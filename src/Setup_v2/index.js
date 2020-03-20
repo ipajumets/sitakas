@@ -133,7 +133,7 @@ class Setup_v2 extends Component {
                             }
                             {
                                 !this.state.creating ?
-                                    <span onClick={() => this.goBack()} className="setup-action-create-game-button">Go back</span>
+                                    <span onClick={() => this.goBack()} className="setup-action-create-game-button">Mine tagasi</span>
                                 :
                                     <img className="setup-action-create-game-loading" src={require("../media/svgs/loading-fat.svg")} alt="" />
                             }
