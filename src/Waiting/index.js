@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { isMobileSafari } from "react-device-detect";
 import Fingerprint2 from "fingerprintjs2";
 import socketIo from "socket.io-client";
+import Page from "../Page";
 
 // api-requests
 import { check_my_waiting_status, change_room_state, leave_room, create_new_game, divide_first_cards } from "./api-requests";
@@ -113,16 +114,20 @@ class Setup_v2 extends Component {
 
     startGame = (code, players) => {
 
-        return change_room_state(code, "game_on")
-            .then(_ => {
-                return;
-            })
-            .then(_ => {
-                return create_new_game(code, players)
-                    .then(result => {
-                        return divide_first_cards(code, players);
-                    });
-            });
+        if (players.length === 4) {
+            return change_room_state(code, "game_on")
+                .then(_ => {
+                    return;
+                })
+                .then(_ => {
+                    return create_new_game(code, players)
+                        .then(result => {
+                            return divide_first_cards(code, players);
+                        });
+                });
+        } else {
+            return alert("4 mängijat peab olema ühes mängus");
+        }
 
     }
 
@@ -132,10 +137,10 @@ class Setup_v2 extends Component {
             return(
                 <div className="waiting-action-container">
                     <div className="waiting-action-navigation-container">
-                        <span>Sitaratas </span>
+                        <span>Sitaratas</span>
                     </div>
                     <div className="waiting-action-wrapper">
-                        <span className="waiting-action-game-code-title">GAME CODE</span>
+                        <span className="waiting-action-game-code-title">MÄNGU KOOD</span>
                         <span className="waiting-action-game-code">{this.props.room.code}</span>
                         <div className="waiting-action-names-list">
                             {this.props.room.players.map((player, index) => {
@@ -148,7 +153,7 @@ class Setup_v2 extends Component {
                             this.props.room.host_browser_id === this.props.user.browser_id ?
                                 !this.state.starting ?
                                     <div onClick={() => this.startGame(this.props.room.code, this.props.room.players)} className="waiting-action-enter-game-button">
-                                        <span>Start game</span>
+                                        <span>Alusta mängu</span>
                                     </div>
                                 :
                                     <div className="waiting-action-enter-game-button">
@@ -159,7 +164,7 @@ class Setup_v2 extends Component {
                         }
                         {
                             !this.state.leaving ?
-                                <span onClick={() => this.leaveRoom(this.props.room.code, this.props.user.browser_id)} className="waiting-action-create-game-button">Leave room</span>
+                                <span onClick={() => this.leaveRoom(this.props.room.code, this.props.user.browser_id)} className="waiting-action-create-game-button">Lahku mängust</span>
                             :
                                 <img className="waiting-action-create-game-loading" src={require("../media/svgs/loading-fat.svg")} alt="" />
                         }
@@ -175,11 +180,13 @@ class Setup_v2 extends Component {
             );
         } else {
             return(
-                <div className="waiting-loading-container">
-                    <div className="waiting-action-navigation-container">
-                        <span>Sitaratas </span>
+                <Page>
+                    <div className="waiting-loading-container">
+                        <div className="waiting-action-navigation-container">
+                            <span>Sitaratas</span>
+                        </div>
                     </div>
-                </div>
+                </Page>
             );
         }
 

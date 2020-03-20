@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import { isMobile, withOrientationChange } from "react-device-detect";
 import Fingerprint2 from "fingerprintjs2";
 import socketIo from "socket.io-client";
+import Page from "../Page";
 
 // modules
 import { setUserBrowserID, resetUser }  from "../modules/user";
@@ -482,97 +483,101 @@ class Board extends Component {
 
         if (!this.state.loading) {
             return(
-                <div className="board-action-container">
-                    <div className="board-action-navigation-container">
-                        <span className="board-action-navigation-title">MÄNG {this.props.game.data.room_code}</span>
-                        <span className="board-action-navigation-subtitle">ROUND {this.props.game.data.round}/26</span>
-                    </div>
-                    <div className="board-action-wrapper">
-                        <div className="board-table-container">
-                            {this.handleTable(this.props.game.data, this.props.round.data, this.props.hands.data, this.props.user.browser_id)}
-                            {
-                                !this.props.game.data.over && this.props.game.data.turn === this.props.user.browser_id && this.props.game.data.action === "guess" ?
-                                    <div className="guess-wins-container">
-                                        <div className="guess-wins-wrapper">
-                                            <div className="guess-wins-header-container">
-                                                <span>Mitu tihi?</span>
-                                            </div>
-                                            <div className="guess-wins-input-container">
-                                                <div className="guess-wins-input-button-container" onClick={() => this.handle_wins_bet_substract(this.state.wins)}>
-                                                    <span>-</span>
+                <Page>
+                    <div className="board-action-container">
+                        <div className="board-action-navigation-container">
+                            <span className="board-action-navigation-title">MÄNG {this.props.game.data.room_code}</span>
+                            <span className="board-action-navigation-subtitle">ROUND {this.props.game.data.round}/26</span>
+                        </div>
+                        <div className="board-action-wrapper">
+                            <div className="board-table-container">
+                                {this.handleTable(this.props.game.data, this.props.round.data, this.props.hands.data, this.props.user.browser_id)}
+                                {
+                                    !this.props.game.data.over && this.props.game.data.turn === this.props.user.browser_id && this.props.game.data.action === "guess" ?
+                                        <div className="guess-wins-container">
+                                            <div className="guess-wins-wrapper">
+                                                <div className="guess-wins-header-container">
+                                                    <span>Mitu võtad?</span>
                                                 </div>
-                                                <div className="guess-wins-input-value-container">
-                                                    <span>{this.state.wins}</span>
+                                                <div className="guess-wins-input-container">
+                                                    <div className="guess-wins-input-button-container" onClick={() => this.handle_wins_bet_substract(this.state.wins)}>
+                                                        <span>-</span>
+                                                    </div>
+                                                    <div className="guess-wins-input-value-container">
+                                                        <span>{this.state.wins}</span>
+                                                    </div>
+                                                    <div className="guess-wins-input-button-container" onClick={() => this.handle_wins_bet_add(this.state.wins, this.props.cards.data)}>
+                                                        <span>+</span>
+                                                    </div>
                                                 </div>
-                                                <div className="guess-wins-input-button-container" onClick={() => this.handle_wins_bet_add(this.state.wins, this.props.cards.data)}>
-                                                    <span>+</span>
+                                                <div className="guess-wins-footer-container">
+                                                    <span onClick={() => this.add_my_bet(this.props.game.data, this.props.user.browser_id, this.state.wins, this.props.round.data, this.props.cards.data)}>Kinnita</span>
                                                 </div>
                                             </div>
-                                            <div className="guess-wins-footer-container">
-                                                <span onClick={() => this.add_my_bet(this.props.game.data, this.props.user.browser_id, this.state.wins, this.props.round.data, this.props.cards.data)}>Kinnita</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                :
-                                    <div></div>
-                            }
-                            {
-                                this.props.hands.data ?
-                                    this.props.hands.data.winner ?
-                                        <div className="hand-winner-overlay-container">
-                                            <span><b>{this.props.game.data.players.filter(player => player.uid === this.props.hands.data.winner.uid)[0].name}</b> võtab</span>
                                         </div>
                                     :
                                         <div></div>
-                                :
-                                    <div></div>
-                            }
-                            {
-                                this.props.game.data.turn === this.props.user.browser_id && this.props.game.data.action === "call" && !this.props.hands.data.winner ?
-                                    <div className="hand-winner-overlay-container">
-                                        <span><b>Sinu</b> kord</span>
-                                    </div>
-                                :
-                                    <div></div>
-                            }
-                        </div>
-                        <div className="board-hand-container" style={{justifyContent: this.props.cards.data.length * 128 < this.state.inner_width ? "space-around" : "flex-start" }}>
-                            {
-                                this.props.game.data ?
-                                    !this.props.game.data.over ?
-                                        this.renderCards(this.props.cards.data, this.props.game.data, this.props.user.browser_id, this.props.hands.data)
+                                }
+                                {
+                                    this.props.hands.data ?
+                                        this.props.hands.data.winner ?
+                                            <div className="hand-winner-overlay-container">
+                                                <span><b>{this.props.game.data.players.filter(player => player.uid === this.props.hands.data.winner.uid)[0].name}</b> võtab</span>
+                                            </div>
+                                        :
+                                            <div></div>
                                     :
-                                        <div className="game-over-alert-container">
-                                            <div className="game-over-alert-wrapper">
-                                                <img src={"https://www.basket.ee/cache/basket/public/remote/http_is-basket-ee/_2000x2000x0/bw-client-filesXbasketisXpublicXplayer-pictureX397-56.jpg"} className="game-over-alert-image" />
-                                                <div className="game-over-alert-text-container">
-                                                    <h3>💩 {getSitaratas(this.props.game.data.players).name}</h3>
-                                                    <span>Sitaratas</span>
-                                                </div>
-                                                <div className="game-over-leave-container">
-                                                    <span onClick={() => this.exitGame()}>Välju</span>
+                                        <div></div>
+                                }
+                                {
+                                    this.props.game.data.turn === this.props.user.browser_id && this.props.game.data.action === "call" && !this.props.hands.data.winner ?
+                                        <div className="hand-winner-overlay-container">
+                                            <span><b>Sinu</b> kord</span>
+                                        </div>
+                                    :
+                                        <div></div>
+                                }
+                            </div>
+                            <div className="board-hand-container" style={{justifyContent: this.props.cards.data.length * 128 < this.state.inner_width ? "space-around" : "flex-start" }}>
+                                {
+                                    this.props.game.data ?
+                                        !this.props.game.data.over ?
+                                            this.renderCards(this.props.cards.data, this.props.game.data, this.props.user.browser_id, this.props.hands.data)
+                                        :
+                                            <div className="game-over-alert-container">
+                                                <div className="game-over-alert-wrapper">
+                                                    <img src={"https://www.basket.ee/cache/basket/public/remote/http_is-basket-ee/_2000x2000x0/bw-client-filesXbasketisXpublicXplayer-pictureX397-56.jpg"} className="game-over-alert-image" />
+                                                    <div className="game-over-alert-text-container">
+                                                        <h3>💩 {getSitaratas(this.props.game.data.players).name}</h3>
+                                                        <span>Sitaratas</span>
+                                                    </div>
+                                                    <div className="game-over-leave-container">
+                                                        <span onClick={() => this.exitGame()}>Välju</span>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                :
-                                    <div></div>
-                            } 
+                                    :
+                                        <div></div>
+                                } 
+                            </div>
                         </div>
+                        
                     </div>
-                    
-                </div>
+                </Page>
             );
         } else {
             return(
-                <div className="board-loading-container">
-                    <div className="board-action-navigation-container">
+                <Page>
+                    <div className="board-loading-container">
+                        <div className="board-action-navigation-container">
+                            
+                        </div>
+                        <div className="board-loading-wrapper">
+                            <img className="board-loading-svg" src={require("../media/svgs/loading.svg")} alt="" />
+                        </div>
                         
                     </div>
-                    <div className="board-loading-wrapper">
-                        <img className="board-loading-svg" src={require("../media/svgs/loading.svg")} alt="" />
-                    </div>
-                    
-                </div>
+                </Page>
             );
         }
 

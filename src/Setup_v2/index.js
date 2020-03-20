@@ -3,6 +3,7 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { isMobileSafari } from "react-device-detect";
 import Fingerprint2 from "fingerprintjs2";
+import Page from "../Page";
 
 // css
 import "./index.css";
@@ -111,47 +112,51 @@ class Setup_v2 extends Component {
 
         if (!this.state.loading) {
             return(
-                <div className="setup-action-container">
-                    <div className="setup-action-navigation-container">
-                        <span>Sitaratas </span>
-                    </div>
-                    <div className="setup-action-wrapper">
-                        <span className="setup-action-game-code-title">GAME CODE</span>
-                        <span className="setup-action-game-code">{this.props.room.code}</span>
-                        <input type={"text"} value={this.state.name} onChange={(e) => this.setState({ name: e.target.value })} placeholder={"Your name"} className="setup-action-game-code-input" />
+                <Page>
+                    <div className="setup-action-container">
+                        <div className="setup-action-navigation-container">
+                            <span>Sitaratas</span>
+                        </div>
+                        <div className="setup-action-wrapper">
+                            <span className="setup-action-game-code-title">MÄNGU KOOD</span>
+                            <span className="setup-action-game-code">{this.props.room.code}</span>
+                            <input type={"text"} value={this.state.name} onChange={(e) => this.setState({ name: e.target.value })} placeholder={"Sinu nimi"} className="setup-action-game-code-input" />
+                            {
+                                !this.state.joining ?
+                                    <div onClick={() => this.joinRoom(this.state.name, this.props.user.browser_id, this.props.room.code)} className="setup-action-enter-game-button">
+                                        <span>Valmis</span>
+                                    </div>
+                                :
+                                    <div className="setup-action-enter-game-button">
+                                        <img src={require("../media/svgs/loading-fat.svg")} alt="" />
+                                    </div>
+                            }
+                            {
+                                !this.state.creating ?
+                                    <span onClick={() => this.goBack()} className="setup-action-create-game-button">Go back</span>
+                                :
+                                    <img className="setup-action-create-game-loading" src={require("../media/svgs/loading-fat.svg")} alt="" />
+                            }
+                        </div>
                         {
-                            !this.state.joining ?
-                                <div onClick={() => this.joinRoom(this.state.name, this.props.user.browser_id, this.props.room.code)} className="setup-action-enter-game-button">
-                                    <span>Ready</span>
+                            isMobileSafari ?
+                                <div className="ios-safari-bottom">
                                 </div>
                             :
-                                <div className="setup-action-enter-game-button">
-                                    <img src={require("../media/svgs/loading-fat.svg")} alt="" />
-                                </div>
-                        }
-                        {
-                            !this.state.creating ?
-                                <span onClick={() => this.goBack()} className="setup-action-create-game-button">Go back</span>
-                            :
-                                <img className="setup-action-create-game-loading" src={require("../media/svgs/loading-fat.svg")} alt="" />
+                                <div></div>
                         }
                     </div>
-                    {
-                        isMobileSafari ?
-                            <div className="ios-safari-bottom">
-                            </div>
-                        :
-                            <div></div>
-                    }
-                </div>
+                </Page>
             );
         } else {
             return(
-                <div className="setup-loading-container">
-                    <div className="setup-action-navigation-container">
-                        <span>Sitaratas </span>
+                <Page>
+                    <div className="setup-loading-container">
+                        <div className="setup-action-navigation-container">
+                            <span>Sitaratas</span>
+                        </div>
                     </div>
-                </div>
+                </Page>
             );
         }
 

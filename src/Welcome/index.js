@@ -4,6 +4,7 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import Fingerprint2 from "fingerprintjs2";
 import { isMobileSafari } from "react-device-detect";
+import Page from "../Page";
 
 // modules
 import { setUserBrowserID, setUser } from "../modules/user";
@@ -103,45 +104,49 @@ class Welcome extends Component {
 
         if (!this.state.loading) {
             return(
-                <div className="welcome-action-container">
-                    <div className="welcome-action-navigation-container">
-                        <span>Sitaratas </span>
-                    </div>
-                    <div className="welcome-action-wrapper">
-                        <input type={"text"} value={this.state.code} onChange={(e) => this.setState({ code: e.target.value })} placeholder={"Game code"} className="welcome-action-game-code-input" />
+                <Page>
+                    <div className="welcome-action-container">
+                        <div className="welcome-action-navigation-container">
+                            <span>Sitaratas</span>
+                        </div>
+                        <div className="welcome-action-wrapper">
+                            <input type={"text"} value={this.state.code} onChange={(e) => this.setState({ code: e.target.value })} placeholder={"Mängu kood"} className="welcome-action-game-code-input" />
+                            {
+                                !this.state.entering ?
+                                    <div onClick={() => this.enterRoom(this.state.code, this.props.user.browser_id)} className="welcome-action-enter-game-button">
+                                        <span>Sisene mängu</span>
+                                    </div>
+                                :
+                                    <div className="welcome-action-enter-game-button">
+                                        <img src={require("../media/svgs/loading-fat.svg")} />
+                                    </div>
+                            }
+                            {
+                                !this.state.creating ?
+                                    <span onClick={() => this.createNewRoom(this.props.user.browser_id)} className="welcome-action-create-game-button">Uus mäng</span>
+                                :
+                                    <img className="welcome-action-create-game-loading" src={require("../media/svgs/loading-fat.svg")} />
+                            }
+                        </div>
                         {
-                            !this.state.entering ?
-                                <div onClick={() => this.enterRoom(this.state.code, this.props.user.browser_id)} className="welcome-action-enter-game-button">
-                                    <span>Enter game</span>
+                            isMobileSafari ?
+                                <div className="ios-safari-bottom">
                                 </div>
                             :
-                                <div className="welcome-action-enter-game-button">
-                                    <img src={require("../media/svgs/loading-fat.svg")} />
-                                </div>
-                        }
-                        {
-                            !this.state.creating ?
-                                <span onClick={() => this.createNewRoom(this.props.user.browser_id)} className="welcome-action-create-game-button">Create new game</span>
-                            :
-                                <img className="welcome-action-create-game-loading" src={require("../media/svgs/loading-fat.svg")} />
+                                <div></div>
                         }
                     </div>
-                    {
-                        isMobileSafari ?
-                            <div className="ios-safari-bottom">
-                            </div>
-                        :
-                            <div></div>
-                    }
-                </div>
+                </Page>
             );
         } else {
             return(
-                <div className="welcome-loading-container">
-                    <div className="welcome-action-navigation-container">
-                        <span>Sitaratas </span>
+                <Page>
+                    <div className="welcome-loading-container">
+                        <div className="welcome-action-navigation-container">
+                            <span>Sitaratas</span>
+                        </div>
                     </div>
-                </div>
+                </Page>
             );
         }
 
