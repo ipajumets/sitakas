@@ -1,0 +1,432 @@
+/* Loading */
+
+.board-loading-container {
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    height: 100vh;
+    background-color: #97D2FB;
+}
+
+.board-loading-wrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.board-loading-svg {
+    width: 64px;
+    height: 64px;
+}
+
+.ios-safari-bottom {
+    width: 100vw;
+    min-height: 75px;
+    max-height: 75px;
+    background-color: #B2DDF7;
+}
+
+/* Setup */
+
+.board-action-container {
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(152, 210, 251, 0.5);
+}
+
+.board-action-navigation-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 54px;
+    background-color: #B2DDF7;
+    border-bottom: 1px solid skyblue;
+}
+
+.board-action-navigation-title {
+    font-size: 13pt;
+    font-family: "Rubik", sans-serif;
+    color: black;
+    font-weight: bold;
+}
+
+.board-action-navigation-subtitle {
+    font-size: 8pt;
+    font-family: "Rubik", sans-serif;
+    color: tomato;
+    font-weight: bold;
+    margin-top: 2px;
+}
+
+.board-action-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Opera and Firefox */
+}
+
+.board-action-game-code-title {
+    color: white;
+    font-size: 21pt;
+    font-family: "Inter", sans-serif;
+    text-align: center;
+}
+
+.board-action-game-code {
+    color: white;
+    font-size: 32pt;
+    font-weight: bold;
+    font-family: "Rubik", sans-serif;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.board-action-game-code-input {
+    width: 192px;
+    height: 60px;
+    font-size: 14pt;
+    border-radius: 37px;
+    font-family: "Inter", sans-serif;
+    text-align: center;
+    outline: none;
+    border: none;
+}
+
+.board-action-enter-game-button {
+    width: 192px;
+    height: 60px;
+    background-color: teal;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 25px;
+    cursor: pointer;
+}
+
+.board-action-enter-game-button span {
+    color: white;
+    font-family: "Inter", sans-serif;
+    font-size: 12pt;
+}
+
+.board-action-enter-game-button img {
+    width: 20px;
+    height: 20px;
+}
+
+.board-action-create-game-button {
+    padding: 30px 10px 10px 10px;
+    color: chocolate;
+    font-family: "Inter", sans-serif;
+    font-size: 12pt;
+    cursor: pointer;
+}
+
+.board-action-create-game-loading {
+    width: 20px;
+    height: 20px;
+    margin-top: 36px;
+}
+
+/* Table */
+
+.board-table-container {
+    height: 66vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.board-hand-container {
+    flex: 1;
+    background-color: #B2DDF7;
+    border-top: 1px solid skyblue;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    padding-top: 10px;
+    width: 100vw;
+    max-width: 100vw;
+    overflow: hidden;
+}
+
+.board-hand-card-container {
+    flex: 1;
+    min-width: 128px;
+    max-width: 128px;
+    background-color: white;
+    height: 100%;
+    border-radius: 5px 5px 0 0;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    border-left: 1px solid rgb(240, 240, 240);
+    border-right: 1px solid rgb(240, 240, 240);
+    overflow: hidden;
+}
+
+.board-hand-cards-wrapper {
+    display: flex;
+    flex-direction: row;
+    max-width: 50vw;
+}
+
+.board-hand-selected-card-container {
+    flex: 1;
+    margin: 0 1vh;
+    min-width: 128px;
+    max-width: 128px;
+    height: 100%;
+    border-radius: 5px 5px 0 0;
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(235, 235, 235);
+    position: relative;
+    cursor: pointer;
+    border-left: 1px solid rgb(240, 240, 240);
+    border-right: 1px solid rgb(240, 240, 240);
+    overflow: hidden;
+}
+
+.selected-card-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2vh 0;
+}
+
+.selected-card-overlay span {
+    font-weight: bold;
+    font-size: 10pt;
+    font-family: "Inter", sans-serif;
+    color: black;
+    padding: 5px 0;
+}
+
+.board-hand-card-value-container {
+    padding: 1vh 2vh;
+    flex: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.board-hand-card-value-and-suit-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.board-hand-card-value {
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    font-size: 14pt;
+}
+
+.board-hand-card-value-suit {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14pt;
+}
+
+.board-hand-card-type-container {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.board-hand-card-type-container span {
+    font-size: 20pt;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Guess wins */
+
+.guess-wins-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.guess-wins-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.guess-wins-header-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4vh 0;
+}
+
+.guess-wins-header-container span {
+    font-size: 3vh;
+    font-family: "Rubik", sans-serif;
+    color: black;
+}
+
+.guess-wins-footer-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4vh 0;
+}
+
+.guess-wins-footer-container span {
+    font-size: 3vh;
+    font-family: "Rubik", sans-serif;
+    padding: 2vh 6vw;
+    border-radius: 10vh;
+    color: steelblue;
+    background-color: rgb(255, 255, 255, 0.33);
+    cursor: pointer;
+}
+
+.guess-wins-input-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.guess-wins-input-button-container {
+    width: 10vw;
+    height: 10vw;
+    border-radius: 5vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(255, 255, 255, 0.5);
+}
+
+.guess-wins-input-button-container span {
+    font-size: 5vh;
+    font-family: "Rubik", sans-serif;
+    color: black;
+    cursor: pointer;
+}
+
+.guess-wins-input-value-container {
+    width: 20vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.guess-wins-input-value-container span {
+    font-size: 4vh;
+    font-family: "Rubik", sans-serif;
+    color: black;
+}
+
+/* Hand winner */
+
+.hand-winner-overlay-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.hand-winner-overlay-container span {
+    font-size: 3vw;
+    font-family: "Rubik", sans-serif;
+    color: "black";
+}
+
+.game-over-alert-container {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 100vw;
+    max-width: 720px;
+    padding: 1vh;
+}
+
+.game-over-alert-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.game-over-alert-text-container {
+    display: flex;
+    flex-direction: column;
+    padding: 0 1vh;
+}
+
+.game-over-alert-text-container h3 {
+    padding: 0;
+    margin: 0;
+    font-size: 3vh;
+    font-family: "Rubik", sans-serif;
+    color: black;
+}
+
+.game-over-alert-text-container span {
+    padding: 0;
+    margin: 0;
+    font-size: 2vh;
+    font-family: "Rubik", sans-serif;
+    color: chocolate;
+}
+
+.game-over-alert-image {
+    width: 6vh;
+    height: 6vh;
+    object-fit: cover;
+    border-radius: 4vh;
+    border: 2px solid white;
+}
+
+.game-over-leave-container {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    padding: 0 1vh;
+}
+
+.game-over-leave-container span {
+    font-size: 2vh;
+    font-family: "Rubik", sans-serif;
+    color: red;
+    font-weight: bold;
+    padding: 1vh 3vh;
+    background-color: rgba(255, 255, 255, 0.67);
+    border-radius: 10vh;
+    cursor: pointer;
+}

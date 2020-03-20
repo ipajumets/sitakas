@@ -1,0 +1,331 @@
+.four-players-table-container {
+    position: relative;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.four-players-table-side-container {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+}
+
+.four-players-table-seat-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 14vh;
+    height: 14vh;
+    padding: 10px;
+    overflow: visible;
+}
+
+.four-players-table-seat-profile-container {
+    flex: 1;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.four-players-table-seat-name-container {
+    height: 4vh;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.four-players-table-seat-name {
+    color: black;
+    font-size: 2vh;
+    font-family: "Rubik", sans-serif;
+    padding-top: 10px;
+}
+
+.four-players-table-seat-profile-image-container {
+    position: relative;
+}
+
+.four-players-table-seat-profile-image {
+    width: 8vh;
+    height: 8vh;
+    object-fit: cover;
+    border-radius: 5vh;
+    border: 1px solid white;
+}
+
+.four-players-table-seat-profile-points-container {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    height: 3vh;
+    border-radius: 2vh;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.seat-profile-points {
+    font-size: 2vh;
+    font-family: "Rubik", sans-serif;
+    color: black;
+}
+
+.four-players-table-seat-profile-wins-container {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 3vh;
+    width: 3vh;
+    border-radius: 2vh;
+    background-color: rgba(0, 0, 0, 0.67);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.seat-profile-wins {
+    font-size: 2vh;
+    font-family: "Rubik", sans-serif;
+    color: white;
+}
+
+.four-players-table-seat-profile-won-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 3vh;
+    width: 3vh;
+    border-radius: 2vh;
+    background-color: rgba(0, 0, 0, 0.67);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.seat-profile-won {
+    font-size: 2vh;
+    font-family: "Rubik", sans-serif;
+    color: white;
+}
+
+.four-players-top-player-card-container {
+    position: absolute;
+    bottom: -6vh;
+    left: 0;
+    right: 0;
+    height: 6vh;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.four-players-bottom-player-card-container {
+    position: absolute;
+    top: -8vh;
+    left: 0;
+    right: 0;
+    height: 6vh;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.four-players-left-player-card-container {
+    position: absolute;
+    right: -3vh;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.four-players-right-player-card-container {
+    position: absolute;
+    left: -3vh;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.player-card {
+    width: 5vh;
+    height: 7vh;
+    background-color: white;
+    border-radius: 3px;
+    display: flex;
+    flex-direction: column;
+}
+
+.player-card-number-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    padding-left: 3px;
+}
+
+.player-card-number {
+    font-size: 2vh;
+    font-family: "Rubik", sans-serif;
+}
+
+.player-card-type-container {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.player-card-type {
+    font-size: 2vh;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.trump-container {
+    position: absolute;
+    top: 2vh;
+    right: 2vh;
+    width: 10vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.trump-card {
+    width: 5vh;
+    height: 7vh;
+    background-color: white;
+    border-radius: 3px;
+    display: flex;
+    flex-direction: column;
+}
+
+.trump-card-number-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    padding-left: 3px;
+}
+
+.trump-card-number {
+    font-size: 2vh;
+    font-family: "Rubik", sans-serif;
+}
+
+.trump-card-type-container {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.trump-card-type {
+    font-size: 2vh;
+}
+
+.trump-title {
+    font-size: 2vh;
+    color: black;
+    font-family: "Rubik", sans-serif;
+    padding-bottom: 1vh;
+    font-weight: bold;
+}
+
+.base-container {
+    position: absolute;
+    bottom: 2vh;
+    right: 2vh;
+    width: 10vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.base-card {
+    width: 5vh;
+    height: 7vh;
+    background-color: white;
+    border-radius: 3px;
+    display: flex;
+    flex-direction: column;
+}
+
+.base-card-number-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    padding-left: 3px;
+}
+
+.base-card-number {
+    font-size: 2vh;
+    font-family: "Rubik", sans-serif;
+}
+
+.base-card-type-container {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.base-card-type {
+    font-size: 2vh;
+}
+
+.base-title {
+    font-size: 2vh;
+    color: black;
+    font-family: "Rubik", sans-serif;
+    padding-bottom: 1vh;
+    font-weight: bold;
+}
+
+.stats-container {
+    position: absolute;
+    top: 2vh;
+    left: 2vh;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.stats-text {
+    font-size: 2vh;
+    color: black;
+    font-family: "Rubik", sans-serif;
+}
+
+.turn-container {
+    position: absolute;
+    bottom: 2vh;
+    left: 2vh;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.turn-text {
+    font-size: 2vh;
+    color: black;
+    font-family: "Rubik", sans-serif;
+}

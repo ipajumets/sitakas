@@ -1,0 +1,118 @@
+.setup-container {
+    width: 100vw;
+    height: 100vh;
+    background-color: #97D2FB;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.setup-title {
+    font-family: "Rubik", sans-serif;
+    font-size: 24pt;
+    color: white;
+    text-align: center;
+}
+
+.setup-code {
+    text-align: center;
+    font-family: "Rubik", sans-serif;
+    font-size: 32pt;
+    color: white;
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+.setup-successful-entry  {
+    font-family: "Rubik", sans-serif;
+    font-size: 24pt;
+    padding: 10px 0;
+    color: white;
+}
+
+.setup-other-players-counter {
+    font-size: 14pt;
+    padding: 10px 0;
+    color: black;
+    font-family: "Rubik", sans-serif;
+    text-decoration: underline;
+}
+
+.setup-other-players-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.setup-other-players-item {
+    color: white;
+    font-size: 18pt;
+    font-family: "Rubik", sans-serif;
+    padding: 10px 20px;
+}
+
+.setup-code-input {
+    margin: 30px;
+    padding: 20px 15px;
+    text-align: center;
+    font-size: 14pt;
+    width: 160px;
+    border: none;
+    outline: none;
+    font-family: "Rubik", sans-serif;
+    border-radius: 5px;
+}
+
+.setup-enter {
+    margin: 15px;
+    padding: 20px;
+    text-align: center;
+    background-color: teal;
+    width: 160px;
+    color: white;
+    font-family: "Rubik", sans-serif;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+.setup-create {
+    padding: 20px;
+    text-align: center;
+    width: 160px;
+    color: steelblue;
+    font-family: "Inter", sans-serif;
+    font-weight: bold;
+}
+
+.setup-leave {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 36px;
+    margin-top: 20px;
+    padding: 0 30px;
+    border-radius: 18px;
+    background-color: tomato;
+    color: white;
+    font-family: "Rubik", sans-serif;
+    font-size: 10pt;
+    cursor: pointer;
+}
+
+.setup-start {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+    margin-top: 30px;
+    padding: 0 40px;
+    border-radius: 25px;
+    background-color: steelblue;
+    color: white;
+    font-family: "Rubik", sans-serif;
+    font-size: 12pt;
+    cursor: pointer;
+}
