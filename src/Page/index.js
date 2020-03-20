@@ -4,9 +4,9 @@ import Helmet from "react-helmet";
 
 const SITE_URL = process.env.NODE_ENV === "development" ? "http://localhost:3000/" : "https://www.sitaratas.eu/";
 
-const defaultTitle = "Sitaratas";
-const defaultDescription = "Kõige parem kaardimäng";
-const defaultImage = "https://i.imgur.com/3FdwBkh.png";
+const defaultTitle = "MÄNGI! Kaotaja on Sitaratas";
+const defaultDescription = "Kõige parem kaardimäng+karantiini garantii";
+const defaultImage = "https://i.imgur.com/jvszDw8.png";
 const defaultTwitter = "@who";
 const defaultSep = " | ";
 
