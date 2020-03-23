@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { isMobileSafari } from "react-device-detect";
-import Fingerprint2 from "fingerprintjs2";
 import Page from "../Page";
 
 // css
@@ -10,13 +9,11 @@ import "./index.css";
 
 // modules
 import { setRoom, setRoomWithPlayers, resetRoom, setPlayers } from "../modules/room";
-import { setUserBrowserID, setUser } from "../modules/user";
+import { setUser } from "../modules/user";
 
 // api-requests
-import { join_room, check_my_setup_status } from "./api-requests";
-
-// constants
-let options = {};
+import { check_my_waiting_status } from "../api-requests/global";
+import { join_room } from "./api-requests";
 
 class Setup_v2 extends Component {
 
@@ -26,53 +23,30 @@ class Setup_v2 extends Component {
         this.state = {
             name: "",
             joining: false,
-            loading: true,
         };
 
     }
 
     componentDidMount = () => {
 
-        if (!this.props.room.code) {
-            
-            let that = this;
+        let that = this;
 
-            return Fingerprint2.getV18(options, (result) => {
-                return that.props.setUserBrowserID(result)
-                    .then(_ => {
-                        return result;
-                    })
-                    .then(browser_id => {
-                        return check_my_setup_status(browser_id, that.props.match.params.code)
-                            .then(result => {
-                                if (result.success) {
-                                    if (result.room.state !== "game_on") {
-                                        return this.props.setRoomWithPlayers(result.room.code, result.room.host_browser_id, result.players)
-                                            .then(_ => {
-                                                return;
-                                            })
-                                            .then(_ => {
-                                                return this.props.setUser(result.user)
-                                                    .then(_ => {
-                                                        return this.props.history.push(`/waiting/${that.props.match.params.code}`);
-                                                    });
-                                            });
-                                    } else {
-                                        return this.props.history.push(`/game/${that.props.match.params.code}`);
-                                    }
-                                } else {
-                                    return this.props.setRoom(that.props.match.params.code, browser_id)
-                                        .then(_ => {
-                                            return this.setState({ loading: false });
-                                        });
-                                }
-                            });
-                    });
+        return check_my_waiting_status(that.props.user.browser_id, that.props.match.params.code)
+            .then(result => {
+                if (result.room) {
+                    if (result.user) {
+                        if (result.room.state === "game_on") {
+                            return that.props.history.push(`/game/${that.props.match.params.code}`);
+                        } else {
+                            return that.props.history.push(`/waiting/${that.props.match.params.code}`);
+                        }
+                    } else {
+                        return that.props.setRoom(result.room.code, result.room.host_browser_id);
+                    }
+                } else {
+                    return that.props.history.push("/");
+                }
             });
-
-        }
-
-        return this.setState({ loading: false });
 
     }
 
@@ -90,16 +64,13 @@ class Setup_v2 extends Component {
             return this.setState({ joining: true }, () => {
                 return join_room(name, id, code)
                     .then(result => {
-                        return this.props.setUser(result.user)
-                            .then(_ => {
-                                return;
-                            })
-                            .then(_ => {
-                                return this.props.setPlayers(result.players)
-                                    .then(_ => {
-                                        return this.props.history.push(`/waiting/${code}`);
-                                    });
+                        if (result.user) {
+                            return this.props.history.push(`/waiting/${code}`);
+                        } else {
+                            return this.setState({ joining: false }, () => {
+                                return alert("Mänguga liitumine ebaõnnestus, palun proovige uuesti.");
                             });
+                        }
                     });
             });
         } else {
@@ -110,7 +81,7 @@ class Setup_v2 extends Component {
 
     render = () => {
 
-        if (!this.state.loading) {
+        if (this.props.room.code) {
             return(
                 <Page>
                     <div className="setup-action-container">
@@ -173,7 +144,7 @@ let mapStateToProps = (state) => {
 
 let mapDispatchToProps = (dispatch) => {
     return {
-        ...bindActionCreators({ setRoom, setRoomWithPlayers, setPlayers, resetRoom, setUserBrowserID, setUser }, dispatch)
+        ...bindActionCreators({ setRoom, setRoomWithPlayers, setPlayers, resetRoom, setUser }, dispatch)
     }
 }
 

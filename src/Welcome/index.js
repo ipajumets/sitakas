@@ -2,20 +2,15 @@ import React, { Component } from "react";
 import "./index.css";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import Fingerprint2 from "fingerprintjs2";
-import { isMobileSafari } from "react-device-detect";
 import Page from "../Page";
 
 // modules
-import { setUserBrowserID, setUser } from "../modules/user";
+import { setUser } from "../modules/user";
 import { setRoom, setRoomWithPlayers } from "../modules/room";
 
 // api-requests
-import { create_new_room, check_if_room_exists } from "./api-requests";
-import { check_my_setup_status } from "../Setup_v2/api-requests";
-
-// constants
-let options = {};
+import { check_my_waiting_status } from "../api-requests/global";
+import { create_new_room } from "./api-requests";
 
 class Welcome extends Component {
 
@@ -26,21 +21,7 @@ class Welcome extends Component {
             code: "",
             entering: false,
             creating: false,
-            loading: true,
         };
-
-    }
-
-    componentDidMount = () => {
-
-        let that = this;
-
-        return Fingerprint2.getV18(options, (result) => {
-            return that.props.setUserBrowserID(result)
-                .then(_ => {
-                    return this.setState({ loading: false });
-                });
-        });
 
     }
 
@@ -55,7 +36,7 @@ class Welcome extends Component {
                                 return this.props.history.push(`/setup/${room.data.code}`);
                             });
                         });
-                });
+                })
         });
 
     }
@@ -63,36 +44,21 @@ class Welcome extends Component {
     enterRoom = (code, id) => {
 
         return this.setState({ entering: true }, () => {
-            return check_if_room_exists(code)
-                .then(room => {
-                    if (room.data) {
-                        if (room.data.state !== "game_on") {
-                            return check_my_setup_status(id, code)
-                                .then(result => {
-                                    if (result.success) {
-                                        return this.props.setRoomWithPlayers(result.room.code, result.room.host_browser_id, result.players)
-                                            .then(_ => {
-                                                return;
-                                            })
-                                            .then(_ => {
-                                                return this.props.setUser(result.user)
-                                                    .then(_ => {
-                                                        return this.props.history.push(`/waiting/${code}`);
-                                                    });
-                                            });
-                                    } else {
-                                        return this.props.setRoom(code, room.data.host_browser_id)
-                                            .then(_ => {
-                                                return this.props.history.push(`/setup/${code}`);
-                                            });
-                                    }
-                                });
+            return check_my_waiting_status(id, code)
+                .then(result => {
+                    if (result.room) {
+                        if (result.user) {
+                            if (result.room.state === "game_on") {
+                                return this.props.history.push(`/game/${code}`);
+                            } else {
+                                return this.props.history.push(`/waiting/${code}`);
+                            }
                         } else {
-                            return this.props.history.push(`/game/${room.data.code}`);
+                            return this.props.history.push(`/setup/${code}`);
                         }
                     } else {
                         return this.setState({ entering: false }, () => {
-                            return alert("Game code invalid, game not found.");
+                            return alert("Vale kood");
                         });
                     }
                 });
@@ -102,7 +68,7 @@ class Welcome extends Component {
 
     render = () => {
 
-        if (!this.state.loading) {
+        if (this.props.user.browser_id) {
             return(
                 <Page>
                     <div className="welcome-action-container">
@@ -118,23 +84,16 @@ class Welcome extends Component {
                                     </div>
                                 :
                                     <div className="welcome-action-enter-game-button">
-                                        <img src={require("../media/svgs/loading-fat.svg")} />
+                                        <img src={require("../media/svgs/loading-fat.svg")} alt="" />
                                     </div>
                             }
                             {
                                 !this.state.creating ?
                                     <span onClick={() => this.createNewRoom(this.props.user.browser_id)} className="welcome-action-create-game-button">Uus mäng</span>
                                 :
-                                    <img className="welcome-action-create-game-loading" src={require("../media/svgs/loading-fat.svg")} />
+                                    <img className="welcome-action-create-game-loading" src={require("../media/svgs/loading-fat.svg")} alt="" />
                             }
                         </div>
-                        {
-                            isMobileSafari ?
-                                <div className="ios-safari-bottom">
-                                </div>
-                            :
-                                <div></div>
-                        }
                     </div>
                 </Page>
             );
@@ -162,7 +121,7 @@ let mapStateToProps = (state) => {
 
 let mapDispatchToProps = (dispatch) => {
     return {
-        ...bindActionCreators({ setUserBrowserID, setUser, setRoom, setRoomWithPlayers }, dispatch)
+        ...bindActionCreators({ setUser, setRoom, setRoomWithPlayers }, dispatch)
     }
 }
 

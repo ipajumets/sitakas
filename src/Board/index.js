@@ -2,8 +2,6 @@ import React, { Component } from "react";
 import "./index.css";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { isMobile, withOrientationChange } from "react-device-detect";
-import Fingerprint2 from "fingerprintjs2";
 import socketIo from "socket.io-client";
 import Page from "../Page";
 
@@ -23,10 +21,9 @@ import ThreePlayersTable from "./layouts/three_players";
 import FourPlayersTable from "./layouts/four_players";
 import FivePlayersTable from "./layouts/five_players";
 import SixPlayersTable from "./layouts/six_players";
-import { rearrange, determineWinner, getSitaratas } from "./helpers";
 
-// constants
-let options = {};
+// helpers
+import { rearrange, determineWinner, getSitaratas } from "./helpers";
 
 class Board extends Component {
 
@@ -51,70 +48,63 @@ class Board extends Component {
         });
 
         let that = this,
-            socket = socketIo("https://www.sitaratas.eu:5000"),
             room_code = that.props.match.params.code;
 
-        this.handleActions(socket, room_code);
+        this.receiveSockets(room_code);
 
-        return Fingerprint2.getV18(options, (result) => {
-            return that.props.setUserBrowserID(result)
-                .then(_ => {
-                    return result;
-                })
-                .then(browser_id => {
-                    return find_room(room_code)
-                        .then(room => {
-                            if (room.data) {
-                                if (room.data.state === "game_on") {
-                                    return am_i_in(browser_id, room_code)
-                                        .then(result => {
-                                            if (result.success) {
-                                                return get_game(room_code)
-                                                    .then(game => {
-                                                        return this.props.setGame(game)
-                                                            .then(_ => {
-                                                                return get_round(room_code, this.props.game.data.round)
-                                                                    .then(round => {
-                                                                        return this.props.setRound(round)
-                                                                            .then(_ => {
-                                                                                return get_hand(room_code, this.props.game.data.round, game.hand)
-                                                                                    .then(hand => {
-                                                                                        return this.props.setHand(hand)
-                                                                                            .then(_ => {
-                                                                                                return get_my_cards(room_code, this.props.game.data.round, browser_id)
-                                                                                                    .then(cards => {
-                                                                                                        if (cards) {
-                                                                                                            return this.props.setCards(cards.active)
-                                                                                                                .then(_ => {
-                                                                                                                    return this.setState({ loading: false });
-                                                                                                                });
-                                                                                                        }  else {
-                                                                                                            return this.setState({ loading: false });
-                                                                                                        }
+        return find_room(room_code)
+            .then(room => {
+                if (room.data) {
+                    if (room.data.state === "game_on") {
+                        return am_i_in(this.props.user.browser_id, room_code)
+                            .then(result => {
+                                if (result.success) {
+                                    return get_game(room_code)
+                                        .then(game => {
+                                            return this.props.setGame(game)
+                                                .then(_ => {
+                                                    return get_round(room_code, this.props.game.data.round)
+                                                        .then(round => {
+                                                            return this.props.setRound(round)
+                                                                .then(_ => {
+                                                                    return get_hand(room_code, this.props.game.data.round, game.hand)
+                                                                        .then(hand => {
+                                                                            return this.props.setHand(hand)
+                                                                                .then(_ => {
+                                                                                    return get_my_cards(room_code, this.props.game.data.round, this.props.user.browser_id)
+                                                                                        .then(cards => {
+                                                                                            if (cards) {
+                                                                                                return this.props.setCards(cards.active)
+                                                                                                    .then(_ => {
+                                                                                                        return this.setState({ loading: false });
                                                                                                     });
-                                                                                            });
-                                                                                    });
-                                                                            });
-                                                                    });
-                                                            });
-                                                    });
-                                            } else {
-                                                return this.props.history.push("/");
-                                            }
+                                                                                            }  else {
+                                                                                                return this.setState({ loading: false });
+                                                                                            }
+                                                                                        });
+                                                                                });
+                                                                        });
+                                                                });
+                                                        });
+                                                });
                                         });
                                 } else {
-                                    return this.props.history.push(`/setup/${room_code}`);
+                                    return this.props.history.push("/");
                                 }
-                            } else {
-                                return this.props.history.push("/");
-                            }
-                        });
-                });
-        });
+                            });
+                    } else {
+                        return this.props.history.push(`/setup/${room_code}`);
+                    }
+                } else {
+                    return this.props.history.push("/");
+                }
+            });
 
     }
 
-    handleActions = (socket, code) => {
+    receiveSockets = (code) => {
+
+        let socket = socketIo("https://www.sitaratas.eu:5000");
 
         socket.on(`${code}_bet_added`, result => {
             return this.props.setNextTurn(result.uid, result.action)
@@ -602,4 +592,4 @@ let mapDispatchToProps = (dispatch) => {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withOrientationChange(Board));
+export default connect(mapStateToProps, mapDispatchToProps)(Board);

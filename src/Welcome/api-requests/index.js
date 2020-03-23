@@ -23,16 +23,3 @@ export let create_new_room = (host_id) => {
         });
 
 }
-
-export let check_if_room_exists = (code) => {
-
-    return fetch("https://www.sitaratas.eu/api/rooms/check/"+code)
-        .then(res => res.json())
-        .then(json => {
-            return json;
-        })
-        .catch(err => {
-            return alert(err);
-        });
-
-}

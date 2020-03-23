@@ -2,12 +2,12 @@ import React, { Component } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { isMobileSafari } from "react-device-detect";
-import Fingerprint2 from "fingerprintjs2";
 import socketIo from "socket.io-client";
 import Page from "../Page";
 
 // api-requests
-import { check_my_waiting_status, change_room_state, leave_room, create_new_game, divide_first_cards } from "./api-requests";
+import { check_my_waiting_status } from "../api-requests/global";
+import { change_room_state, leave_room, create_new_game, divide_first_cards } from "./api-requests";
 
 // css
 import "./index.css";
@@ -15,9 +15,6 @@ import "./index.css";
 // modules
 import { setRoomWithPlayers, resetRoom, addPlayer, removePlayer } from "../modules/room";
 import { setUserBrowserID, setUser, resetUser } from "../modules/user";
-
-// constants
-let options = {};
 
 class Setup_v2 extends Component {
 
@@ -27,7 +24,6 @@ class Setup_v2 extends Component {
         this.state = {
             starting: false,
             leaving: false,
-            loading: true,
         };
 
     }
@@ -35,56 +31,48 @@ class Setup_v2 extends Component {
     componentDidMount = () => {
 
         let that = this,
-            socket = socketIo("https://www.sitaratas.eu:5000"),
             room_code = that.props.match.params.code ? that.props.match.params.code : this.props.room.code;
 
-        socket.on(`${room_code}_joined`, result => {
+        that.receiveSockets(room_code);
+
+        return check_my_waiting_status(that.props.user.browser_id, that.props.match.params.code)
+            .then(result => {
+                if (result.room) {
+                    if (result.user) {
+                        if (result.room.state === "game_on") {
+                            return that.props.history.push(`/game/${that.props.match.params.code}`);
+                        } else {
+                            return that.props.setRoomWithPlayers(result.room.code, result.room.host_browser_id, result.players)
+                                .then(_ => {
+                                    return that.props.setUser(result.user);
+                                });
+                        }
+                    } else {
+                        return that.props.history.push(`/setup/${that.props.match.params.code}`);
+                    }
+                } else {
+                    return that.props.history.push("/");
+                }
+            });
+
+    }
+
+    receiveSockets = (code) => {
+
+        let socket = socketIo("https://www.sitaratas.eu:5000");
+
+        socket.on(`${code}_joined`, result => {
             this.props.addPlayer(result.data);
         });
 
-        socket.on(`${room_code}_left`, result => {
+        socket.on(`${code}_left`, result => {
             this.props.removePlayer(result.data.id);
         });
 
-        socket.on(`${room_code}_started`, result => {
+        socket.on(`${code}_started`, result => {
             this.props.history.push(`/game/${result.code}`);
         });
 
-        if (!this.props.room.code) {
-
-            return Fingerprint2.getV18(options, (result) => {
-                return that.props.setUserBrowserID(result)
-                    .then(_ => {
-                        return result;
-                    })
-                    .then(browser_id => {
-                        return check_my_waiting_status(browser_id, that.props.match.params.code)
-                            .then(result => {
-                                if (result.success) {
-                                    if (result.room.state !== "game_on") {
-                                        return this.props.setRoomWithPlayers(result.room.code, result.room.host_browser_id, result.players)
-                                            .then(_ => {
-                                                return;
-                                            })
-                                            .then(_ => {
-                                                return this.props.setUser(result.user)
-                                                    .then(_ => {
-                                                        return this.setState({ loading: false });
-                                                    });
-                                            });
-                                    } else {
-                                        this.props.history.push(`/game/${result.room.code}`);
-                                    }
-                                } else {
-                                    return this.props.history.push("/");
-                                }
-                            });
-                    });
-            });
-
-        }
-
-        return this.setState({ loading: false });
 
     }
 
@@ -121,7 +109,7 @@ class Setup_v2 extends Component {
                 })
                 .then(_ => {
                     return create_new_game(code, players)
-                        .then(result => {
+                        .then(_ => {
                             return divide_first_cards(code, players);
                         });
                 });
@@ -133,7 +121,7 @@ class Setup_v2 extends Component {
 
     render = () => {
 
-        if (!this.state.loading) {
+        if (this.props.room.code) {
             return(
                 <div className="waiting-action-container">
                     <div className="waiting-action-navigation-container">
