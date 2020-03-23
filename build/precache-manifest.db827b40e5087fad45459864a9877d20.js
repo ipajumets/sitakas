@@ -21,7 +21,7 @@ self.__precacheManifest = [
   },
   {
     "revision": "9e50d614350efbb1afcd",
-    "url": "/static/css/main.279ed8a0.css"
+    "url": "/static/css/main.a390585e.css"
   },
   {
     "revision": "9e50d614350efbb1afcd",
@@ -40,7 +40,7 @@ self.__precacheManifest = [
     "url": "/static/media/loading.6b0b56a8.svg"
   },
   {
-    "revision": "69df74f70a73f9e5c61fcc58d04d47b2",
+    "revision": "74e41f11ba1ff299cad3d2e01f0130d9",
     "url": "/index.html"
   }
 ];
