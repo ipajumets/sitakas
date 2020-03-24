@@ -109,7 +109,13 @@ class Board extends Component {
 
         socket.on(`${code}_last_card_added`, result => {
             return this.setState({ selected_card: {} }, () => {
-                return this.props.addCard(result.card);
+                return this.props.addCard(result.card)
+                    .then(_ => {
+                        return this.props.addWon(result.winner.uid)
+                    })
+                    .then(_ => {
+                        return this.props.addHandWinner({ uid: result.winner.uid, value: result.winner.value, suit: result.winner.suit });
+                    });
             });
         });
 
@@ -138,7 +144,7 @@ class Board extends Component {
         switch (game.players.length) {
 
             case 3:
-                return <ThreePlayersTable />;
+                return <ThreePlayersTable game={game} round={round} hand={hand} players={sorted} />;
             case 4:
                 return <FourPlayersTable game={game} round={round} hand={hand} players={sorted} />;
             case 5:
