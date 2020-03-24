@@ -7,7 +7,7 @@ import Page from "../Page";
 
 // api-requests
 import { check_my_waiting_status } from "../api-requests/global";
-import { change_room_state, leave_room, create_new_game } from "./api-requests";
+import { leave_room, create_new_game } from "./api-requests";
 
 // css
 import "./index.css";

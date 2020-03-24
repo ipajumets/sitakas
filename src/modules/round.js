@@ -1,5 +1,6 @@
 export const SET_ROUND = "SET_ROUND";
 export const ADD_MY_BET = "ADD_MY_BET";
+export const UPDATE_RESULTS = "UPDATE_RESULTS";
 export const ADD_WON = "ADD_WON";
 export const RESET_ROUND = "RESET_ROUND";
 
@@ -29,7 +30,7 @@ export default (state = initialState, action) => {
             };
 
         case ADD_WON:
-    
+
             return {
                 ...state,
                 data: {
@@ -44,6 +45,16 @@ export default (state = initialState, action) => {
                             return result;
                         }
                     }),
+                },
+            };
+
+        case UPDATE_RESULTS:
+        
+            return {
+                ...state,
+                data: {
+                    ...state.data,
+                    results: action.results,
                 },
             };
         
@@ -76,6 +87,17 @@ export let addMyBet = (data) => dispatch => {
         return resolve(dispatch({
             type: ADD_MY_BET,
             data,
+        }));
+    });
+
+}
+
+export let updateResults = (results) => dispatch => {
+
+    return new Promise(resolve => {
+        return resolve(dispatch({
+            type: UPDATE_RESULTS,
+            results,
         }));
     });
 

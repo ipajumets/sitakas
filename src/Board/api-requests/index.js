@@ -38,19 +38,6 @@ export let am_i_in = (id, code) => {
 
 }
 
-export let get_game = (code) => {
-
-    return fetch("https://www.sitaratas.eu/api/games/return/"+code)
-        .then(res => res.json())
-        .then(json => {
-            return json;
-        })
-        .catch(err => {
-            return alert(err);
-        });
-    
-}
-
 export let get_round = (code, round) => {
 
     let body = {
@@ -134,7 +121,7 @@ export let get_my_cards = (code, round, uid) => {
 
 }
 
-export let add_bet = (code, round, uid, wins, next_uid, last) => {
+export let add_bet = (code, round, uid, wins, next_uid, next_action, last) => {
 
     let body = {
         code: code,
@@ -142,6 +129,7 @@ export let add_bet = (code, round, uid, wins, next_uid, last) => {
         uid: uid,
         wins: wins,
         next_uid: next_uid,
+        next_action: next_action,
         last: last,
     };
 
@@ -165,18 +153,20 @@ export let add_bet = (code, round, uid, wins, next_uid, last) => {
 
 }
 
-export let add_card = (code, round, hand, uid, value, suit, next_uid, first, last) => {
+// Add card
+export let add_card = (code, round, hand, uid, value, suit, next_uid, next_action, first, last) => {
 
     let body = {
         code: code,
         round: round,
         hand: hand,
         uid: uid,
-        next_uid: next_uid,
-        first: first,
-        last: last,
         value: value,
         suit: suit,
+        next_uid: next_uid,
+        next_action: next_action,
+        first: first,
+        last: last,
     };
 
     let request = {
@@ -199,7 +189,7 @@ export let add_card = (code, round, hand, uid, value, suit, next_uid, first, las
 
 }
 
-export let add_last_card = (code, round, hand, uid, value, suit, winner, next_uid, next_action, results, next_dealer) => {
+export let add_last_card = (code, round, hand, uid, value, suit, winner, next_uid, next_action, results, players, next_dealer) => {
 
     let body = {
         code: code,
@@ -212,6 +202,7 @@ export let add_last_card = (code, round, hand, uid, value, suit, winner, next_ui
         next_uid: next_uid,
         next_action: next_action,
         results: results,
+        players: players,
         next_dealer: next_dealer,
     };
 
@@ -224,7 +215,7 @@ export let add_last_card = (code, round, hand, uid, value, suit, winner, next_ui
         body: JSON.stringify(body),
     };
 
-    return fetch("https://www.sitaratas.eu/api/hands/add-last-card", request)
+    return(fetch("https://www.sitaratas.eu/api/hands/add-last-card", request))
         .then(res => res.json())
         .then(json => {
             return json;
@@ -232,5 +223,32 @@ export let add_last_card = (code, round, hand, uid, value, suit, winner, next_ui
         .catch(err => {
             return alert(err);
         });
+
+}
+
+// Get room data
+
+export let getGameData = (code, browser_id) => {
+
+    let body = {
+        code: code,
+        browser_id: browser_id,
+    };
+
+    let request = {
+        method: "POST",
+        headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+    };
+
+    return(fetch("https://www.sitaratas.eu/api/games/get-game-data", request))
+        .then(res => res.json())
+        .then(json => {
+            return json;
+        })
+        .catch(err => console.log(err));
 
 }

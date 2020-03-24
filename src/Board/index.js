@@ -8,13 +8,13 @@ import Page from "../Page";
 // modules
 import { setUserBrowserID, resetUser }  from "../modules/user";
 import { setGame, resetGame, setNextTurn }  from "../modules/game";
-import { setRound, addMyBet, addWon, resetRound }  from "../modules/round";
+import { setRound, addMyBet, resetRound, updateResults, addWon }  from "../modules/round";
 import { setHand, addCard, addHandWinner, resetHands }  from "../modules/hands";
 import { setCards, removeCard, resetCards }  from "../modules/cards";
 import { resetRoom }  from "../modules/room";
 
 // api-requests
-import { find_room, am_i_in, get_game, get_my_cards, get_round, get_hand, add_bet, add_card, add_last_card } from "./api-requests";
+import { add_bet, add_card, add_last_card, getGameData } from "./api-requests";
 
 // Layouts
 import ThreePlayersTable from "./layouts/three_players";
@@ -23,7 +23,7 @@ import FivePlayersTable from "./layouts/five_players";
 import SixPlayersTable from "./layouts/six_players";
 
 // helpers
-import { rearrange, determineWinner, getSitaratas } from "./helpers";
+import { rearrangePlayersOrder, determineWinner, getSitaratas, checkErrors, checkBets, handleCardValue, handleCardType, sortCards } from "./helpers";
 
 class Board extends Component {
 
@@ -41,68 +41,50 @@ class Board extends Component {
 
     componentDidMount = () => {
 
-        this.setState({ inner_width: window.innerWidth }, () => {
-            window.addEventListener("resize", (ev) => {
-                this.setState({ inner_width: ev.target.innerWidth });
-            });
-        });
-
         let that = this,
             room_code = that.props.match.params.code;
 
-        this.receiveSockets(room_code);
+        that.setState({ inner_width: window.innerWidth }, () => {
+            window.addEventListener("resize", (ev) => {
+                that.setState({ inner_width: ev.target.innerWidth });
+            });
+        });
 
-        return find_room(room_code)
-            .then(room => {
-                if (room.data) {
-                    if (room.data.state === "game_on") {
-                        return am_i_in(this.props.user.browser_id, room_code)
-                            .then(result => {
-                                if (result.success) {
-                                    return get_game(room_code)
-                                        .then(game => {
-                                            return this.props.setGame(game)
-                                                .then(_ => {
-                                                    return get_round(room_code, this.props.game.data.round)
-                                                        .then(round => {
-                                                            return this.props.setRound(round)
-                                                                .then(_ => {
-                                                                    return get_hand(room_code, this.props.game.data.round, game.hand)
-                                                                        .then(hand => {
-                                                                            return this.props.setHand(hand)
-                                                                                .then(_ => {
-                                                                                    return get_my_cards(room_code, this.props.game.data.round, this.props.user.browser_id)
-                                                                                        .then(cards => {
-                                                                                            if (cards) {
-                                                                                                return this.props.setCards(cards.active)
-                                                                                                    .then(_ => {
-                                                                                                        return this.setState({ loading: false });
-                                                                                                    });
-                                                                                            }  else {
-                                                                                                return this.setState({ loading: false });
-                                                                                            }
-                                                                                        });
-                                                                                });
-                                                                        });
-                                                                });
-                                                        });
-                                                });
-                                        });
-                                } else {
-                                    return this.props.history.push("/");
-                                }
+        that.receiveSockets(room_code, that.props.user.browser_id);
+        that.handleGame(room_code, that.props.user.browser_id);
+
+    }
+
+    handleGame = (code, id) => {
+
+        return getGameData(code, id)
+            .then(result => {
+                if (checkErrors(result)) {
+                    if (result.room.state === "game_on") {
+                        return this.props.setGame(result.game)
+                            .then(_ => {
+                                return this.props.setRound(result.round);
+                            })
+                            .then(_ => {
+                                return this.props.setHand(result.hand)
+                                    .then(_ => {
+                                        return this.props.setCards(result.myCards.active);
+                                    })
+                                    .then(_ => {
+                                        return this.setState({ loading: false });
+                                    });
                             });
                     } else {
-                        return this.props.history.push(`/setup/${room_code}`);
+                        return this.props.history.push(`/setup/${result.room.code}`);
                     }
                 } else {
                     return this.props.history.push("/");
-                }
+                };
             });
 
     }
 
-    receiveSockets = (code) => {
+    receiveSockets = (code, id) => {
 
         let socket = socketIo("https://www.sitaratas.eu:5000");
 
@@ -111,9 +93,8 @@ class Board extends Component {
                 .then(_ => {
                     if (result.bet.uid !== this.props.user.browser_id) {
                         return this.props.addMyBet(result.bet);
-                    } else {
-                        return;
                     }
+                    return;
                 });
         });
 
@@ -126,67 +107,25 @@ class Board extends Component {
             });
         });
 
-        socket.on(`${code}_hand_winner`, result => {
+        socket.on(`${code}_last_card_added`, result => {
             return this.setState({ selected_card: {} }, () => {
-                return this.props.addCard(result.card)
-                    .then(_ => {
-                        if (result.card.uid !== this.props.user.browser_id) {
-                            return this.props.addWon(result.winner.uid)
-                                .then(_ => {
-                                    return this.props.addHandWinner(result.winner);
-                                });
-                        } else {
-                            return;
-                        }
-                    });
+                return this.props.addCard(result.card);
             });
         });
 
-        socket.on(`${code}_new_round`, result => {
+        socket.on(`${code}_update_results`, result => {
+            return this.props.updateResults(result.data);
+        });
+
+        socket.on(`${code}_new_round`, _ => {
             return this.setState({ selected_card: {} }, () => {
-                return get_game(result.code)
-                    .then(game => {
-                        return this.props.setGame(game)
-                            .then(_ => {
-                                return get_round(result.code, this.props.game.data.round)
-                                    .then(round => {
-                                        return this.props.setRound(round)
-                                            .then(_ => {
-                                                return get_hand(result.code, this.props.game.data.round, game.hand)
-                                                    .then(hand => {
-                                                        return this.props.setHand(hand)
-                                                            .then(_ => {
-                                                                return get_my_cards(result.code, this.props.game.data.round, this.props.user.browser_id)
-                                                                    .then(cards => {
-                                                                        return this.props.setCards(cards.active);
-                                                                    });
-                                                            });
-                                                    });
-                                            });
-                                    });
-                            });
-                    });
+                return this.handleGame(code, id);
             });
         });
 
-        socket.on(`${code}_next_hand`, result => {
+        socket.on(`${code}_next_hand`, _ => {
             return this.setState({ selected_card: {} }, () => {
-                return get_game(result.code)
-                    .then(game => {
-                        return this.props.setGame(game)
-                            .then(_ => {
-                                return get_round(result.code, this.props.game.data.round)
-                                    .then(round => {
-                                        return this.props.setRound(round)
-                                            .then(_ => {
-                                                return get_hand(result.code, this.props.game.data.round, game.hand)
-                                                    .then(hand => {
-                                                        return this.props.setHand(hand);
-                                                    });
-                                            });
-                                    });
-                            });
-                    });
+                return this.handleGame(code, id);
             });
         });
 
@@ -194,7 +133,7 @@ class Board extends Component {
 
     handleTable = (game, round, hand, uid) => {
 
-        let sorted = rearrange(game.players, uid);
+        let sorted = rearrangePlayersOrder(game.players, uid);
 
         switch (game.players.length) {
 
@@ -218,18 +157,20 @@ class Board extends Component {
         let marginLeft = (((cards.length * 128) - this.state.inner_width) / cards.length) + cards.length;
         let canFit = cards.length * 128 < this.state.inner_width ? true : false;
 
-        return cards.map((card, index) => {
+        let sortedCards = sortCards(cards, game.trump);
+
+        return sortedCards.map((card, index) => {
             if (this.state.selected_card.suit === card.suit && this.state.selected_card.value === card.value) {
                 return(
                     <div style={canFit ? {zIndex: index+1} : {zIndex: index+1, marginLeft: index !== 0 ? -marginLeft : 0}} className="board-hand-selected-card-container" key={index} onClick={() => this.handle_card_send(card, game, uid, hand, index)}>
                         <div className="board-hand-card-value-container">
                             <div className="board-hand-card-value-and-suit-container">
-                                <span className="board-hand-card-value" style={card.suit === "diamonds" || card.suit === "hearts" ? {color: "red"} : {color: "black"}}>{this.handleCardValue(card.value)}</span>
-                                <span className="board-hand-card-value-suit" style={{marginTop: 5}}>{this.handleCardType(card.suit)}</span>
+                                <span className="board-hand-card-value" style={card.suit === "diamonds" || card.suit === "hearts" ? {color: "red"} : {color: "black"}}>{handleCardValue(card.value)}</span>
+                                <span className="board-hand-card-value-suit" style={{marginTop: 5}}>{handleCardType(card.suit)}</span>
                             </div>
                         </div>
                         <div className="board-hand-card-type-container">
-                            {this.handleCardType(card.suit)}
+                            {handleCardType(card.suit)}
                         </div>
                         <div className="selected-card-overlay">
                             <img src={require("../media/svgs/up-arrow.svg")} style={{width: 24, height: 24}} alt=""/>
@@ -242,12 +183,12 @@ class Board extends Component {
                     <div style={canFit ? {zIndex: index+1} : {zIndex: index+1, marginLeft: index !== 0 ? -marginLeft : 0}} className="board-hand-card-container" key={index} onClick={() => this.handle_card_select(card, game, uid, hand, cards)}>
                         <div className="board-hand-card-value-container">
                             <div className="board-hand-card-value-and-suit-container">
-                                <span className="board-hand-card-value" style={card.suit === "diamonds" || card.suit === "hearts" ? {color: "red"} : {color: "black"}}>{this.handleCardValue(card.value)}</span>
-                                <span className="board-hand-card-value-suit" style={{marginTop: 5}}>{this.handleCardType(card.suit)}</span>
+                                <span className="board-hand-card-value" style={card.suit === "diamonds" || card.suit === "hearts" ? {color: "red"} : {color: "black"}}>{handleCardValue(card.value)}</span>
+                                <span className="board-hand-card-value-suit" style={{marginTop: 5}}>{handleCardType(card.suit)}</span>
                             </div>
                         </div>
                         <div className="board-hand-card-type-container">
-                            {this.handleCardType(card.suit)}
+                            {handleCardType(card.suit)}
                         </div>
                     </div>
                 );
@@ -256,62 +197,27 @@ class Board extends Component {
 
     }
 
-    handle_card_send = (card, game, uid, hand, card_index) => {
+    add_my_bet = (game, uid, wins, round, cards) => {
 
-        let sorted = rearrange(game.players, uid);
+        let sorted = rearrangePlayersOrder(game.players, uid),
+            isLast = round.results.length+1 === game.players.length,
+            nextAction = isLast ? "call" : "guess",
+            sum = round.results.reduce((a, b) => +a + +b.wins, 0),
+            winsGood = sum+wins !== cards.length,
+            allGood = checkBets(isLast, winsGood);
 
-        if (hand.cards.length < 1) {
-            return this.props.removeCard(card_index)
+        if (allGood) {
+            return this.props.setNextTurn(sorted[1].uid, nextAction)
                 .then(_ => {
-                    return this.props.addCard({ uid: uid, value: card.value, suit: card.suit })
+                    return this.props.addMyBet({ uid: uid, wins: wins, won: 0 })
                         .then(_ => {
-                            return this.props.setNextTurn(sorted[1].uid, "call")
-                                .then(_ => {
-                                    return add_card(game.room_code, game.round, game.hand, uid, card.value, card.suit, sorted[1].uid, true, false);
-                                });
-                        });
-                });
-        } else if (hand.cards.length+1 !== game.players.length) {
-            return this.props.removeCard(card_index)
-                .then(_ => {
-                    return this.props.addCard({ uid: uid, value: card.value, suit: card.suit })
-                        .then(_ => {
-                            return this.props.setNextTurn(sorted[1].uid, "call")
-                                .then(_ => {
-                                    return add_card(game.room_code, game.round, game.hand, uid, card.value, card.suit, sorted[1].uid, false, false);
-                                });
+                            return this.setState({ wins: 0 }, () => {
+                                return add_bet(game.room_code, game.round, uid, wins, sorted[1].uid, nextAction, isLast);
+                            });
                         });
                 });
         } else {
-            return this.props.removeCard(card_index)
-                .then(_ => {
-                    return this.props.addCard({ uid: uid, value: card.value, suit: card.suit })
-                        .then(_ => {
-
-                            let winner = determineWinner(this.props.hands.data, game);
-
-                            return this.props.addWon(winner.uid)
-                                .then(_ => {
-                                    return this.props.addHandWinner({ uid: winner.uid, value: winner.value, suit: winner.suit })
-                                        .then(_ => {
-                                            
-                                            if (this.props.cards.data.length < 1) {
-
-                                                let line = rearrange(game.players, game.dealer);
-
-                                                return add_last_card(game.room_code, game.round, game.hand, uid, card.value, card.suit, winner, line[2].uid, "guess", this.props.round.data.results, line[1].uid);
-
-                                            } else {
-
-                                                return add_last_card(game.room_code, game.round, game.hand, uid, card.value, card.suit, winner, winner.uid, "call", this.props.round.data.results);
-                                                
-                                            }
-
-                                        });
-                                });
-                            
-                        });
-                });
+            return alert(wins+" ei saa võtta");
         }
 
     }
@@ -343,43 +249,51 @@ class Board extends Component {
                 }
 
             }
+        } else {
+            console.log(card);
+            console.log(game);
+            console.log(uid);
+            console.log(hand);
+            console.log(cards);
+            return alert("Veel ei ole sinu kord");
         }
 
     }
 
-    handleCardValue = (value) => {
+    handle_card_send = (card, game, uid, hand, card_index) => {
 
-        switch (value) {
-            case 11:
-                return "J";
-            case 12:
-                return "Q";
-            case 13:
-                return "K";
-            case 14:
-                return "A";
-            default:
-                return value;
-        }
+        let sorted = rearrangePlayersOrder(game.players, uid),
+            isFirst = hand.cards.length < 1,
+            isLast = hand.cards.length+1 === game.players.length,
+            dealerOrder = rearrangePlayersOrder(game.players, game.dealer);
+            
+        return this.props.removeCard(card_index)
+            .then(_ => {
+                return this.props.addCard({ uid: uid, value: card.value, suit: card.suit })
+                    .then(_ => {
 
-    }
+                        let lastCard = this.props.cards.data.length < 1,
+                            winner = determineWinner(this.props.hands.data, game),
+                            nextUid = lastCard ? dealerOrder[2].uid : winner.uid,
+                            nextAction = lastCard ? "guess" : "call",
+                            nextDealer = lastCard ? dealerOrder[1].uid : dealerOrder[0].uid;
 
-    handleCardType = (type) => {
-
-        switch (type) {
-
-            case "spades":
-                return <span style={{color: "black"}}>♠</span>;
-            case "diamonds":
-                return <span style={{color: "red"}}>♦</span>;
-            case "clubs":
-                return <span style={{color: "black"}}>♣</span>;
-            case "hearts":
-                return <span style={{color: "red"}}>♥</span>;
-            default:
-                return <span></span>;
-
-        }
+                        return this.props.setNextTurn(sorted[1].uid, "call")
+                            .then(_ => {
+                                if (!isLast) {
+                                    return add_card(game.room_code, game.round, game.hand, uid, card.value, card.suit, sorted[1].uid, "call", isFirst, isLast);
+                                } else {
+                                    return this.props.addWon(winner.uid)
+                                        .then(_ => {
+                                            return this.props.addHandWinner({ uid: winner.uid, value: winner.value, suit: winner.suit })
+                                                .then(_ => {
+                                                    return add_last_card(game.room_code, game.round, game.hand, uid, card.value, card.suit, winner, nextUid, nextAction, this.props.round.data.results, game.players, nextDealer);
+                                                });
+                                        });
+                                }
+                            });
+                    });
+            });
 
     }
 
@@ -405,43 +319,7 @@ class Board extends Component {
             return this.setState({ wins: 0});
         }
 
-    }
-
-    add_my_bet = (game, uid, wins, round, cards) => {
-
-        let sorted = rearrange(game.players, uid);
-
-        if (round.results.length+1 === game.players.length) {
-            
-            let sum = round.results.reduce((a, b) => +a + +b.wins, 0);
-
-            if (sum+wins !== cards.length) {
-                return this.props.setNextTurn(sorted[1].uid, "call")
-                    .then(_ => {
-                        return this.props.addMyBet({ uid: uid, wins: wins, won: 0 })
-                            .then(_ => {
-                                return this.setState({ wins: 0 }, () => {
-                                    return add_bet(game.room_code, game.round, uid, wins, sorted[1].uid, true);
-                                });
-                            });
-                    });
-            } else {
-                return alert("Kuule, kuule!");
-            }
-
-        } else {
-            return this.props.setNextTurn(sorted[1].uid, "guess")
-                .then(_ => {
-                    return this.props.addMyBet({ uid: uid, wins: wins, won: 0 })
-                        .then(_ => {
-                            return this.setState({ wins: 0 }, () => {
-                                return add_bet(game.room_code, game.round, uid, wins, sorted[1].uid, false);
-                            });
-                        });
-                });
-        }
-
-    }
+    } 
 
     exitGame = () => {
 
@@ -487,7 +365,7 @@ class Board extends Component {
                                         <div className="guess-wins-container">
                                             <div className="guess-wins-wrapper">
                                                 <div className="guess-wins-header-container">
-                                                    <span>Mitu võtad?</span>
+                                                    <span>Sinu panus</span>
                                                 </div>
                                                 <div className="guess-wins-input-container">
                                                     <div className="guess-wins-input-button-container" onClick={() => this.handle_wins_bet_substract(this.state.wins)}>
@@ -536,9 +414,9 @@ class Board extends Component {
                                         :
                                             <div className="game-over-alert-container">
                                                 <div className="game-over-alert-wrapper">
-                                                    <img src={"https://www.basket.ee/cache/basket/public/remote/http_is-basket-ee/_2000x2000x0/bw-client-filesXbasketisXpublicXplayer-pictureX397-56.jpg"} className="game-over-alert-image" />
+                                                    <img src={"https://www.basket.ee/cache/basket/public/remote/http_is-basket-ee/_2000x2000x0/bw-client-filesXbasketisXpublicXplayer-pictureX397-56.jpg"} className="game-over-alert-image" alt="" />
                                                     <div className="game-over-alert-text-container">
-                                                        <h3>💩 {getSitaratas(this.props.game.data.players).name}</h3>
+                                                        <h3><span role="img" aria-label="Poop">💩</span> {getSitaratas(this.props.game.data.players).name}</h3>
                                                         <span>Sitaratas</span>
                                                     </div>
                                                     <div className="game-over-leave-container">
@@ -588,7 +466,7 @@ let mapStateToProps = (state) => {
 
 let mapDispatchToProps = (dispatch) => {
     return {
-        ...bindActionCreators({ resetRoom, setUserBrowserID, setGame, resetGame, setNextTurn, setRound, addMyBet, addWon, setHand, addCard, addHandWinner, setCards, removeCard, resetCards, resetHands, resetRound, resetUser }, dispatch)
+        ...bindActionCreators({ resetRoom, setUserBrowserID, setGame, resetGame, setNextTurn, setRound, addMyBet, setHand, addCard, updateResults, setCards, removeCard, resetCards, resetHands, resetRound, resetUser, addWon, addHandWinner }, dispatch)
     }
 }
 
