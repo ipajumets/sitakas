@@ -167,6 +167,7 @@ export let sortCards = (cards, trump) => {
 
 }
 
+// Create value for suit
 let handleSuitValue = (trump, card) => {
 
     switch (card.suit) {
@@ -181,3 +182,14 @@ let handleSuitValue = (trump, card) => {
     }
 
 };
+
+export let totalRounds = (players) => {
+
+    switch (players) {
+        case 3:
+            return 29;
+        case 4:
+            return 26;
+    }
+
+}   

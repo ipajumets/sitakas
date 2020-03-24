@@ -23,7 +23,7 @@ import FivePlayersTable from "./layouts/five_players";
 import SixPlayersTable from "./layouts/six_players";
 
 // helpers
-import { rearrangePlayersOrder, determineWinner, getSitaratas, checkErrors, checkBets, handleCardValue, handleCardType, sortCards } from "./helpers";
+import { rearrangePlayersOrder, determineWinner, getSitaratas, checkErrors, checkBets, handleCardValue, handleCardType, sortCards, totalRounds } from "./helpers";
 
 class Board extends Component {
 
@@ -291,10 +291,10 @@ class Board extends Component {
                                 } else {
                                     return this.props.addWon(winner.uid)
                                         .then(_ => {
-                                            return this.props.addHandWinner({ uid: winner.uid, value: winner.value, suit: winner.suit })
-                                                .then(_ => {
-                                                    return add_last_card(game.room_code, game.round, game.hand, uid, card.value, card.suit, winner, nextUid, nextAction, this.props.round.data.results, game.players, nextDealer);
-                                                });
+                                            return this.props.addHandWinner({ uid: winner.uid, value: winner.value, suit: winner.suit });
+                                        })
+                                        .then(_ => {
+                                            return add_last_card(game.room_code, game.round, game.hand, uid, card.value, card.suit, winner, nextUid, nextAction, this.props.round.data.results, game.players, nextDealer);
                                         });
                                 }
                             });
@@ -361,7 +361,7 @@ class Board extends Component {
                     <div className="board-action-container">
                         <div className="board-action-navigation-container">
                             <span className="board-action-navigation-title">MÄNG {this.props.game.data.room_code}</span>
-                            <span className="board-action-navigation-subtitle">ROUND {this.props.game.data.round}/26</span>
+                            <span className="board-action-navigation-subtitle">ROUND {this.props.game.data.round}/{totalRounds(this.props.game.data.players.length)}</span>
                         </div>
                         <div className="board-action-wrapper">
                             <div className="board-table-container">
@@ -420,7 +420,7 @@ class Board extends Component {
                                         :
                                             <div className="game-over-alert-container">
                                                 <div className="game-over-alert-wrapper">
-                                                    <img src={"https://www.basket.ee/cache/basket/public/remote/http_is-basket-ee/_2000x2000x0/bw-client-filesXbasketisXpublicXplayer-pictureX397-56.jpg"} className="game-over-alert-image" alt="" />
+                                                    <img src={getSitaratas(this.props.game.data.players).image} className="game-over-alert-image" alt="" />
                                                     <div className="game-over-alert-text-container">
                                                         <h3><span role="img" aria-label="Poop">💩</span> {getSitaratas(this.props.game.data.players).name}</h3>
                                                         <span>Sitaratas</span>

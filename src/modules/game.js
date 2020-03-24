@@ -16,8 +16,8 @@ export default (state = initialState, action) => {
                 ...state,
                 data: {
                     ...action.game,
-                    round: action.game.round < 27 ? action.game.round : 26,
-                    over: action.game.round < 27 ? false : true,
+                    round: handleRound(action.game.round, action.game.players.length),
+                    over: handleOver(action.game.round, action.game.players.length),
                 },
             };
 
@@ -74,5 +74,33 @@ export let setNextTurn = (uid, step) => dispatch => {
             step,
         }));
     });
+
+}
+
+// What round is currently on?
+let handleRound = (round, players) => {
+
+    switch (players) {
+
+        case 3:
+            return round < 30 ? round : 29;
+        case 4:
+            return round < 27 ? round : 26;
+
+    }
+
+}
+
+// Is the game over?
+let handleOver = (round, players) => {
+
+    switch (players) {
+
+        case 3:
+            return round > 29 ? true : false;
+        case 4:
+            return round > 26 ? true : false;
+
+    }
 
 }
