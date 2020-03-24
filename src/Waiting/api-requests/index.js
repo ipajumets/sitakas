@@ -1,7 +1,11 @@
-export let change_room_state = (code, state) => {
+// Create  new game and start
+export let create_new_game = (code, state, round, players) => {
 
     let body = {
+        code: code,
         state: state,
+        round: round,
+        players: players,
     };
 
     let request = {
@@ -13,7 +17,7 @@ export let change_room_state = (code, state) => {
         body: JSON.stringify(body),
     };
 
-    return fetch("https://www.sitaratas.eu/api/rooms/change-state/"+code, request)
+    return(fetch("https://www.sitaratas.eu/api/games/create-game", request))
         .then(res => res.json())
         .then(json => {
             return json;
@@ -24,6 +28,7 @@ export let change_room_state = (code, state) => {
 
 }
 
+// Leave room
 export let leave_room = (id, code) => {
 
     let body = {
@@ -39,62 +44,7 @@ export let leave_room = (id, code) => {
         body: JSON.stringify(body),
     };
 
-    return fetch("https://www.sitaratas.eu/api/users/leave-room/"+code, request)
-        .then(res => res.json())
-        .then(json => {
-            return json;
-        })
-        .catch(err => {
-            return alert(err);
-        });
-
-}
-
-export let create_new_game = (code, players) => {
-
-    let body = {
-        room_code: code,
-        players: players,
-    };
-
-    let request = {
-        method: "POST",
-        headers: {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-    };
-
-    return fetch("https://www.sitaratas.eu/api/games/create-game", request)
-        .then(res => res.json())
-        .then(json => {
-            return json;
-        })
-        .catch(err => {
-            return alert(err);
-        });
-
-}
-
-export let divide_first_cards = (code, players) => {
-
-    let body = {
-        code: code,
-        players: players,
-        round: 1,
-    };
-
-    let request = {
-        method: "POST",
-        headers: {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-    };
-
-    return fetch("https://www.sitaratas.eu/api/cards/divide-cards", request)
+    return(fetch("https://www.sitaratas.eu/api/users/leave-room/"+code, request))
         .then(res => res.json())
         .then(json => {
             return json;

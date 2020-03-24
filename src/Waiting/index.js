@@ -7,7 +7,7 @@ import Page from "../Page";
 
 // api-requests
 import { check_my_waiting_status } from "../api-requests/global";
-import { change_room_state, leave_room, create_new_game, divide_first_cards } from "./api-requests";
+import { change_room_state, leave_room, create_new_game } from "./api-requests";
 
 // css
 import "./index.css";
@@ -103,16 +103,7 @@ class Setup_v2 extends Component {
     startGame = (code, players) => {
 
         if (players.length === 4) {
-            return change_room_state(code, "game_on")
-                .then(_ => {
-                    return;
-                })
-                .then(_ => {
-                    return create_new_game(code, players)
-                        .then(_ => {
-                            return divide_first_cards(code, players);
-                        });
-                });
+            return create_new_game(code, "game_on", 1, players);
         } else {
             return alert("4 mängijat peab olema ühes mängus");
         }
