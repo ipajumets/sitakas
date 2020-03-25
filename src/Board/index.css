@@ -49,14 +49,14 @@
 
 .board-action-navigation-title {
     font-size: 13pt;
-    font-family: "Open Sans", Arial, sans-serif;
+    font-family: "Roboto", Arial, sans-serif;
     color: black;
     font-weight: bold;
 }
 
 .board-action-navigation-subtitle {
     font-size: 8pt;
-    font-family: "Open Sans", Arial, sans-serif;
+    font-family: "Roboto", Arial, sans-serif;
     color: tomato;
     font-weight: bold;
     margin-top: 2px;
@@ -79,7 +79,7 @@
 .board-action-game-code-title {
     color: white;
     font-size: 21pt;
-    font-family: "Open Sans", Arial, sans-serif;
+    font-family: "Roboto", Arial, sans-serif;
     text-align: center;
 }
 
@@ -87,7 +87,7 @@
     color: white;
     font-size: 32pt;
     font-weight: bold;
-    font-family: "Open Sans", Arial, sans-serif;
+    font-family: "Roboto", Arial, sans-serif;
     text-align: center;
     margin-bottom: 30px;
 }
@@ -97,7 +97,7 @@
     height: 60px;
     font-size: 14pt;
     border-radius: 37px;
-    font-family: "Open Sans", Arial, sans-serif;
+    font-family: "Roboto", Arial, sans-serif;
     text-align: center;
     outline: none;
     border: none;
@@ -117,7 +117,7 @@
 
 .board-action-enter-game-button span {
     color: white;
-    font-family: "Open Sans", Arial, sans-serif;
+    font-family: "Roboto", Arial, sans-serif;
     font-size: 12pt;
 }
 
@@ -129,7 +129,7 @@
 .board-action-create-game-button {
     padding: 30px 10px 10px 10px;
     color: chocolate;
-    font-family: "Open Sans", Arial, sans-serif;
+    font-family: "Roboto", Arial, sans-serif;
     font-size: 12pt;
     cursor: pointer;
 }
@@ -216,7 +216,7 @@
 .selected-card-overlay span {
     font-weight: bold;
     font-size: 10pt;
-    font-family: "Open Sans", Arial, sans-serif;
+    font-family: "Roboto", Arial, sans-serif;
     color: black;
     padding: 5px 0;
 }
@@ -236,7 +236,7 @@
 }
 
 .board-hand-card-value {
-    font-family: "Open Sans", Arial, Helvetica, sans-serif;
+    font-family: "Roboto", Arial, sans-serif;
     font-weight: bold;
     font-size: 18pt;
 }
@@ -287,7 +287,7 @@
 
 .guess-wins-header-container span {
     font-size: 3vh;
-    font-family: "Open Sans", Arial, sans-serif;
+    font-family: "Roboto", Arial, sans-serif;
     color: black;
 }
 
@@ -313,7 +313,7 @@
 
 .guess-wins-footer-button-container span {
     font-size: 3vh;
-    font-family: "Open Sans", Arial, sans-serif;
+    font-family: "Roboto", Arial, sans-serif;
     color: steelblue;
 }
 
@@ -339,7 +339,7 @@
 
 .guess-wins-input-button-container span {
     font-size: 4vh;
-    font-family: "Open Sans", Arial, sans-serif;
+    font-family: "Roboto", Arial, sans-serif;
     color: black;
 }
 
@@ -352,7 +352,7 @@
 
 .guess-wins-input-value-container span {
     font-size: 4vh;
-    font-family: "Open Sans", Arial, sans-serif;
+    font-family: "Roboto", Arial, sans-serif;
     color: black;
 }
 
@@ -372,7 +372,7 @@
 
 .hand-winner-overlay-container span {
     font-size: 3vw;
-    font-family: "Open Sans", Arial, sans-serif;
+    font-family: "Roboto", Arial, sans-serif;
     color: "black";
 }
 
@@ -403,7 +403,7 @@
     padding: 0;
     margin: 0;
     font-size: 3vh;
-    font-family: "Open Sans", Arial, sans-serif;
+    font-family: "Roboto", Arial, sans-serif;
     color: black;
 }
 
@@ -411,7 +411,7 @@
     padding: 0;
     margin: 0;
     font-size: 2vh;
-    font-family: "Open Sans", Arial, sans-serif;
+    font-family: "Roboto", Arial, sans-serif;
     color: chocolate;
 }
 
@@ -433,7 +433,7 @@
 
 .game-over-leave-container span {
     font-size: 2vh;
-    font-family: "Open Sans", Arial, sans-serif;
+    font-family: "Roboto", Arial, sans-serif;
     color: red;
     font-weight: bold;
     padding: 1vh 3vh;

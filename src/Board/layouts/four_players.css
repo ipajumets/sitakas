@@ -40,7 +40,7 @@
 .four-players-table-seat-name {
     color: black;
     font-size: 2vh;
-    font-family: "Open Sans", Arial, sans-serif;
+    font-family: "Roboto", Arial, sans-serif;
     padding-top: 10px;
 }
 
@@ -71,7 +71,7 @@
 
 .seat-profile-points {
     font-size: 2vh;
-    font-family: "Open Sans", Arial, sans-serif;
+    font-family: "Roboto", Arial, sans-serif;
     color: black;
 }
 
@@ -90,7 +90,7 @@
 
 .seat-profile-wins {
     font-size: 2vh;
-    font-family: "Open Sans", Arial, sans-serif;
+    font-family: "Roboto", Arial, sans-serif;
     color: white;
 }
 
@@ -109,7 +109,7 @@
 
 .seat-profile-won {
     font-size: 2vh;
-    font-family: "Open Sans", Arial, sans-serif;
+    font-family: "Roboto", Arial, sans-serif;
     color: white;
 }
 
@@ -178,7 +178,7 @@
 
 .player-card-number {
     font-size: 2vh;
-    font-family: "Open Sans", Arial, sans-serif;
+    font-family: "Roboto", Arial, sans-serif;
 }
 
 .player-card-type-container {
@@ -191,7 +191,7 @@
 
 .player-card-type {
     font-size: 2vh;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: "Roboto", Arial, sans-serif;
 }
 
 .trump-container {
@@ -224,7 +224,7 @@
 
 .trump-card-number {
     font-size: 2vh;
-    font-family: "Open Sans", Arial, sans-serif;
+    font-family: "Roboto", Arial, sans-serif;
 }
 
 .trump-card-type-container {
@@ -241,7 +241,7 @@
 .trump-title {
     font-size: 2vh;
     color: black;
-    font-family: "Open Sans", Arial, sans-serif;
+    font-family: "Roboto", Arial, sans-serif;
     padding-bottom: 1vh;
     font-weight: bold;
 }
@@ -276,7 +276,7 @@
 
 .base-card-number {
     font-size: 2vh;
-    font-family: "Open Sans", Arial, sans-serif;
+    font-family: "Roboto", Arial, sans-serif;
 }
 
 .base-card-type-container {
@@ -293,7 +293,7 @@
 .base-title {
     font-size: 2vh;
     color: black;
-    font-family: "Open Sans", Arial, sans-serif;
+    font-family: "Roboto", Arial, sans-serif;
     padding-bottom: 1vh;
     font-weight: bold;
 }
@@ -311,7 +311,7 @@
 .stats-text {
     font-size: 2vh;
     color: black;
-    font-family: "Open Sans", Arial, sans-serif;
+    font-family: "Roboto", Arial, sans-serif;
 }
 
 .previous-hand-container {
@@ -331,14 +331,14 @@
 }
 
 .prev-hand-bottom-container span {
-    font-size: clamp(12pt, 3vw, 36px);
-    font-family: "Open Sans", Arial, sans-serif;
+    font-size: 12pt;
+    font-family: "Roboto", Arial, sans-serif;
     color: black;
 }
 
 .prev-hand-title-container span {
-    font-size: clamp(12pt, 3vw, 36px);
-    font-family: "Open Sans", Arial, sans-serif;
+    font-size: 12pt;
+    font-family: "Roboto", Arial, sans-serif;
     color: black;
 }
 
@@ -348,20 +348,20 @@
 }
 
 .bolded-text {
-    font-family: "Open Sans", Arial, sans-serif;
+    font-family: "Roboto", Arial, sans-serif;
     font-weight: 700;
 }
 
 .prev-card {
-    width: 6vw;
-    height: 10vw;
-    max-width: 70px;
-    max-height: 120px;
+    width: 30px;
+    height: 50px;
     background-color: white;
     border-radius: 3px;
     display: flex;
     flex-direction: column;
     margin-right: 10px;
+    position: relative;
+    border-left: 1px solid rgb(240, 240, 240);
 }
 
 .prev-card-number-container {
@@ -369,12 +369,13 @@
     flex-direction: row;
     align-items: flex-start;
     justify-content: flex-start;
-    padding-left: 5px;
+    position: absolute;
+    padding: 3px;
 }
 
 .prev-card-number {
-    font-size: clamp(12pt, 3vw, 36px);
-    font-family: "Open Sans", Arial, sans-serif;
+    font-size: 10pt;
+    font-family: "Roboto", Arial, sans-serif;
 }
 
 .prev-card-type-container {
@@ -382,8 +383,15 @@
     display: flex;
     flex-direction: row;
     justify-content: center;
+    align-items: center;
 }
 
 .prev-card-type {
-    font-size: clamp(12pt, 3vw, 36px);
+    margin-top: 10px;
+    font-size: 12pt;
+    font-family: "Roboto", Arial, sans-serif;
+}
+
+.five-players-separator {
+    height: 4vh;
 }

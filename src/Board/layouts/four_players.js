@@ -241,10 +241,65 @@ export default ({ game, round, hand, prevHand, players }) => {
                 <span className="stats-text">Kaarte käes: <span className="bolded-text">{howManyCardsInHand(game.round)}</span></span>
                 <span className="stats-text">Tahetakse: <span className="bolded-text">{howMuchWanted(round.results)}</span></span>
                 <div style={{height: 2, backgroundColor: "tomato", width: 128, marginTop: 5, marginBottom: 5}}></div>
-                <span className="turn-text"><span className="bolded-text">{whosTurn(game, players)}</span> {handleAction(game.action)}</span>
+                <span className="stats-text"><span className="bolded-text">{whosTurn(game, players)}</span> {handleAction(game.action)}</span>
             </div>
+            {
+                prevHand ?
+                    prevHand.cards ?
+                        <div className="previous-hand-container">
+                            <div className="prev-hand-title-container">
+                                <span>Eelmine käsi</span>
+                            </div>
+                            <div className="prev-hand-cards-container">
+                                {renderPrevCards(prevHand)}
+                            </div>
+                            <div className="prev-hand-bottom-container">
+                                <span><span className="bolded-text">{whoTook(prevHand.winner, players)}</span> võttis</span>
+                            </div>
+                        </div>
+                    :
+                        <div></div>
+                :
+                    <div></div>
+            }
         </div>
     );
+
+}
+
+let renderPrevCards = (prev) => {
+
+    return prev.cards.map((card, index) => {
+        return(
+            <div className="prev-card" style={{marginLeft: index !== 0 ? -20 : 0, zIndex: index+1, backgroundColor: card.uid === prev.winner.uid ? "#00FFCD" : "white"}} key={index}>
+                <div className="prev-card-number-container">
+                    <span className="prev-card-number" style={card.suit === "diamonds" || card.suit === "hearts" ? {color: "red"} : {color: "black"}}>{handleCardValue(card.value)}</span>
+                </div>
+                <div className="prev-card-type-container">
+                    {handlePrevCardType(card.suit)}
+                </div>
+            </div>
+        );
+    });
+
+}
+
+let handlePrevCardType = (type) => {
+
+    switch (type) {
+
+        case "spades":
+            return <span className="prev-card-type" style={{color: "black"}}>♠</span>;
+        case "diamonds":
+            return <span className="prev-card-type" style={{color: "red"}}>♦</span>;
+        case "clubs":
+            return <span className="prev-card-type" style={{color: "black"}}>♣</span>;
+        case "hearts":
+            return <span className="prev-card-type" style={{color: "red"}}>♥</span>;
+        default:
+            return <span></span>;
+
+    }
 
 }
 
@@ -325,6 +380,12 @@ let wonAndWins = (round, uid) => {
     } else {
         return find[0];
     }   
+
+}
+
+let whoTook = (winner, players) => {
+
+    return players.filter(player => player.uid === winner.uid)[0].name;
 
 }
 

@@ -102,10 +102,10 @@ class Setup_v2 extends Component {
 
     startGame = (code, players) => {
 
-        if (players.length === 4 || players.length === 3) {
+        if (players.length === 4 || players.length === 3 || players.length === 5) {
             return create_new_game(code, "game_on", 1, players);
         } else {
-            return alert("3 või 4 mängijat peab olema ühes mängus");
+            return alert("3 kuni 5 mängijat võib olla ühes mängus");
         }
 
     }

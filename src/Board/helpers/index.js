@@ -192,6 +192,8 @@ export let totalRounds = (players) => {
             return 29;
         case 4:
             return 26;
+        case 5:
+            return 25;
         default:
             return "";
     }
