@@ -6,10 +6,10 @@ import socketIo from "socket.io-client";
 import Page from "../Page";
 
 // modules
-import { setUserBrowserID, resetUser }  from "../modules/user";
+import { resetUser }  from "../modules/user";
 import { setGame, resetGame, setNextTurn }  from "../modules/game";
 import { setRound, addMyBet, resetRound, updateResults, addWon }  from "../modules/round";
-import { setHand, addCard, addHandWinner, resetHands }  from "../modules/hands";
+import { setHand, setPreviousHand, addCard, addHandWinner, resetHands }  from "../modules/hands";
 import { setCards, removeCard, resetCards }  from "../modules/cards";
 import { resetRoom }  from "../modules/room";
 
@@ -66,12 +66,15 @@ class Board extends Component {
                                 return this.props.setRound(result.round);
                             })
                             .then(_ => {
-                                return this.props.setHand(result.hand)
+                                return this.props.setPreviousHand(result.previousHand)
                                     .then(_ => {
-                                        return this.props.setCards(result.myCards.active);
+                                        return this.props.setHand(result.hand);
                                     })
                                     .then(_ => {
-                                        return this.setState({ loading: false });
+                                        return this.props.setCards(result.myCards.active)
+                                            .then(_ => {
+                                                return this.setState({ loading: false });
+                                            });
                                     });
                             });
                     } else {
@@ -79,7 +82,7 @@ class Board extends Component {
                     }
                 } else {
                     return this.props.history.push("/");
-                };
+                }
             });
 
     }
@@ -137,16 +140,16 @@ class Board extends Component {
 
     }
 
-    handleTable = (game, round, hand, uid) => {
+    handleTable = (game, round, hand, prevHand, uid) => {
 
         let sorted = rearrangePlayersOrder(game.players, uid);
 
         switch (game.players.length) {
 
             case 3:
-                return <ThreePlayersTable game={game} round={round} hand={hand} players={sorted} />;
+                return <ThreePlayersTable game={game} round={round} hand={hand} prevHand={prevHand} players={sorted} />;
             case 4:
-                return <FourPlayersTable game={game} round={round} hand={hand} players={sorted} />;
+                return <FourPlayersTable game={game} round={round} hand={hand} prevHand={prevHand} players={sorted} />;
             case 5:
                 return <FivePlayersTable />;
             case 6:
@@ -223,7 +226,7 @@ class Board extends Component {
                         });
                 });
         } else {
-            return alert(wins+" ei saa võtta");
+            return alert(wins+" ei saa pakkuda");
         }
 
     }
@@ -365,7 +368,7 @@ class Board extends Component {
                         </div>
                         <div className="board-action-wrapper">
                             <div className="board-table-container">
-                                {this.handleTable(this.props.game.data, this.props.round.data, this.props.hands.data, this.props.user.browser_id)}
+                                {this.handleTable(this.props.game.data, this.props.round.data, this.props.hands.data, this.props.hands.prev, this.props.user.browser_id)}
                                 {
                                     !this.props.game.data.over && this.props.game.data.turn === this.props.user.browser_id && this.props.game.data.action === "guess" ?
                                         <div className="guess-wins-container">
@@ -385,7 +388,9 @@ class Board extends Component {
                                                     </div>
                                                 </div>
                                                 <div className="guess-wins-footer-container">
-                                                    <span onClick={() => this.add_my_bet(this.props.game.data, this.props.user.browser_id, this.state.wins, this.props.round.data, this.props.cards.data)}>Kinnita</span>
+                                                    <div className="guess-wins-footer-button-container" onClick={() => this.add_my_bet(this.props.game.data, this.props.user.browser_id, this.state.wins, this.props.round.data, this.props.cards.data)}>
+                                                        <span>Kinnita</span>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -472,7 +477,7 @@ let mapStateToProps = (state) => {
 
 let mapDispatchToProps = (dispatch) => {
     return {
-        ...bindActionCreators({ resetRoom, setUserBrowserID, setGame, resetGame, setNextTurn, setRound, addMyBet, setHand, addCard, updateResults, setCards, removeCard, resetCards, resetHands, resetRound, resetUser, addWon, addHandWinner }, dispatch)
+        ...bindActionCreators({ resetRoom, setGame, resetGame, setNextTurn, setRound, addMyBet, setHand, setPreviousHand, addCard, updateResults, setCards, removeCard, resetCards, resetHands, resetRound, resetUser, addWon, addHandWinner }, dispatch)
     }
 }
 

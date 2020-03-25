@@ -179,6 +179,8 @@ let handleSuitValue = (trump, card) => {
             return trump.suit !== card.suit ? 3 : 100;
         case "spades":
             return trump.suit !== card.suit ? 4 : 100;
+        default:
+            return 5;
     }
 
 };
@@ -190,6 +192,8 @@ export let totalRounds = (players) => {
             return 29;
         case 4:
             return 26;
+        default:
+            return "";
     }
 
 }   

@@ -1,7 +1,7 @@
 import React from "react";
 import "./four_players.css";
 
-export default ({ game, round, hand, players }) => {
+export default ({ game, round, hand, prevHand, players }) => {
 
     let player_0_card = hand ? myCard(hand, players[0].uid) : null,
         player_1_card = hand ? myCard(hand, players[1].uid) : null,
@@ -192,22 +192,49 @@ export default ({ game, round, hand, players }) => {
                     <div></div>
             }
             <div className="stats-container">
-                <span className="stats-text">Kaarte käes: <span style={{fontWeight: "bold"}}>{howManyCardsInHand(game.round)}</span></span>
-                <span className="stats-text">Tahetakse: <span style={{fontWeight: "bold"}}>{howMuchWanted(round.results)}</span></span>
+                <span className="stats-text">Kaarte käes: <span className="bolded-text">{howManyCardsInHand(game.round)}</span></span>
+                <span className="stats-text">Tahetakse: <span className="bolded-text">{howMuchWanted(round.results)}</span></span>
+                <div style={{height: 2, backgroundColor: "tomato", width: 128, marginTop: 5, marginBottom: 5}}></div>
+                <span className="stats-text"><span className="bolded-text">{whosTurn(game, players)}</span> {handleAction(game.action)}</span>
             </div>
-            <div className="turn-container">
-                {
-                    hand ?
-                        !hand.winner ?
-                            <span className="turn-text"><span style={{fontWeight: "bold"}}>{whosTurn(game, players)}</span> {handleAction(game.action)}</span>
-                        :
-                            <div></div>
+            {
+                prevHand ?
+                    prevHand.cards ?
+                        <div className="previous-hand-container">
+                            <div className="prev-hand-title-container">
+                                <span>Eelmine käsi</span>
+                            </div>
+                            <div className="prev-hand-cards-container">
+                                {renderPrevCards(prevHand)}
+                            </div>
+                            <div className="prev-hand-bottom-container">
+                                <span><span className="bolded-text">{whoTook(prevHand.winner, players)}</span> võttis</span>
+                            </div>
+                        </div>
                     :
                         <div></div>
-                }
-            </div>  
+                :
+                    <div></div>
+            }
         </div>
     );
+
+}
+
+let renderPrevCards = (prev) => {
+
+    return prev.cards.map((card, index) => {
+        return(
+            <div className="prev-card" style={card.uid === prev.winner.uid ? {backgroundColor: "#00FFCD"} : {}} key={index}>
+                <div className="prev-card-number-container">
+                    <span className="prev-card-number" style={card.suit === "diamonds" || card.suit === "hearts" ? {color: "red"} : {color: "black"}}>{handleCardValue(card.value)}</span>
+                </div>
+                <div className="prev-card-type-container">
+                    {handlePrevCardType(card.suit)}
+                </div>
+            </div>
+        );
+    });
 
 }
 
@@ -224,6 +251,25 @@ let handleCardValue = (value) => {
             return "A";
         default:
             return value;
+    }
+
+}
+
+let handlePrevCardType = (type) => {
+
+    switch (type) {
+
+        case "spades":
+            return <span className="prev-card-type" style={{color: "black"}}>♠</span>;
+        case "diamonds":
+            return <span className="prev-card-type" style={{color: "red"}}>♦</span>;
+        case "clubs":
+            return <span className="prev-card-type" style={{color: "black"}}>♣</span>;
+        case "hearts":
+            return <span className="prev-card-type" style={{color: "red"}}>♥</span>;
+        default:
+            return <span></span>;
+
     }
 
 }
@@ -248,7 +294,6 @@ let handleCardType = (type) => {
 }
 
 // Kui palju tahetakse
-
 let howMuchWanted = (results) => {
 
     if (results.length < 1) {
@@ -260,7 +305,6 @@ let howMuchWanted = (results) => {
 }
 
 // Kas mängija on kaardi käinud?
-
 let myCard = (hand, uid) => {
 
     let find = hand.cards.filter(card => {
@@ -276,7 +320,6 @@ let myCard = (hand, uid) => {
 }
 
 // Mis on mängija bet ja võidetud kaardid?
-
 let wonAndWins = (round, uid) => {
 
     let find = round.results.filter(player => {
@@ -288,6 +331,12 @@ let wonAndWins = (round, uid) => {
     } else {
         return find[0];
     }   
+
+}
+
+let whoTook = (winner, players) => {
+
+    return players.filter(player => player.uid === winner.uid)[0].name;
 
 }
 
@@ -319,7 +368,6 @@ let howManyCardsInHand = (round) => {
 }
 
 // Rounds
-
 let rounds = [
     {
         round: 1,

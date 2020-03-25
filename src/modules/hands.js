@@ -1,10 +1,12 @@
 export const SET_HAND = "SET_HAND";
+export const SET_PREVIOUS_HAND = "SET_PREVIOUS_HAND";
 export const ADD_CARD = "ADD_CARD";
 export const ADD_HAND_WINNER = "ADD_HAND_WINNER";
 export const RESET_HANDS = "RESET_HANDS";
 
 const initialState = {
     data: null,
+    prev: null,
 };
 
 export default (state = initialState, action) => {
@@ -16,6 +18,13 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 data: action.hand,
+            };
+        
+        case SET_PREVIOUS_HAND:
+        
+            return {
+                ...state,
+                prev: action.data,
             };
 
         case ADD_CARD:
@@ -57,6 +66,17 @@ export let setHand = (hand) => dispatch => {
         return resolve(dispatch({
             type: SET_HAND,
             hand,
+        }));
+    });
+
+}
+
+export let setPreviousHand = (data) => dispatch => {
+
+    return new Promise(resolve => {
+        return resolve(dispatch({
+            type: SET_PREVIOUS_HAND,
+            data,
         }));
     });
 

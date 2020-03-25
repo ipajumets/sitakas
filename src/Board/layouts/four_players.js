@@ -1,7 +1,7 @@
 import React from "react";
 import "./four_players.css";
 
-export default ({ game, round, hand, players }) => {
+export default ({ game, round, hand, prevHand, players }) => {
 
     let player_0_card = hand ? myCard(hand, players[0].uid) : null,
         player_1_card = hand ? myCard(hand, players[1].uid) : null,
@@ -238,20 +238,11 @@ export default ({ game, round, hand, players }) => {
                     <div></div>
             }
             <div className="stats-container">
-                <span className="stats-text">Kaarte käes: <span style={{fontWeight: "bold"}}>{howManyCardsInHand(game.round)}</span></span>
-                <span className="stats-text">Tahetakse: <span style={{fontWeight: "bold"}}>{howMuchWanted(round.results)}</span></span>
+                <span className="stats-text">Kaarte käes: <span className="bolded-text">{howManyCardsInHand(game.round)}</span></span>
+                <span className="stats-text">Tahetakse: <span className="bolded-text">{howMuchWanted(round.results)}</span></span>
+                <div style={{height: 2, backgroundColor: "tomato", width: 128, marginTop: 5, marginBottom: 5}}></div>
+                <span className="turn-text"><span className="bolded-text">{whosTurn(game, players)}</span> {handleAction(game.action)}</span>
             </div>
-            <div className="turn-container">
-                {
-                    hand ?
-                        !hand.winner ?
-                            <span className="turn-text"><span style={{fontWeight: "bold"}}>{whosTurn(game, players)}</span> {handleAction(game.action)}</span>
-                        :
-                            <div></div>
-                    :
-                        <div></div>
-                }
-            </div>  
         </div>
     );
 

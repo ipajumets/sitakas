@@ -40,7 +40,7 @@
 .four-players-table-seat-name {
     color: black;
     font-size: 2vh;
-    font-family: "Rubik", sans-serif;
+    font-family: "Open Sans", Arial, sans-serif;
     padding-top: 10px;
 }
 
@@ -71,7 +71,7 @@
 
 .seat-profile-points {
     font-size: 2vh;
-    font-family: "Rubik", sans-serif;
+    font-family: "Open Sans", Arial, sans-serif;
     color: black;
 }
 
@@ -90,7 +90,7 @@
 
 .seat-profile-wins {
     font-size: 2vh;
-    font-family: "Rubik", sans-serif;
+    font-family: "Open Sans", Arial, sans-serif;
     color: white;
 }
 
@@ -109,7 +109,7 @@
 
 .seat-profile-won {
     font-size: 2vh;
-    font-family: "Rubik", sans-serif;
+    font-family: "Open Sans", Arial, sans-serif;
     color: white;
 }
 
@@ -178,7 +178,7 @@
 
 .player-card-number {
     font-size: 2vh;
-    font-family: "Rubik", sans-serif;
+    font-family: "Open Sans", Arial, sans-serif;
 }
 
 .player-card-type-container {
@@ -224,7 +224,7 @@
 
 .trump-card-number {
     font-size: 2vh;
-    font-family: "Rubik", sans-serif;
+    font-family: "Open Sans", Arial, sans-serif;
 }
 
 .trump-card-type-container {
@@ -241,7 +241,7 @@
 .trump-title {
     font-size: 2vh;
     color: black;
-    font-family: "Rubik", sans-serif;
+    font-family: "Open Sans", Arial, sans-serif;
     padding-bottom: 1vh;
     font-weight: bold;
 }
@@ -276,7 +276,7 @@
 
 .base-card-number {
     font-size: 2vh;
-    font-family: "Rubik", sans-serif;
+    font-family: "Open Sans", Arial, sans-serif;
 }
 
 .base-card-type-container {
@@ -293,7 +293,7 @@
 .base-title {
     font-size: 2vh;
     color: black;
-    font-family: "Rubik", sans-serif;
+    font-family: "Open Sans", Arial, sans-serif;
     padding-bottom: 1vh;
     font-weight: bold;
 }
@@ -311,21 +311,79 @@
 .stats-text {
     font-size: 2vh;
     color: black;
-    font-family: "Rubik", sans-serif;
+    font-family: "Open Sans", Arial, sans-serif;
 }
 
-.turn-container {
+.previous-hand-container {
     position: absolute;
     bottom: 2vh;
     left: 2vh;
     display: flex;
     flex-direction: column;
+}
+
+.prev-hand-title-container {
+    padding-bottom: 8px;
+}
+
+.prev-hand-bottom-container {
+    padding-top: 8px;
+}
+
+.prev-hand-bottom-container span {
+    font-size: clamp(12pt, 3vw, 36px);
+    font-family: "Open Sans", Arial, sans-serif;
+    color: black;
+}
+
+.prev-hand-title-container span {
+    font-size: clamp(12pt, 3vw, 36px);
+    font-family: "Open Sans", Arial, sans-serif;
+    color: black;
+}
+
+.prev-hand-cards-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.bolded-text {
+    font-family: "Open Sans", Arial, sans-serif;
+    font-weight: 700;
+}
+
+.prev-card {
+    width: 6vw;
+    height: 10vw;
+    max-width: 70px;
+    max-height: 120px;
+    background-color: white;
+    border-radius: 3px;
+    display: flex;
+    flex-direction: column;
+    margin-right: 10px;
+}
+
+.prev-card-number-container {
+    display: flex;
+    flex-direction: row;
     align-items: flex-start;
+    justify-content: flex-start;
+    padding-left: 5px;
+}
+
+.prev-card-number {
+    font-size: clamp(12pt, 3vw, 36px);
+    font-family: "Open Sans", Arial, sans-serif;
+}
+
+.prev-card-type-container {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
     justify-content: center;
 }
 
-.turn-text {
-    font-size: 2vh;
-    color: black;
-    font-family: "Rubik", sans-serif;
+.prev-card-type {
+    font-size: clamp(12pt, 3vw, 36px);
 }
