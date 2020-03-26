@@ -8,7 +8,7 @@ import Page from "../Page";
 // modules
 import { resetUser }  from "../modules/user";
 import { setGame, resetGame, setNextTurn }  from "../modules/game";
-import { setRound, addMyBet, resetRound, updateResults, addWon }  from "../modules/round";
+import { setRound, setPreviousRound, addMyBet, resetRound, updateResults, addWon }  from "../modules/round";
 import { setHand, setPreviousHand, addCard, addHandWinner, resetHands }  from "../modules/hands";
 import { setCards, removeCard, resetCards }  from "../modules/cards";
 import { resetRoom }  from "../modules/room";
@@ -61,22 +61,26 @@ class Board extends Component {
             .then(result => {
                 if (checkErrors(result)) {
                     if (result.room.state === "game_on") {
+                        console.log(result.game.players);
                         return this.props.setGame(result.game)
                             .then(_ => {
-                                return this.props.setRound(result.round);
-                            })
-                            .then(_ => {
-                                return this.props.setPreviousHand(result.previousHand)
+                                return this.props.setPreviousRound(result.previousRound)
                                     .then(_ => {
-                                        return this.props.setHand(result.hand);
+                                        return this.props.setRound(result.round);
                                     })
                                     .then(_ => {
-                                        return this.props.setCards(result.myCards.active)
+                                        return this.props.setPreviousHand(result.previousHand)
                                             .then(_ => {
-                                                return this.setState({ loading: false });
+                                                return this.props.setHand(result.hand);
+                                            })
+                                            .then(_ => {
+                                                return this.props.setCards(result.myCards.active)
+                                                    .then(_ => {
+                                                        return this.setState({ loading: false });
+                                                    });
                                             });
                                     });
-                            });
+                            })
                     } else {
                         return this.props.history.push(`/setup/${result.room.code}`);
                     }
@@ -112,13 +116,15 @@ class Board extends Component {
 
         socket.on(`${code}_last_card_added`, result => {
             return this.setState({ selected_card: {} }, () => {
-                return this.props.addCard(result.card)
-                    .then(_ => {
-                        return this.props.addWon(result.winner.uid)
-                    })
-                    .then(_ => {
-                        return this.props.addHandWinner({ uid: result.winner.uid, value: result.winner.value, suit: result.winner.suit });
-                    });
+                if (result.card.uid !== this.props.user.browser_id) {
+                    return this.props.addCard(result.card)
+                        .then(_ => {
+                            return this.props.addWon(result.winner.uid)
+                        })
+                        .then(_ => {
+                            return this.props.addHandWinner({ uid: result.winner.uid, value: result.winner.value, suit: result.winner.suit });
+                        });
+                }   
             });
         });
 
@@ -138,20 +144,27 @@ class Board extends Component {
             });
         });
 
+        socket.on(`${code}_game_over`, _ => {
+            alert("Tere");
+            return this.setState({ selected_card: {} }, () => {
+                return this.handleGame(code, id);
+            });
+        });
+
     }
 
-    handleTable = (game, round, hand, prevHand, uid) => {
+    handleTable = (game, round, prevRound, hand, prevHand, uid) => {
 
         let sorted = rearrangePlayersOrder(game.players, uid);
 
         switch (game.players.length) {
 
             case 3:
-                return <ThreePlayersTable game={game} round={round} hand={hand} prevHand={prevHand} players={sorted} />;
+                return <ThreePlayersTable game={game} round={round} prevRound={prevRound} hand={hand} prevHand={prevHand} players={sorted} />;
             case 4:
-                return <FourPlayersTable game={game} round={round} hand={hand} prevHand={prevHand} players={sorted} />;
+                return <FourPlayersTable game={game} round={round} prevRound={prevRound} hand={hand} prevHand={prevHand} players={sorted} />;
             case 5:
-                return <FivePlayersTable game={game} round={round} hand={hand} prevHand={prevHand} players={sorted} />;
+                return <FivePlayersTable game={game} round={round} prevRound={prevRound} hand={hand} prevHand={prevHand} players={sorted} />;
             case 6:
                 return <SixPlayersTable />;
             default:
@@ -163,7 +176,7 @@ class Board extends Component {
 
     renderCards = (cards, game, uid, hand) => {
 
-        let marginLeft = (((cards.length * 128) - this.state.inner_width) / cards.length) + cards.length;
+        let marginLeft = (((cards.length * 128) - this.state.inner_width) / cards.length);
         let canFit = cards.length * 128 < this.state.inner_width ? true : false;
 
         let sortedCards = sortCards(cards, game.trump);
@@ -175,7 +188,7 @@ class Board extends Component {
                         <div className="board-hand-card-value-container">
                             <div className="board-hand-card-value-and-suit-container">
                                 <span className="board-hand-card-value" style={card.suit === "diamonds" || card.suit === "hearts" ? {color: "red"} : {color: "black"}}>{handleCardValue(card.value)}</span>
-                                <span className="board-hand-card-value-suit" style={{marginTop: 5}}>{handleCardType(card.suit)}</span>
+                                <span className="board-hand-card-value-suit">{handleCardType(card.suit)}</span>
                             </div>
                         </div>
                         <div className="board-hand-card-type-container">
@@ -193,7 +206,7 @@ class Board extends Component {
                         <div className="board-hand-card-value-container">
                             <div className="board-hand-card-value-and-suit-container">
                                 <span className="board-hand-card-value" style={card.suit === "diamonds" || card.suit === "hearts" ? {color: "red"} : {color: "black"}}>{handleCardValue(card.value)}</span>
-                                <span className="board-hand-card-value-suit" style={{marginTop: 5}}>{handleCardType(card.suit)}</span>
+                                <span className="board-hand-card-value-suit">{handleCardType(card.suit)}</span>
                             </div>
                         </div>
                         <div className="board-hand-card-type-container">
@@ -356,9 +369,39 @@ class Board extends Component {
 
     }
 
+    renderResults = (results) => {
+
+        let to_be_sorted = results;
+
+        let sorted = to_be_sorted.sort((a, b) => {
+
+            if (a.points > b.points) return -1;
+            if (a.points < b.points) return 1;
+
+            return 0;
+
+        });
+
+        return sorted.map((result, index) => {
+            return(
+                <div key={index} className="final-pop-up-list-item">
+                    <img src={result.image} alt="" />
+                    <span>{result.name}</span>
+                    <div className="final-pop-up-points-container">
+                        <strong>{result.points}</strong>
+                    </div>
+                </div>
+            );
+        });
+
+    }
+
     render = () => {
 
         if (!this.state.loading) {
+
+            let loser = this.props.game.data.over ? getSitaratas(this.props.game.data.players) : {};
+
             return(
                 <Page>
                     <div className="board-action-container">
@@ -368,7 +411,7 @@ class Board extends Component {
                         </div>
                         <div className="board-action-wrapper">
                             <div className="board-table-container">
-                                {this.handleTable(this.props.game.data, this.props.round.data, this.props.hands.data, this.props.hands.prev, this.props.user.browser_id)}
+                                {this.handleTable(this.props.game.data, this.props.round.data, this.props.round.prev, this.props.hands.data, this.props.hands.prev, this.props.user.browser_id)}
                                 {
                                     !this.props.game.data.over && this.props.game.data.turn === this.props.user.browser_id && this.props.game.data.action === "guess" ?
                                         <div className="guess-wins-container">
@@ -420,27 +463,36 @@ class Board extends Component {
                             <div className="board-hand-container" style={{justifyContent: this.props.cards.data.length * 128 < this.state.inner_width ? "space-around" : "flex-start" }}>
                                 {
                                     this.props.game.data ?
-                                        !this.props.game.data.over ?
-                                            this.renderCards(this.props.cards.data, this.props.game.data, this.props.user.browser_id, this.props.hands.data)
-                                        :
-                                            <div className="game-over-alert-container">
-                                                <div className="game-over-alert-wrapper">
-                                                    <img src={getSitaratas(this.props.game.data.players).image} className="game-over-alert-image" alt="" />
-                                                    <div className="game-over-alert-text-container">
-                                                        <h3><span role="img" aria-label="Poop">💩</span> {getSitaratas(this.props.game.data.players).name}</h3>
-                                                        <span>Sitaratas</span>
-                                                    </div>
-                                                    <div className="game-over-leave-container">
-                                                        <span onClick={() => this.exitGame()}>Välju</span>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                        this.renderCards(this.props.cards.data, this.props.game.data, this.props.user.browser_id, this.props.hands.data)
                                     :
                                         <div></div>
                                 } 
                             </div>
                         </div>
-                        
+                        {   
+                            this.props.game.data.over ?
+                                <div className="final-pop-up-container">
+                                    <div className="final-pop-up-sitaratas-container">
+                                        <img className="final-pop-up-sitaratas-image" src={loser.image} alt="" />
+                                        <span className="final-pop-up-sitaratas-name"><span className="final-pop-up-sitaratas-title">Sitaratas:</span> {loser.name}</span>
+                                        <div className="final-pop-up-signature-container">
+                                            <span className="final-pop-up-signature-title">Allkiri</span>
+                                            <div className="final-pop-up-signature"></div>
+                                        </div>
+                                        <div className="final-pop-up-list-container">
+                                            <span className="final-pop-up-list-title">Lõplik järjestus</span>
+                                            {this.renderResults(this.props.game.data.players)}
+                                        </div>
+                                        <div className="final-pop-up-exit-container">
+                                            <div className="final-pop-up-exit-button-container" onClick={() => this.exitGame()}>
+                                                <span className="final-pop-up-exit-button-text">Välju</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            :
+                                <div></div>
+                        }
                     </div>
                 </Page>
             );
@@ -477,7 +529,7 @@ let mapStateToProps = (state) => {
 
 let mapDispatchToProps = (dispatch) => {
     return {
-        ...bindActionCreators({ resetRoom, setGame, resetGame, setNextTurn, setRound, addMyBet, setHand, setPreviousHand, addCard, updateResults, setCards, removeCard, resetCards, resetHands, resetRound, resetUser, addWon, addHandWinner }, dispatch)
+        ...bindActionCreators({ resetRoom, setGame, resetGame, setNextTurn, setRound, setPreviousRound, addMyBet, setHand, setPreviousHand, addCard, updateResults, setCards, removeCard, resetCards, resetHands, resetRound, resetUser, addWon, addHandWinner }, dispatch)
     }
 }
 

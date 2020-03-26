@@ -30,6 +30,7 @@
 /* Setup */
 
 .board-action-container {
+    position: relative;
     display: flex;
     flex-direction: column;
     width: 100vw;
@@ -242,8 +243,8 @@
 }
 
 .board-hand-card-value-suit {
-    font-family: Helvetica;
-    font-size: 18pt;
+    font-family: Arial;
+    font-size: 20pt;
 }
 
 .board-hand-card-type-container {
@@ -255,8 +256,8 @@
 }
 
 .board-hand-card-type-container span {
-    font-size: 18pt;
-    font-family: Helvetica;
+    font-size: 32pt;
+    font-family: Arial;
 }
 
 /* Guess wins */
@@ -439,5 +440,146 @@
     padding: 1vh 3vh;
     background-color: rgba(255, 255, 255, 0.67);
     border-radius: 10vh;
+    cursor: pointer;
+}
+
+.final-pop-up-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.67);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.final-pop-up-sitaratas-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.final-pop-up-sitaratas-image {
+    width: 20vh;
+    height: 20vh;
+    max-width: 180px;
+    max-height: 180px;
+    border-radius: 25vw;
+    border: 5px solid white;
+    object-fit: cover;
+    margin-bottom: 2vh;
+}
+
+.final-pop-up-sitaratas-name {
+    color: white;
+    font-size: 5vh;
+    padding-bottom: 0;
+    font-family: "Roboto", Arial, sans-serif;
+}
+
+.final-pop-up-sitaratas-title {
+    color: tomato;
+    font-size: 4vh;
+    font-family: "Roboto", Arial, sans-serif;
+}
+
+.final-pop-up-signature-container {
+    margin-top: 2vh;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.final-pop-up-signature-title {
+    color: white;
+    font-size: 4vh;
+    padding: 10px 0 5px 0;
+    font-family: "Roboto", Arial, sans-serif;
+}
+
+.final-pop-up-signature {
+    flex: 1;
+    height: 8vh;
+    border-bottom: 2px solid white;
+    margin-left: 15px;
+}
+
+.final-pop-up-list-container {
+    margin-top: 3vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.final-pop-up-list-title {
+    color: white;
+    font-size: 2vh;
+    padding: 10px 0 5px 0;
+    font-family: "Roboto", Arial, sans-serif;
+}
+
+.final-pop-up-list-item {
+    padding-top: 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.final-pop-up-list-item img {
+    width: 4vh;
+    height: 4vh;
+    border-radius: 3vh;
+    border: 1px solid white;
+}
+
+.final-pop-up-list-item span {
+    color: white;
+    margin-left: 10px;
+    font-family: "Roboto", Arial, sans-serif;
+    font-size: 2vh;
+}
+
+.final-pop-up-points-container {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.final-pop-up-points-container strong {
+    color: white;
+    font-family: "Roboto", Arial, sans-serif;
+    font-size: 2vh;
+}
+
+.final-pop-up-exit-container {
+    margin-top: 5vh;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.final-pop-up-exit-button-container {
+    background-color: white;
+    width: 33vw;
+    max-width: 128px;
+    height: 44px;
+    border-radius: 22px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.final-pop-up-exit-button-text {
+    color: tomato;
+    font-family: "Roboto", Arial, sans-serif;
+    font-size: 12pt;
     cursor: pointer;
 }

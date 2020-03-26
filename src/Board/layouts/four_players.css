@@ -395,3 +395,14 @@
 .five-players-separator {
     height: 4vh;
 }
+
+.prev-round-container {
+    position: absolute;
+    top: -3px;
+    right: -14px;
+}
+
+.prev-round-text {
+    font-size: 9pt;
+    font-family: "Roboto", Arial, sans-serif;
+}

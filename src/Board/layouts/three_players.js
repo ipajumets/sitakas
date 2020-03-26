@@ -1,7 +1,7 @@
 import React from "react";
 import "./four_players.css";
 
-export default ({ game, round, hand, prevHand, players }) => {
+export default ({ game, round, prevRound, hand, prevHand, players }) => {
 
     let player_0_card = hand ? myCard(hand, players[0].uid) : null,
         player_1_card = hand ? myCard(hand, players[1].uid) : null,
@@ -10,6 +10,10 @@ export default ({ game, round, hand, prevHand, players }) => {
     let player_0_won_wins = round ? wonAndWins(round, players[0].uid) : null,
         player_1_won_wins = round ? wonAndWins(round, players[1].uid) : null,
         player_2_won_wins = round ? wonAndWins(round, players[2].uid) : null;
+
+    let player_0_prev_round = prevRound ? handlePrevRound(prevRound, players[0].uid) : null,
+        player_1_prev_round = prevRound ? handlePrevRound(prevRound, players[1].uid) : null,
+        player_2_prev_round = prevRound ? handlePrevRound(prevRound, players[2].uid) : null;
 
     return(
         <div className="four-players-table-container">
@@ -37,7 +41,17 @@ export default ({ game, round, hand, prevHand, players }) => {
                             }
                             <img className="four-players-table-seat-profile-image" src={players[1].image} alt="" />
                             <div className="four-players-table-seat-profile-points-container">
-                                <span className="seat-profile-points">{players[1].points}</span>
+                                <div style={{position: "relative"}}>
+                                    <span className="seat-profile-points">{players[1].points}</span>
+                                    {
+                                        player_1_prev_round ?
+                                            <div className="prev-round-container">
+                                                {handlePrevRoundText(player_1_prev_round.won, player_1_prev_round.wins)}
+                                            </div>
+                                        :
+                                            <div></div>
+                                    }
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -81,7 +95,17 @@ export default ({ game, round, hand, prevHand, players }) => {
                             }
                             <img className="four-players-table-seat-profile-image" src={players[2].image} alt="" />
                             <div className="four-players-table-seat-profile-points-container">
-                                <span className="seat-profile-points">{players[2].points}</span>
+                                <div style={{position: "relative"}}>
+                                    <span className="seat-profile-points">{players[2].points}</span>
+                                    {
+                                        player_2_prev_round ?
+                                            <div className="prev-round-container">
+                                                {handlePrevRoundText(player_2_prev_round.won, player_2_prev_round.wins)}
+                                            </div>
+                                        :
+                                            <div></div>
+                                    }
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -127,7 +151,17 @@ export default ({ game, round, hand, prevHand, players }) => {
                             }                            
                             <img className="four-players-table-seat-profile-image" src={players[0].image} alt="" />
                             <div className="four-players-table-seat-profile-points-container">
-                                <span className="seat-profile-points">{players[0].points}</span>
+                                <div style={{position: "relative"}}>
+                                    <span className="seat-profile-points">{players[0].points}</span>
+                                    {
+                                        player_0_prev_round ?
+                                            <div className="prev-round-container">
+                                                {handlePrevRoundText(player_0_prev_round.won, player_0_prev_round.wins)}
+                                            </div>
+                                        :
+                                            <div></div>
+                                    }
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -218,6 +252,26 @@ export default ({ game, round, hand, prevHand, players }) => {
             }
         </div>
     );
+
+}
+
+let handlePrevRoundText = (won, wins) => {
+
+    if (won === wins) {
+        return <span className="prev-round-text" style={{marginRight: (won+5) > 9 ? -5 : 0, color: "#3AB795"}}>+{won+5}</span>;
+    }
+
+    if (won !== wins) {
+        return <span className="prev-round-text" style={{marginRight: won > 9 ? -5 : 0, color: "#E05263"}}>+{won}</span>;
+    }
+
+}
+
+let handlePrevRound = (prevRound, uid) => {
+
+    return prevRound.results.filter(result => {
+        return result.uid === uid;
+    })[0];
 
 }
 

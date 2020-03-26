@@ -22,7 +22,7 @@ export let rearrangePlayersOrder = (players, uid) => {
 
 // Determine points on round end
 
-export function determineWinner(hand, game) {
+export let determineWinner = (hand, game) => {
 
     let cards = hand.cards,
         trump = game.trump,
@@ -48,9 +48,11 @@ export function determineWinner(hand, game) {
 
 }
 
-export function getSitaratas(players) {
+export let getSitaratas = (players) => {
 
-    let sorted = players.sort((a, b) => a.points - b.points);
+    let to_be_sorted = players;
+
+    let sorted = to_be_sorted.sort((a, b) => a.points - b.points);
 
     return sorted[0];
     
