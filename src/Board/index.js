@@ -471,7 +471,7 @@ class Board extends Component {
                         </div>
                         {   
                             this.props.game.data.over ?
-                                <div className="final-pop-up-container">
+                                <div className="final-pop-up-container" style={{zIndex: 1000}}>
                                     <div className="final-pop-up-sitaratas-container">
                                         <img className="final-pop-up-sitaratas-image" src={loser.image} alt="" />
                                         <span className="final-pop-up-sitaratas-name"><span className="final-pop-up-sitaratas-title">Sitaratas:</span> {loser.name}</span>
