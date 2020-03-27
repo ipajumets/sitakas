@@ -145,7 +145,6 @@ class Board extends Component {
         });
 
         socket.on(`${code}_game_over`, _ => {
-            alert("Tere");
             return this.setState({ selected_card: {} }, () => {
                 return this.handleGame(code, id);
             });
