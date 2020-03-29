@@ -60,7 +60,7 @@ export default ({ game, round, prevRound, hand, prevHand, players }) => {
                         </div>
                     </div>
                     <div className="four-players-table-seat-name-container">
-                        <span className="four-players-table-seat-name">{players[2].name}</span>
+                        <span className="four-players-table-seat-name" style={{fontSize: handleFontSize(players[2].name)}}>{players[2].name}</span>
                     </div>
                     <div className="four-players-top-player-card-container">
                         {
@@ -116,7 +116,7 @@ export default ({ game, round, prevRound, hand, prevHand, players }) => {
                         </div>
                     </div>
                     <div className="four-players-table-seat-name-container">
-                        <span className="four-players-table-seat-name">{players[1].name}</span>
+                        <span className="four-players-table-seat-name" style={{fontSize: handleFontSize(players[1].name)}}>{players[1].name}</span>
                     </div>
                     <div className="four-players-left-player-card-container">
                         {
@@ -171,7 +171,7 @@ export default ({ game, round, prevRound, hand, prevHand, players }) => {
                             </div>
                         </div>
                         <div className="four-players-table-seat-name-container">
-                            <span className="four-players-table-seat-name">{players[3].name}</span>
+                            <span className="four-players-table-seat-name" style={{fontSize: handleFontSize(players[3].name)}}>{players[3].name}</span>
                         </div>
                         <div className="four-players-right-player-card-container">
                             {
@@ -226,7 +226,7 @@ export default ({ game, round, prevRound, hand, prevHand, players }) => {
                             </div>
                         </div>
                         <div className="four-players-table-seat-name-container">
-                            <span className="four-players-table-seat-name">{players[4].name}</span>
+                            <span className="four-players-table-seat-name" style={{fontSize: handleFontSize(players[4].name)}}>{players[4].name}</span>
                         </div>
                         <div className="four-players-right-player-card-container">
                             {
@@ -283,7 +283,7 @@ export default ({ game, round, prevRound, hand, prevHand, players }) => {
                         </div>
                     </div>
                     <div className="four-players-table-seat-name-container">
-                        <span className="four-players-table-seat-name">{players[0].name}</span>
+                        <span className="four-players-table-seat-name" style={{fontSize: handleFontSize(players[0].name)}}>{players[0].name}</span>
                     </div>
                     <div className="four-players-bottom-player-card-container">
                         {
@@ -369,6 +369,22 @@ export default ({ game, round, prevRound, hand, prevHand, players }) => {
             }
         </div>
     );
+
+}
+
+let handleFontSize = (name) => {
+
+    if (name.length < 10) {
+        return 14;
+    } else if (name.length < 16) {
+        return 12;
+    } else if (name.length < 20) {
+        return 10;
+    } else if (name.length < 24) {
+        return 8;
+    } else {
+        return  6;
+    }
 
 }
 

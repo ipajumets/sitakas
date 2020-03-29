@@ -165,7 +165,7 @@ class Board extends Component {
             case 5:
                 return <FivePlayersTable game={game} round={round} prevRound={prevRound} hand={hand} prevHand={prevHand} players={sorted} />;
             case 6:
-                return <SixPlayersTable />;
+                return <SixPlayersTable game={game} round={round} prevRound={prevRound} hand={hand} prevHand={prevHand} players={sorted} />;
             default:
                 return <ThreePlayersTable />;
 

@@ -30,7 +30,6 @@
 }
 
 .four-players-table-seat-name-container {
-    height: 4vh;
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -38,10 +37,11 @@
 }
 
 .four-players-table-seat-name {
+    margin-top: 1vh;
     color: black;
     font-size: 2vh;
     font-family: "Roboto", Arial, sans-serif;
-    padding-top: 10px;
+    text-align: center;
 }
 
 .four-players-table-seat-profile-image-container {
@@ -393,7 +393,7 @@
 }
 
 .five-players-separator {
-    height: 4vh;
+    height: 2vh;
 }
 
 .prev-round-container {
