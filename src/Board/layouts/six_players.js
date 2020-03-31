@@ -367,14 +367,14 @@ export default ({ game, round, prevRound, hand, prevHand, players }) => {
                 <div className="trump-card">
                     <div className="trump-card-number-container">
                         {
-                            game.trump.value !== 1 ?
-                                <span className="trump-card-number" style={game.trump.suit === "diamonds" || game.trump.suit === "hearts" ? {color: "red"} : {color: "black"}}>{handleCardValue(game.trump.value)}</span>
+                            round.trump.value !== 1 ?
+                                <span className="trump-card-number" style={round.trump.suit === "diamonds" || round.trump.suit === "hearts" ? {color: "red"} : {color: "black"}}>{handleCardValue(round.trump.value)}</span>
                             :
                                 <div></div>
                         }
                     </div>
-                    <div className="trump-card-type-container" style={{alignItems: game.trump.value !== 1 ? "flex-start" : "center"}}>
-                        {handleCardType(game.trump.suit)}
+                    <div className="trump-card-type-container" style={{alignItems: round.trump.value !== 1 ? "flex-start" : "center"}}>
+                        {handleCardType(round.trump.suit)}
                     </div>
                 </div>
             </div>
@@ -406,7 +406,7 @@ export default ({ game, round, prevRound, hand, prevHand, players }) => {
                 <span className="stats-text">Kaarte käes: <span className="bolded-text">{howManyCardsInHand(game.round)}</span></span>
                 <span className="stats-text">Tahetakse: <span className="bolded-text">{howMuchWanted(round.results)}</span></span>
                 <div style={{height: 2, backgroundColor: "tomato", width: 128, marginTop: 5, marginBottom: 5}}></div>
-                <span className="stats-text"><span className="bolded-text">{whosTurn(game, players)}</span> {handleAction(game.action)}</span>
+                <span className="stats-text"><span className="bolded-text">{whosTurn(round, players)}</span> {handleAction(round.action)}</span>
             </div>
             {
                 prevHand ?
@@ -590,9 +590,9 @@ let whoTook = (winner, players) => {
 
 }
 
-let whosTurn = (game, players) => {
+let whosTurn = (round, players) => {
 
-    return players.filter(player => player.uid === game.turn)[0].name;
+    return players.filter(player => player.uid === round.turn)[0].name;
 
 }
 
@@ -604,6 +604,8 @@ let handleAction = (action) => {
             return "pakub";
         case "call":
             return "käib";
+        case "called":
+            return "käis";
         default:
             return "";
 

@@ -1,5 +1,5 @@
 export const SET_GAME = "SET_GAME";
-export const SET_NEXT_TURN = "SET_NEXT_TURN";
+export const UPDATE_GAME_HAND = "UPDATE_GAME_HAND";
 export const RESET_GAME = "RESET_GAME";
 
 const initialState = {
@@ -17,21 +17,20 @@ export default (state = initialState, action) => {
                 data: action.game,
             };
 
-        case RESET_GAME:
-        
-            return {
-                data: null,
-            };
-
-        case SET_NEXT_TURN:
+        case UPDATE_GAME_HAND:
         
             return {
                 ...state,
                 data: {
                     ...state.data,
-                    "turn": action.uid,
-                    "action": action.step,
+                    hand: action.hand,
                 },
+            };
+
+        case RESET_GAME:
+        
+            return {
+                data: null,
             };
         
         default:
@@ -51,23 +50,22 @@ export let setGame = (game) => dispatch => {
 
 }
 
-export let resetGame = () => dispatch => {
+export let updateGameHand = (hand) => dispatch => {
 
     return new Promise(resolve => {
         return resolve(dispatch({
-            type: RESET_GAME,
+            type: UPDATE_GAME_HAND,
+            hand,
         }));
     });
 
 }
 
-export let setNextTurn = (uid, step) => dispatch => {
+export let resetGame = () => dispatch => {
 
     return new Promise(resolve => {
         return resolve(dispatch({
-            type: SET_NEXT_TURN,
-            uid,
-            step,
+            type: RESET_GAME,
         }));
     });
 

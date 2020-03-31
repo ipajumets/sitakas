@@ -2,6 +2,7 @@ export const SET_ROUND = "SET_ROUND";
 export const SET_PREVIOUS_ROUND = "SET_PREVIOUS_ROUND";
 export const ADD_MY_BET = "ADD_MY_BET";
 export const UPDATE_RESULTS = "UPDATE_RESULTS";
+export const SET_NEXT_TURN = "SET_NEXT_TURN";
 export const ADD_WON = "ADD_WON";
 export const RESET_ROUND = "RESET_ROUND";
 
@@ -54,6 +55,17 @@ export default (state = initialState, action) => {
                             return result;
                         }
                     }),
+                },
+            };
+
+        case SET_NEXT_TURN:
+    
+            return {
+                ...state,
+                data: {
+                    ...state.data,
+                    "turn": action.uid,
+                    "action": action.step,
                 },
             };
 
@@ -139,6 +151,18 @@ export let resetRound = () => dispatch => {
     return new Promise(resolve => {
         return resolve(dispatch({
             type: RESET_ROUND,
+        }));
+    });
+
+}
+
+export let setNextTurn = (uid, step) => dispatch => {
+
+    return new Promise(resolve => {
+        return resolve(dispatch({
+            type: SET_NEXT_TURN,
+            uid,
+            step,
         }));
     });
 

@@ -153,42 +153,6 @@ export let add_bet = (code, round, uid, wins, next_uid, next_action, last) => {
 
 }
 
-// Add card
-export let add_card = (code, round, hand, uid, value, suit, next_uid, next_action, first, last) => {
-
-    let body = {
-        code: code,
-        round: round,
-        hand: hand,
-        uid: uid,
-        value: value,
-        suit: suit,
-        next_uid: next_uid,
-        next_action: next_action,
-        first: first,
-        last: last,
-    };
-
-    let request = {
-        method: "POST",
-        headers: {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-    };
-
-    return fetch("https://www.sitaratas.eu/api/hands/add-card", request)
-        .then(res => res.json())
-        .then(json => {
-            return json;
-        })
-        .catch(err => {
-            return alert(err);
-        });
-
-}
-
 export let add_last_card = (code, round, hand, uid, value, suit, winner, next_uid, next_action, results, players, next_dealer) => {
 
     let body = {
@@ -226,13 +190,26 @@ export let add_last_card = (code, round, hand, uid, value, suit, winner, next_ui
 
 }
 
-// Get room data
+// v2
 
+// Get data about game
 export let getGameData = (code, browser_id) => {
 
+    return fetch("https://www.sitaratas.eu/api/games/get-game-data/"+code+"/"+browser_id)
+        .then(res => res.json())
+        .then(json => {
+            return json;
+        })
+        .catch(err => console.log(err));
+
+}
+
+// Add bet
+export let addBet = (game_id, user_id, wins, round_id) => {
+
     let body = {
-        code: code,
-        browser_id: browser_id,
+        uid: user_id,
+        wins: wins,
     };
 
     let request = {
@@ -244,11 +221,41 @@ export let getGameData = (code, browser_id) => {
         body: JSON.stringify(body),
     };
 
-    return(fetch("https://www.sitaratas.eu/api/games/get-game-data", request))
+    return fetch("https://www.sitaratas.eu/api/rounds/add-bet/"+game_id, request)
+        .then(res => res.json())
+        .then(result => {
+            return result;
+        })
+        .catch(err => {
+            console.log(err);
+            return;
+        });
+
+}
+
+// Upload card
+export let uploadCard = (game, card) => {
+
+    let body = {
+        card: card,
+    };
+
+    let request = {
+        method: "POST",
+        headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+    };
+
+    return fetch("https://www.sitaratas.eu/api/hands/add-card/"+game.room_code, request)
         .then(res => res.json())
         .then(json => {
             return json;
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+            return alert(err);
+        });
 
 }
