@@ -68,14 +68,7 @@ export default ({ game, round, prevRound, hand, prevHand, players }) => {
                     <div className="four-players-top-player-card-container">
                         {
                             player_3_card ?
-                                <div className="player-card">
-                                    <div className="player-card-number-container">
-                                        <span className="player-card-number" style={player_3_card.suit === "diamonds" || player_3_card.suit === "hearts" ? {color: "red"} : {color: "black"}}>{handleCardValue(player_3_card.value)}</span>
-                                    </div>
-                                    <div className="player-card-type-container">
-                                        <span className="player-card-type" style={player_3_card.suit === "diamonds" || player_3_card.suit === "hearts" ? {color: "red"} : {color: "black"}}>{handleCardType(player_3_card.suit)}</span>
-                                    </div>
-                                </div>
+                                <img className="player-card" src={require(`../../media/deck/${player_3_card.value}_${player_3_card.suit}.svg`)} alt="" />
                             :
                                 <div></div>
                         }
@@ -125,14 +118,7 @@ export default ({ game, round, prevRound, hand, prevHand, players }) => {
                         <div className="four-players-left-player-card-container">
                             {
                                 player_2_card ?
-                                    <div className="player-card">
-                                        <div className="player-card-number-container">
-                                            <span className="player-card-number" style={player_2_card.suit === "diamonds" || player_2_card.suit === "hearts" ? {color: "red"} : {color: "black"}}>{handleCardValue(player_2_card.value)}</span>
-                                        </div>
-                                        <div className="player-card-type-container">
-                                            <span className="player-card-type" style={player_2_card.suit === "diamonds" || player_2_card.suit === "hearts" ? {color: "red"} : {color: "black"}}>{handleCardType(player_2_card.suit)}</span>
-                                        </div>
-                                    </div>
+                                    <img className="player-card" src={require(`../../media/deck/${player_2_card.value}_${player_2_card.suit}.svg`)} alt="" />
                                 :
                                     <div></div>
                             }
@@ -180,14 +166,7 @@ export default ({ game, round, prevRound, hand, prevHand, players }) => {
                         <div className="four-players-left-player-card-container">
                             {
                                 player_1_card ?
-                                    <div className="player-card">
-                                        <div className="player-card-number-container">
-                                            <span className="player-card-number" style={player_1_card.suit === "diamonds" || player_1_card.suit === "hearts" ? {color: "red"} : {color: "black"}}>{handleCardValue(player_1_card.value)}</span>
-                                        </div>
-                                        <div className="player-card-type-container">
-                                            <span className="player-card-type" style={player_1_card.suit === "diamonds" || player_1_card.suit === "hearts" ? {color: "red"} : {color: "black"}}>{handleCardType(player_1_card.suit)}</span>
-                                        </div>
-                                    </div>
+                                    <img className="player-card" src={require(`../../media/deck/${player_1_card.value}_${player_1_card.suit}.svg`)} alt="" />
                                 :
                                     <div></div>
                             }
@@ -236,14 +215,7 @@ export default ({ game, round, prevRound, hand, prevHand, players }) => {
                         <div className="four-players-right-player-card-container">
                             {
                                 player_4_card ?
-                                    <div className="player-card">
-                                        <div className="player-card-number-container">
-                                            <span className="player-card-number" style={player_4_card.suit === "diamonds" || player_4_card.suit === "hearts" ? {color: "red"} : {color: "black"}}>{handleCardValue(player_4_card.value)}</span>
-                                        </div>
-                                        <div className="player-card-type-container">
-                                            <span className="player-card-type" style={player_4_card.suit === "diamonds" || player_4_card.suit === "hearts" ? {color: "red"} : {color: "black"}}>{handleCardType(player_4_card.suit)}</span>
-                                        </div>
-                                    </div>
+                                    <img className="player-card" src={require(`../../media/deck/${player_4_card.value}_${player_4_card.suit}.svg`)} alt="" />
                                 :
                                     <div></div>
                             }
@@ -291,14 +263,7 @@ export default ({ game, round, prevRound, hand, prevHand, players }) => {
                         <div className="four-players-right-player-card-container">
                             {
                                 player_5_card ?
-                                    <div className="player-card">
-                                        <div className="player-card-number-container">
-                                            <span className="player-card-number" style={player_5_card.suit === "diamonds" || player_5_card.suit === "hearts" ? {color: "red"} : {color: "black"}}>{handleCardValue(player_5_card.value)}</span>
-                                        </div>
-                                        <div className="player-card-type-container">
-                                            <span className="player-card-type" style={player_5_card.suit === "diamonds" || player_5_card.suit === "hearts" ? {color: "red"} : {color: "black"}}>{handleCardType(player_5_card.suit)}</span>
-                                        </div>
-                                    </div>
+                                    <img className="player-card" src={require(`../../media/deck/${player_5_card.value}_${player_5_card.suit}.svg`)} alt="" />
                                 :
                                     <div></div>
                             }
@@ -348,14 +313,7 @@ export default ({ game, round, prevRound, hand, prevHand, players }) => {
                     <div className="four-players-bottom-player-card-container">
                         {
                             player_0_card ?
-                                <div className="player-card">
-                                    <div className="player-card-number-container">
-                                        <span className="player-card-number" style={player_0_card.suit === "diamonds" || player_0_card.suit === "hearts" ? {color: "red"} : {color: "black"}}>{handleCardValue(player_0_card.value)}</span>
-                                    </div>
-                                    <div className="player-card-type-container">
-                                        <span className="player-card-type" style={player_0_card.suit === "diamonds" || player_0_card.suit === "hearts" ? {color: "red"} : {color: "black"}}>{handleCardType(player_0_card.suit)}</span>
-                                    </div>
-                                </div>
+                                <img className="player-card" src={require(`../../media/deck/${player_0_card.value}_${player_0_card.suit}.svg`)} alt="" />
                             :
                                 <div></div>
                         }
@@ -364,38 +322,14 @@ export default ({ game, round, prevRound, hand, prevHand, players }) => {
             </div>
             <div className="trump-container">
                 <span className="trump-title">TRUMP</span>
-                <div className="trump-card">
-                    <div className="trump-card-number-container">
-                        {
-                            round.trump.value !== 1 ?
-                                <span className="trump-card-number" style={round.trump.suit === "diamonds" || round.trump.suit === "hearts" ? {color: "red"} : {color: "black"}}>{handleCardValue(round.trump.value)}</span>
-                            :
-                                <div></div>
-                        }
-                    </div>
-                    <div className="trump-card-type-container" style={{alignItems: round.trump.value !== 1 ? "flex-start" : "center"}}>
-                        {handleCardType(round.trump.suit)}
-                    </div>
-                </div>
+                <img className="trump-card" src={require(`../../media/deck/${round.trump.value}_${round.trump.suit}.svg`)} alt="" />
             </div>
             {
                 hand ?
                     hand.base ?
                         <div className="base-container">
                             <span className="base-title">PÕHI</span>
-                            <div className="base-card">
-                                <div className="base-card-number-container">
-                                    {
-                                        hand.base.value !== 1 ?
-                                            <span className="base-card-number" style={hand.base.suit === "diamonds" || hand.base.suit === "hearts" ? {color: "red"} : {color: "black"}}>{handleCardValue(hand.base.value)}</span>
-                                        :
-                                            <div></div>
-                                    }
-                                </div>
-                                <div className="base-card-type-container" style={{alignItems: hand.base.value !== 1 ? "flex-start" : "center"}}>
-                                    {handleCardType(hand.base.suit)}
-                                </div>
-                            </div>
+                            <img className="trump-card" src={require(`../../media/deck/${hand.base.value}_${hand.base.suit}.svg`)} alt="" />
                         </div>
                     :
                         <div></div>
@@ -471,72 +405,8 @@ let handlePrevRound = (prevRound, uid) => {
 let renderPrevCards = (prev) => {
 
     return prev.cards.map((card, index) => {
-        return(
-            <div className="prev-card" style={{marginLeft: index !== 0 ? -20 : 0, zIndex: index+1, backgroundColor: card.uid === prev.winner.uid ? "#00FFCD" : "white"}} key={index}>
-                <div className="prev-card-number-container">
-                    <span className="prev-card-number" style={card.suit === "diamonds" || card.suit === "hearts" ? {color: "red"} : {color: "black"}}>{handleCardValue(card.value)}</span>
-                </div>
-                <div className="prev-card-type-container">
-                    {handlePrevCardType(card.suit)}
-                </div>
-            </div>
-        );
+        return <img key={index} className="prev-card" style={{marginBottom: card.uid === prev.winner.uid ? 10 : 0, marginLeft: index !== 0 ? -20 : 0, zIndex: index+1, }} src={require(`../../media/deck/${card.value}_${card.suit}.svg`)} alt="" />;
     });
-
-}
-
-let handlePrevCardType = (type) => {
-
-    switch (type) {
-
-        case "spades":
-            return <span className="prev-card-type" style={{color: "black"}}>♠</span>;
-        case "diamonds":
-            return <span className="prev-card-type" style={{color: "red"}}>♦</span>;
-        case "clubs":
-            return <span className="prev-card-type" style={{color: "black"}}>♣</span>;
-        case "hearts":
-            return <span className="prev-card-type" style={{color: "red"}}>♥</span>;
-        default:
-            return <span></span>;
-
-    }
-
-}
-
-let handleCardValue = (value) => {
-
-    switch (value) {
-        case 11:
-            return "J";
-        case 12:
-            return "Q";
-        case 13:
-            return "K";
-        case 14:
-            return "A";
-        default:
-            return value;
-    }
-
-}
-
-let handleCardType = (type) => {
-
-    switch (type) {
-
-        case "spades":
-            return <span className="trump-card-type" style={{color: "black"}}>♠</span>;
-        case "diamonds":
-            return <span className="trump-card-type" style={{color: "red"}}>♦</span>;
-        case "clubs":
-            return <span className="trump-card-type" style={{color: "black"}}>♣</span>;
-        case "hearts":
-            return <span className="trump-card-type" style={{color: "red"}}>♥</span>;
-        default:
-            return <span></span>;
-
-    }
 
 }
 

@@ -4,6 +4,7 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import socketIo from "socket.io-client";
 import Page from "../Page";
+import { isMobileSafari, isChrome, isMobile, isIOS } from "react-device-detect";
 
 // modules
 import { resetUser }  from "../modules/user";
@@ -118,18 +119,6 @@ class Board extends Component {
             });
         });
 
-        /* socket.on(`${code}_next_hand`, _ => {
-            return this.setState({ selected_card: {} }, () => {
-                return this.handleGame(code, id);
-            });
-        });
-
-        socket.on(`${code}_game_over`, _ => {
-            return this.setState({ selected_card: {} }, () => {
-                return this.handleGame(code, id);
-            });
-        }); */
-
     }
 
     handleTable = (game, round, prevRound, hand, prevHand, uid) => {
@@ -164,15 +153,7 @@ class Board extends Component {
             if (this.state.selected_card.suit === card.suit && this.state.selected_card.value === card.value) {
                 return(
                     <div style={canFit ? {zIndex: index+1} : {zIndex: index+1, marginLeft: index !== 0 ? -marginLeft : 0}} className="board-hand-selected-card-container" key={index} onClick={() => this.handle_card_send(card, index, game, uid)}>
-                        <div className="board-hand-card-value-container">
-                            <div className="board-hand-card-value-and-suit-container">
-                                <span className="board-hand-card-value" style={card.suit === "diamonds" || card.suit === "hearts" ? {color: "red"} : {color: "black"}}>{handleCardValue(card.value)}</span>
-                                <span className="board-hand-card-value-suit">{handleCardType(card.suit)}</span>
-                            </div>
-                        </div>
-                        <div className="board-hand-card-type-container">
-                            {handleCardType(card.suit)}
-                        </div>
+                        <img className="board-hand-card" src={require(`../media/deck/${card.value}_${card.suit}.svg`)} alt="" />
                         <div className="selected-card-overlay">
                             <img src={require("../media/svgs/up-arrow.svg")} style={{width: 24, height: 24}} alt=""/>
                             <span>SAADA</span>
@@ -182,15 +163,7 @@ class Board extends Component {
             } else {
                 return(
                     <div style={canFit ? {zIndex: index+1} : {zIndex: index+1, marginLeft: index !== 0 ? -marginLeft : 0}} className="board-hand-card-container" key={index} onClick={() => this.handle_card_select(card, round, hand, cards, uid)}>
-                        <div className="board-hand-card-value-container">
-                            <div className="board-hand-card-value-and-suit-container">
-                                <span className="board-hand-card-value" style={card.suit === "diamonds" || card.suit === "hearts" ? {color: "red"} : {color: "black"}}>{handleCardValue(card.value)}</span>
-                                <span className="board-hand-card-value-suit">{handleCardType(card.suit)}</span>
-                            </div>
-                        </div>
-                        <div className="board-hand-card-type-container">
-                            {handleCardType(card.suit)}
-                        </div>
+                        <img className="board-hand-card" src={require(`../media/deck/${card.value}_${card.suit}.svg`)} alt="" />
                     </div>
                 );
             }
@@ -349,6 +322,20 @@ class Board extends Component {
 
     }
 
+    handleCardsContainerStyle = () => {
+
+        if (isMobileSafari) {
+            return { minHeight: 190, maxHeight: 190 };
+        }
+
+        if (isIOS && isMobile && isChrome) {
+            return { minHeight: 190, maxHeight: 190 };
+        }
+
+        return { minHeight: 100, maxHeight: 100 };
+
+    }
+
     render = () => {
 
         if (!this.state.loading) {
@@ -413,10 +400,12 @@ class Board extends Component {
                                         <div></div>
                                 }
                             </div>
-                            <div className="board-hand-container" style={{justifyContent: this.props.cards.data.length * 128 < this.state.inner_width ? "space-around" : "flex-start" }}>
+                            <div className="board-hand-container" style={this.handleCardsContainerStyle()}>
                                 {
                                     this.props.game.data ?
-                                        this.renderCards(this.props.cards.data, this.props.game.data, this.props.round.data, this.props.hands.data, this.props.user.browser_id)
+                                        <div className="board-hand-cards-wrapper" style={{justifyContent: this.props.cards.data.length * 128 < this.state.inner_width ? "space-around" : "flex-start" }}>
+                                            {this.renderCards(this.props.cards.data, this.props.game.data, this.props.round.data, this.props.hands.data, this.props.user.browser_id)}
+                                        </div>
                                     :
                                         <div></div>
                                 } 

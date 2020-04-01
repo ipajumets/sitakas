@@ -139,7 +139,7 @@
 
 .four-players-left-player-card-container {
     position: absolute;
-    right: -3vh;
+    right: -5vh;
     top: 0;
     bottom: 0;
     display: flex;
@@ -150,7 +150,7 @@
 
 .four-players-right-player-card-container {
     position: absolute;
-    left: -3vh;
+    left: -5vh;
     top: 0;
     bottom: 0;
     display: flex;
@@ -160,38 +160,11 @@
 }
 
 .player-card {
-    width: 5vh;
-    height: 7vh;
-    background-color: white;
-    border-radius: 3px;
-    display: flex;
-    flex-direction: column;
-}
-
-.player-card-number-container {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-start;
-    padding-left: 3px;
-}
-
-.player-card-number {
-    font-size: 2vh;
-    font-family: "Roboto", Arial, sans-serif;
-}
-
-.player-card-type-container {
-    flex: 1;
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    justify-content: center;
-}
-
-.player-card-type {
-    font-size: 2vh;
-    font-family: "Roboto", Arial, sans-serif;
+    width: 10vw;
+    height: 12vw;
+    max-width: 50px;
+    max-height: 70px;
+    object-fit: contain;
 }
 
 .trump-container {
@@ -206,12 +179,11 @@
 }
 
 .trump-card {
-    width: 5vh;
-    height: 7vh;
-    background-color: white;
-    border-radius: 3px;
-    display: flex;
-    flex-direction: column;
+    width: 10vw;
+    height: 12vw;
+    max-width: 50px;
+    max-height: 70px;
+    object-fit: contain;
 }
 
 .trump-card-number-container {
@@ -323,11 +295,11 @@
 }
 
 .prev-hand-title-container {
-    padding-bottom: 8px;
+    padding-bottom: 0;
 }
 
 .prev-hand-bottom-container {
-    padding-top: 8px;
+    padding-top: 5px;
 }
 
 .prev-hand-bottom-container span {
@@ -337,7 +309,7 @@
 }
 
 .prev-hand-title-container span {
-    font-size: 12pt;
+    font-size: 10pt;
     font-family: "Roboto", Arial, sans-serif;
     color: black;
 }
@@ -345,6 +317,7 @@
 .prev-hand-cards-container {
     display: flex;
     flex-direction: row;
+    align-items: flex-end;
 }
 
 .bolded-text {
@@ -353,43 +326,8 @@
 }
 
 .prev-card {
-    width: 30px;
-    height: 50px;
-    background-color: white;
-    border-radius: 3px;
-    display: flex;
-    flex-direction: column;
-    margin-right: 10px;
-    position: relative;
-    border-left: 1px solid rgb(240, 240, 240);
-}
-
-.prev-card-number-container {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    justify-content: flex-start;
-    position: absolute;
-    padding: 3px;
-}
-
-.prev-card-number {
-    font-size: 10pt;
-    font-family: "Roboto", Arial, sans-serif;
-}
-
-.prev-card-type-container {
-    flex: 1;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-}
-
-.prev-card-type {
-    margin-top: 10px;
-    font-size: 12pt;
-    font-family: "Roboto", Arial, sans-serif;
+    width: 40px;
+    height: 56px;
 }
 
 .five-players-separator {
