@@ -115,10 +115,9 @@
 
 .four-players-top-player-card-container {
     position: absolute;
-    bottom: -6vh;
+    bottom: -10vh;
     left: 0;
     right: 0;
-    height: 6vh;
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -127,10 +126,9 @@
 
 .four-players-bottom-player-card-container {
     position: absolute;
-    top: -8vh;
+    top: -10vh;
     left: 0;
     right: 0;
-    height: 6vh;
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -295,7 +293,7 @@
 }
 
 .prev-hand-title-container {
-    padding-bottom: 0;
+    padding-bottom: 5px;
 }
 
 .prev-hand-bottom-container {
