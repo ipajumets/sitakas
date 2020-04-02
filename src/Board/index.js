@@ -351,7 +351,7 @@ class Board extends Component {
             let loser = this.props.game.data.isOver ? getSitaratas(this.props.game.data.players) : {};
 
             return(
-                <Page title={this.props.round.data.turn === this.props.user.browser_id ? `Sinu kord | Mäng ${this.props.game.data.room_code}` : `Mäng ${this.props.game.data.room_code}`} icon={this.props.round.data.turn === this.props.user.browser_id ? require("../media/icos/favicon-alert.ico") : require("../media/icos/favicon.ico")}>
+                <Page title={this.props.round.data.turn === this.props.user.browser_id ? `Sinu kord | Mäng ${this.props.game.data.room_code}` : `Mäng ${this.props.game.data.room_code}`} icon={this.props.round.data.turn === this.props.user.browser_id ? require("../media/icos/favicon-alert.png") : require("../media/icos/favicon.png")}>
                     <div className="board-action-container">
                         <div className="board-action-navigation-container">
                             <span className="board-action-navigation-title">MÄNG {this.props.game.data.room_code}</span>

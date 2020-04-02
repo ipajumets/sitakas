@@ -4,7 +4,7 @@ import Helmet from "react-helmet";
 
 const SITE_URL = process.env.NODE_ENV === "development" ? "http://localhost:3000/" : "https://www.sitaratas.eu/";
 
-const defaultIcon = require("../media/icos/favicon.ico");
+const defaultIcon = require("../media/icos/favicon.png");
 const defaultTitle = "MÄNGI! Kaotaja on Sitaratas";
 const defaultDescription = "Kõige parem kaardimäng+karantiini garantii";
 const defaultImage = "https://i.imgur.com/jvszDw8.png";
@@ -96,6 +96,7 @@ class Page extends Component {
                         },
                         {
                             rel: "icon",
+                            type: "image/png",
                             href: rest.icon,
                         }
                     ]}
