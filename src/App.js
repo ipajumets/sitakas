@@ -31,7 +31,7 @@ class App extends Component {
     firebase.initializeApp(firebaseConfig);
     firebase.analytics();
 
-    let socket = io("https://www.sitaratas.eu/"),
+    let socket = io("https://www.sitaratas.eu:5000/"),
       browserID = Cookies.get("browserID");
 
     return this.props.setSocket(socket)
