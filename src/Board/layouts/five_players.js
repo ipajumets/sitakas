@@ -357,61 +357,6 @@ let renderPrevCards = (prev) => {
 
 }
 
-let handlePrevCardType = (type) => {
-
-    switch (type) {
-
-        case "spades":
-            return <span className="prev-card-type" style={{color: "black"}}>♠</span>;
-        case "diamonds":
-            return <span className="prev-card-type" style={{color: "red"}}>♦</span>;
-        case "clubs":
-            return <span className="prev-card-type" style={{color: "black"}}>♣</span>;
-        case "hearts":
-            return <span className="prev-card-type" style={{color: "red"}}>♥</span>;
-        default:
-            return <span></span>;
-
-    }
-
-}
-
-let handleCardValue = (value) => {
-
-    switch (value) {
-        case 11:
-            return "J";
-        case 12:
-            return "Q";
-        case 13:
-            return "K";
-        case 14:
-            return "A";
-        default:
-            return value;
-    }
-
-}
-
-let handleCardType = (type) => {
-
-    switch (type) {
-
-        case "spades":
-            return <span className="trump-card-type" style={{color: "black"}}>♠</span>;
-        case "diamonds":
-            return <span className="trump-card-type" style={{color: "red"}}>♦</span>;
-        case "clubs":
-            return <span className="trump-card-type" style={{color: "black"}}>♣</span>;
-        case "hearts":
-            return <span className="trump-card-type" style={{color: "red"}}>♥</span>;
-        default:
-            return <span></span>;
-
-    }
-
-}
-
 // Kui palju tahetakse
 
 let howMuchWanted = (results) => {

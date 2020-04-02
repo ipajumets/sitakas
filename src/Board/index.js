@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import "./index.css";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import socketIo from "socket.io-client";
 import Page from "../Page";
 import { isMobileSafari, isChrome, isMobile, isIOS } from "react-device-detect";
 
@@ -24,7 +23,7 @@ import FivePlayersTable from "./layouts/five_players";
 import SixPlayersTable from "./layouts/six_players";
 
 // helpers
-import { rearrangePlayersOrder, determineWinner, getSitaratas, checkErrors, checkBets, handleCardValue, handleCardType, sortCards, totalRounds } from "./helpers";
+import { rearrangePlayersOrder, getSitaratas, checkErrors, sortCards, totalRounds } from "./helpers";
 
 class Board extends Component {
 
@@ -93,27 +92,25 @@ class Board extends Component {
 
     receiveSockets = (code, id) => {
 
-        let socket = socketIo("https://www.sitaratas.eu:5000");
-
-        socket.on(`${code}_bet_done`, result => {
+        this.props.socket.channel.on(`${code}_bet_done`, result => {
             return this.props.setRound(result);
         });
 
-        socket.on(`${code}_update_hand`, result => {
+        this.props.socket.channel.on(`${code}_update_hand`, result => {
             return this.props.setHand(result);
         });
 
-        socket.on(`${code}_update_round`, result => {
+        this.props.socket.channel.on(`${code}_update_round`, result => {
             return this.props.setRound(result);
         });
 
-        socket.on(`${code}_new_hand`, _ => {
+        this.props.socket.channel.on(`${code}_new_hand`, _ => {
             return this.setState({ selected_card: {} }, () => {
                 return this.handleGame(code, id);
             });
         });
 
-        socket.on(`${code}_new_round`, _ => {
+        this.props.socket.channel.on(`${code}_new_round`, _ => {
             return this.setState({ selected_card: {} }, () => {
                 return this.handleGame(code, id);
             });
@@ -136,7 +133,7 @@ class Board extends Component {
             case 6:
                 return <SixPlayersTable game={game} round={round} prevRound={prevRound} hand={hand} prevHand={prevHand} players={sorted} />;
             default:
-                return <ThreePlayersTable />;
+                return <ThreePlayersTable game={game} round={round} prevRound={prevRound} hand={hand} prevHand={prevHand} players={sorted} />;
 
         }
 
@@ -274,20 +271,20 @@ class Board extends Component {
         return this.setState({ loading: true }, () => {
             return this.props.resetGame()
                 .then(_ => {
-                    this.props.resetRound()
+                    return this.props.resetRound();
+                })
+                .then(_ => {
+                    return this.props.resetHands()
                         .then(_ => {
-                            return this.props.resetHands()
+                            return this.props.resetCards();
+                        })
+                        .then(_ => {
+                            return this.props.resetRoom()
                                 .then(_ => {
-                                    return this.props.resetCards()
-                                        .then(_ => {
-                                            return this.props.resetRoom()
-                                                .then(_ => {
-                                                    return this.props.resetUser()
-                                                        .then(_ => {
-                                                            return this.props.history.push("/");
-                                                        });
-                                                });
-                                        });
+                                    return this.props.resetUser();
+                                })
+                                .then(_ => {
+                                    return this.props.history.push("/");
                                 });
                         });
                 });
@@ -466,6 +463,7 @@ let mapStateToProps = (state) => {
         round: state.round,
         hands: state.hands,
         cards: state.cards,
+        socket: state.socket,
     }
 }
 

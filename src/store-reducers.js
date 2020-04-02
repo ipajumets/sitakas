@@ -6,6 +6,7 @@ import game from "./modules/game";
 import cards from "./modules/cards";
 import round from "./modules/round";
 import hands from "./modules/hands";
+import socket from "./modules/socket";
 
 const rootReducer = combineReducers({
     room,
@@ -14,6 +15,7 @@ const rootReducer = combineReducers({
     cards,
     round,
     hands,
+    socket,
 });
 
 export default rootReducer;

@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { isMobileSafari } from "react-device-detect";
-import socketIo from "socket.io-client";
 import Page from "../Page";
 
 // api-requests
@@ -59,17 +58,15 @@ class Setup_v2 extends Component {
 
     receiveSockets = (code) => {
 
-        let socket = socketIo("https://www.sitaratas.eu:5000");
-
-        socket.on(`${code}_joined`, result => {
+        this.props.socket.channel.on(`${code}_joined`, result => {
             this.props.addPlayer(result.data);
         });
 
-        socket.on(`${code}_left`, result => {
+        this.props.socket.channel.on(`${code}_left`, result => {
             this.props.removePlayer(result.data.id);
         });
 
-        socket.on(`${code}_started`, result => {
+        this.props.socket.channel.on(`${code}_started`, result => {
             this.props.history.push(`/game/${result.code}`);
         });
 
@@ -177,6 +174,7 @@ let mapStateToProps = (state) => {
     return {
         room: state.room,
         user: state.user,
+        socket: state.socket,
     }
 }
 

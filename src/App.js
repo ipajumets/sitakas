@@ -1,11 +1,13 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import Routes from "./routes";
 import { bindActionCreators } from "redux";
+import io from "socket.io-client";
 import firebase from "firebase";
+import Routes from "./routes";
 
 import { setUserBrowserID } from "./modules/user";
+import { setSocket } from "./modules/socket";
 
 // Cookies and browserID
 import Cookies from "js-cookie";
@@ -29,20 +31,25 @@ class App extends Component {
     firebase.initializeApp(firebaseConfig);
     firebase.analytics();
 
-    let browserID = Cookies.get("browserID");
+    let socket = io("https://www.sitaratas.eu/"),
+      browserID = Cookies.get("browserID");
 
-    if (browserID) {
+    return this.props.setSocket(socket)
+      .then(_ => {
+        if (browserID) {
 
-      return this.props.setUserBrowserID(browserID);
-
-    } else {
-
-      let id = uuid();
-      Cookies.set("browserID", id);
-
-      return this.props.setUserBrowserID(id);
-
-    }
+          return this.props.setUserBrowserID(browserID);
+    
+        } else {
+    
+          let id = uuid();
+    
+          Cookies.set("browserID", id, { expires: 365 });  
+    
+          return this.props.setUserBrowserID(id);
+    
+        }
+      });
 
   }
 
@@ -58,7 +65,7 @@ class App extends Component {
 
 let mapDispatchToProps = (dispatch) => {
   return {
-      ...bindActionCreators({ setUserBrowserID }, dispatch)
+      ...bindActionCreators({ setSocket, setUserBrowserID }, dispatch)
   }
 }
 

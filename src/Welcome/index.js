@@ -30,13 +30,13 @@ class Welcome extends Component {
         return this.setState({ creating: true }, () => {
             return create_new_room(host_id)
                 .then(room => {
-                    return this.props.setRoom(room.data.code, room.data.host_browser_id)
-                        .then(_ => {
-                            return this.setState({ creating: false }, () => {
-                                return this.props.history.push(`/setup/${room.data.code}`);
-                            });
-                        });
+                    return this.props.setRoom(room.data.code, room.data.host_browser_id);
                 })
+                .then(result => {
+                    return this.setState({ creating: false }, () => {
+                        return this.props.history.push(`/setup/${result.code}`);
+                    });
+                });
         });
 
     }
