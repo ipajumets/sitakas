@@ -83,7 +83,7 @@ class Setup_v2 extends Component {
 
         if (this.props.room.code) {
             return(
-                <Page>
+                <Page title={`${this.props.room.code}`}>
                     <div className="setup-action-container">
                         <div className="setup-action-navigation-container">
                             <span>Sitaratas</span>

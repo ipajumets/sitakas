@@ -23,6 +23,7 @@ class Setup_v2 extends Component {
         this.state = {
             starting: false,
             leaving: false,
+            init: false,
         };
 
     }
@@ -32,31 +33,44 @@ class Setup_v2 extends Component {
         let that = this,
             room_code = that.props.match.params.code ? that.props.match.params.code : this.props.room.code;
 
-        that.receiveSockets(room_code);
-
-        return check_my_waiting_status(that.props.user.browser_id, that.props.match.params.code)
-            .then(result => {
-                if (result.room) {
-                    if (result.user) {
-                        if (result.room.state === "game_on") {
-                            return that.props.history.push(`/game/${that.props.match.params.code}`);
-                        } else {
-                            return that.props.setRoomWithPlayers(result.room.code, result.room.host_browser_id, result.players)
-                                .then(_ => {
-                                    return that.props.setUser(result.user);
-                                });
-                        }
-                    } else {
-                        return that.props.history.push(`/setup/${that.props.match.params.code}`);
-                    }
-                } else {
-                    return that.props.history.push("/");
-                }
-            });
+        that.receiveSockets(room_code, that.props.user.browser_id);
+        that.handleWaitingStatus(that.props.user.browser_id, room_code);
 
     }
 
-    receiveSockets = (code) => {
+    handleWaitingStatus = (id, code) => {
+
+        if (!this.state.init) {
+            return this.setState({ init: true }, () => {
+                return check_my_waiting_status(id, code)
+                    .then(result => {
+                        if (result.room) {
+                            if (result.user) {
+                                if (result.room.state === "game_on") {
+                                    return this.props.history.push(`/game/${code}`);
+                                } else {
+                                    return this.setState({ init: false }, () => {
+                                        return this.props.setRoomWithPlayers(result.room.code, result.room.host_browser_id, result.players)
+                                            .then(_ => {
+                                                return this.props.setUser(result.user);
+                                            });
+                                    });
+                                }
+                            } else {
+                                return this.props.history.push(`/setup/${code}`);
+                            }
+                        } else {
+                            return this.setState({ init: false }, () => {
+                                return this.props.history.push("/");
+                            });
+                        }
+                    });
+            });
+        }
+
+    }
+
+    receiveSockets = (code, id) => {
 
         this.props.socket.channel.on(`${code}_joined`, result => {
             this.props.addPlayer(result.data);
@@ -68,6 +82,10 @@ class Setup_v2 extends Component {
 
         this.props.socket.channel.on(`${code}_started`, result => {
             this.props.history.push(`/game/${result.code}`);
+        });
+
+        this.props.socket.channel.on("connect", () => {
+            this.handleWaitingStatus(id, code);
         });
 
 
@@ -111,48 +129,50 @@ class Setup_v2 extends Component {
 
         if (this.props.room.code) {
             return(
-                <div className="waiting-action-container">
-                    <div className="waiting-action-navigation-container">
-                        <span>Sitaratas</span>
-                    </div>
-                    <div className="waiting-action-wrapper">
-                        <span className="waiting-action-game-code-title">MÄNGU KOOD</span>
-                        <span className="waiting-action-game-code">{this.props.room.code}</span>
-                        <div className="waiting-action-names-list">
-                            {this.props.room.players.map((player, index) => {
-                                return(
-                                    <span key={index}>{player.name}</span>
-                                );
-                            })}
+                <Page title={`${this.props.room.code}`}>
+                    <div className="waiting-action-container">
+                        <div className="waiting-action-navigation-container">
+                            <span>Sitaratas</span>
+                        </div>
+                        <div className="waiting-action-wrapper">
+                            <span className="waiting-action-game-code-title">MÄNGU KOOD</span>
+                            <span className="waiting-action-game-code">{this.props.room.code}</span>
+                            <div className="waiting-action-names-list">
+                                {this.props.room.players.map((player, index) => {
+                                    return(
+                                        <span key={index}>{player.name}</span>
+                                    );
+                                })}
+                            </div>
+                            {
+                                this.props.room.host_browser_id === this.props.user.browser_id ?
+                                    !this.state.starting ?
+                                        <div onClick={() => this.startGame(this.props.room.code, this.props.room.players)} className="waiting-action-enter-game-button">
+                                            <span>Alusta mängu</span>
+                                        </div>
+                                    :
+                                        <div className="waiting-action-enter-game-button">
+                                            <img src={require("../media/svgs/loading-fat.svg")} alt="" />
+                                        </div>
+                                :
+                                    <div></div>
+                            }
+                            {
+                                !this.state.leaving ?
+                                    <span onClick={() => this.leaveRoom(this.props.room.code, this.props.user.browser_id)} className="waiting-action-create-game-button">Lahku mängust</span>
+                                :
+                                    <img className="waiting-action-create-game-loading" src={require("../media/svgs/loading-fat.svg")} alt="" />
+                            }
                         </div>
                         {
-                            this.props.room.host_browser_id === this.props.user.browser_id ?
-                                !this.state.starting ?
-                                    <div onClick={() => this.startGame(this.props.room.code, this.props.room.players)} className="waiting-action-enter-game-button">
-                                        <span>Alusta mängu</span>
-                                    </div>
-                                :
-                                    <div className="waiting-action-enter-game-button">
-                                        <img src={require("../media/svgs/loading-fat.svg")} alt="" />
-                                    </div>
+                            isMobileSafari ?
+                                <div className="ios-safari-bottom">
+                                </div>
                             :
                                 <div></div>
                         }
-                        {
-                            !this.state.leaving ?
-                                <span onClick={() => this.leaveRoom(this.props.room.code, this.props.user.browser_id)} className="waiting-action-create-game-button">Lahku mängust</span>
-                            :
-                                <img className="waiting-action-create-game-loading" src={require("../media/svgs/loading-fat.svg")} alt="" />
-                        }
                     </div>
-                    {
-                        isMobileSafari ?
-                            <div className="ios-safari-bottom">
-                            </div>
-                        :
-                            <div></div>
-                    }
-                </div>
+                </Page>
             );
         } else {
             return(

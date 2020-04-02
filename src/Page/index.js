@@ -4,11 +4,11 @@ import Helmet from "react-helmet";
 
 const SITE_URL = process.env.NODE_ENV === "development" ? "http://localhost:3000/" : "https://www.sitaratas.eu/";
 
+const defaultIcon = require("../media/icos/favicon.ico");
 const defaultTitle = "MÄNGI! Kaotaja on Sitaratas";
 const defaultDescription = "Kõige parem kaardimäng+karantiini garantii";
 const defaultImage = "https://i.imgur.com/jvszDw8.png";
 const defaultTwitter = "@who";
-const defaultSep = " | ";
 
 class Page extends Component {
 
@@ -17,6 +17,7 @@ class Page extends Component {
             title,
             description,
             image,
+            icon,
             contentType,
             twitter,
             noCrawl,
@@ -29,14 +30,16 @@ class Page extends Component {
     )
 
     {
-        const theTitle = title ? (title) : defaultTitle;
+        const theTitle = title ? title : defaultTitle;
         const theDescription = description ? description.length > 150 ? description.substring(0, 155) + "..." : description : defaultDescription;
         const theImage = image ? `${SITE_URL}${image}` : defaultImage;
+        const theIcon = icon ? icon : defaultIcon;
 
         const metaTags = [
             { itemprop: "name", content: theTitle },
             { itemprop: "description", content: theDescription },
             { itemprop: "image", content: theImage },
+            { itemprop: "icon", content: theIcon },
             { name: "description", content: theDescription },
             { name: "twitter:card", content: "summary_large_image" },
             { name: "twitter:site", content: defaultTwitter },
@@ -84,12 +87,16 @@ class Page extends Component {
                         lang: "en",
                     }}
                     title={
-                        rest.title ? rest.title + defaultSep + defaultTitle : defaultTitle
+                        rest.title ? rest.title+" | Sitaratas.eu" : defaultTitle
                     }
                     link={[
                         {
                             rel: "canonical",
                             href: SITE_URL + this.props.location.pathname,
+                        },
+                        {
+                            rel: "icon",
+                            href: rest.icon,
                         }
                     ]}
                     meta={this.getMetaTags(rest, this.props.location.pathname)}

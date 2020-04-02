@@ -70,7 +70,7 @@ class Welcome extends Component {
 
         if (this.props.user.browser_id) {
             return(
-                <Page>
+                <Page title={"Sitaratas.eu | Kõige parem kaardimäng maailmas"}>
                     <div className="welcome-action-container">
                         <div className="welcome-action-navigation-container">
                             <span>Sitaratas</span>

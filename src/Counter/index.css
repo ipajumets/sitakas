@@ -1,0 +1,14 @@
+.counter-master-container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: skyblue;
+}
+
+.count-number {
+    color: white;
+    font-size: 10vw;
+    font-family: "Rubik", Arial, Helvetica, sans-serif;
+}

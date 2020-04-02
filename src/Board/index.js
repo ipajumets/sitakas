@@ -32,6 +32,7 @@ class Board extends Component {
 
         this.state = {
             loading: true,
+            init: false,
             wins: 0,
             selected_card: {},
             inner_width: 0,
@@ -56,37 +57,41 @@ class Board extends Component {
     }
 
     handleGame = (code, id) => {
-
-        return getGameData(code, id)
-            .then(result => {
-                if (checkErrors(result)) {
-                    if (result.room.state === "game_on") {
-                        return this.props.setGame(result.game)
-                            .then(_ => {
-                                return this.props.setPreviousRound(result.previousRound)
+        
+        if (!this.state.init) {
+            return this.setState({ init: true }, () => {
+                return getGameData(code, id)
+                    .then(result => {
+                        if (checkErrors(result)) {
+                            if (result.room.state === "game_on") {
+                                return this.props.setGame(result.game)
                                     .then(_ => {
-                                        return this.props.setRound(result.round);
-                                    })
-                                    .then(_ => {
-                                        return this.props.setPreviousHand(result.previousHand)
+                                        return this.props.setPreviousRound(result.previousRound)
                                             .then(_ => {
-                                                return this.props.setHand(result.hand);
+                                                return this.props.setRound(result.round);
                                             })
                                             .then(_ => {
-                                                return this.props.setCards(result.myCards.active)
+                                                return this.props.setPreviousHand(result.previousHand)
                                                     .then(_ => {
-                                                        return this.setState({ loading: false });
+                                                        return this.props.setHand(result.hand);
+                                                    })
+                                                    .then(_ => {
+                                                        return this.props.setCards(result.myCards.active)
+                                                            .then(_ => {
+                                                                return this.setState({ loading: false, init: false });
+                                                            });
                                                     });
                                             });
-                                    });
-                            })
-                    } else {
-                        return this.props.history.push(`/setup/${result.room.code}`);
-                    }
-                } else {
-                    return this.props.history.push("/");
-                }
+                                    })
+                            } else {
+                                return this.props.history.push(`/setup/${result.room.code}`);
+                            }
+                        } else {
+                            return this.props.history.push("/");
+                        }
+                    });
             });
+        }
 
     }
 
@@ -111,6 +116,12 @@ class Board extends Component {
         });
 
         this.props.socket.channel.on(`${code}_new_round`, _ => {
+            return this.setState({ selected_card: {} }, () => {
+                return this.handleGame(code, id);
+            });
+        });
+
+        this.props.socket.channel.on("connect", () => {
             return this.setState({ selected_card: {} }, () => {
                 return this.handleGame(code, id);
             });
@@ -340,7 +351,7 @@ class Board extends Component {
             let loser = this.props.game.data.isOver ? getSitaratas(this.props.game.data.players) : {};
 
             return(
-                <Page>
+                <Page title={this.props.round.data.turn === this.props.user.browser_id ? `Sinu kord | Mäng ${this.props.game.data.room_code}` : `Mäng ${this.props.game.data.room_code}`} icon={this.props.round.data.turn === this.props.user.browser_id ? require("../media/icos/favicon-alert.ico") : require("../media/icos/favicon.ico")}>
                     <div className="board-action-container">
                         <div className="board-action-navigation-container">
                             <span className="board-action-navigation-title">MÄNG {this.props.game.data.room_code}</span>

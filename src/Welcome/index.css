@@ -94,7 +94,8 @@
 }
 
 .welcome-action-create-game-button {
-    padding: 30px 10px 10px 10px;
+    margin-top: 20px;
+    padding: 10px 10px 10px 10px;
     color: chocolate;
     font-family: "Inter", sans-serif;
     font-size: 12pt;
