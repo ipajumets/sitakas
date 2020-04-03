@@ -6,7 +6,7 @@ import Page from "../Page";
 
 // modules
 import { setUser } from "../modules/user";
-import { setRoom, setRoomWithPlayers } from "../modules/room";
+import { setRoom } from "../modules/room";
 
 // api-requests
 import { check_my_waiting_status } from "../api-requests/global";
@@ -121,7 +121,7 @@ let mapStateToProps = (state) => {
 
 let mapDispatchToProps = (dispatch) => {
     return {
-        ...bindActionCreators({ setUser, setRoom, setRoomWithPlayers }, dispatch)
+        ...bindActionCreators({ setUser, setRoom }, dispatch)
     }
 }
 

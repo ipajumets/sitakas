@@ -80,6 +80,13 @@ class Setup_v2 extends Component {
             this.props.removePlayer(result.data.id);
         });
 
+        this.props.socket.channel.on(`${code}_new_host`, result => {
+            this.props.removePlayer(result.data.id)
+                .then(_ => {
+                    this.handleWaitingStatus(id, code);
+                });
+        });
+
         this.props.socket.channel.on(`${code}_started`, result => {
             this.props.history.push(`/game/${result.code}`);
         });
