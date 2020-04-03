@@ -3,7 +3,6 @@ import bodyParser from "body-parser";
 import compression from "compression";
 import proxy from "http-proxy-middleware";
 import express from "express";
-import morgan from "morgan";
 import path from "path";
 import Loadable from "react-loadable";
 import cookieParser from "cookie-parser";
@@ -25,7 +24,6 @@ app.use("/api/*", proxy({target: "https://www.sitaratas.eu:5000", changeOrigin: 
 app.use(compression());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(morgan("dev"));
 app.use(cookieParser());
 
 // Set up homepage, static assets, and capture everything else
