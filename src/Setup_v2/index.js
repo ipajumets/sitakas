@@ -61,20 +61,24 @@ class Setup_v2 extends Component {
     joinRoom = (name, id, code) => {
 
         if (name) {
-            return this.setState({ joining: true }, () => {
-                return join_room(name, id, code)
-                    .then(result => {
-                        if (result.user) {
-                            return this.props.history.push(`/waiting/${code}`);
-                        } else {
-                            return this.setState({ joining: false }, () => {
-                                return alert("Mänguga liitumine ebaõnnestus, palun proovige uuesti.");
-                            });
-                        }
-                    });
-            });
+            if (name.length < 25) {
+                return this.setState({ joining: true }, () => {
+                    return join_room(name, id, code)
+                        .then(result => {
+                            if (result.user) {
+                                return this.props.history.push(`/waiting/${code}`);
+                            } else {
+                                return this.setState({ joining: false }, () => {
+                                    return alert("Mänguga liitumine ebaõnnestus, palun proovige uuesti.");
+                                });
+                            }
+                        });
+                });
+            } else {
+                return alert("Nimi ei tohi olla rohkem kui 24 tähemärki");
+            }
         } else {
-            return alert("Please add your name");
+            return alert("Palun sisesta oma nimi");
         }
 
     }
