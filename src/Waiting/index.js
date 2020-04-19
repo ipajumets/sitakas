@@ -6,14 +6,15 @@ import Page from "../Page";
 
 // api-requests
 import { check_my_waiting_status } from "../api-requests/global";
-import { leave_room, create_new_game } from "./api-requests";
+import { leave_room, create_new_game, update_privacy, update_max_players, update_isReady } from "./api-requests";
 
 // css
 import "./index.css";
 
 // modules
-import { setRoomWithPlayers, resetRoom, addPlayer, removePlayer } from "../modules/room";
-import { setUserBrowserID, setUser, resetUser } from "../modules/user";
+import { setRoomWithPlayers, resetRoom, addPlayer, setPlayers, removePlayer, setPrivacy, setMaxPlayers } from "../modules/room";
+import { setUserBrowserID, setUser, resetUser, setUserStatus } from "../modules/user";
+import { allReady } from "./helpers";
 
 class Setup_v2 extends Component {
 
@@ -50,7 +51,7 @@ class Setup_v2 extends Component {
                                     return this.props.history.push(`/game/${code}`);
                                 } else {
                                     return this.setState({ init: false }, () => {
-                                        return this.props.setRoomWithPlayers(result.room.code, result.room.host_browser_id, result.players)
+                                        return this.props.setRoomWithPlayers(result.room, result.players)
                                             .then(_ => {
                                                 return this.props.setUser(result.user);
                                             });
@@ -85,6 +86,18 @@ class Setup_v2 extends Component {
                 .then(_ => {
                     this.handleWaitingStatus(id, code);
                 });
+        });
+
+        this.props.socket.channel.on(`${code}_privacy_updated`, result => {
+            this.props.setPrivacy(result.privacy);
+        });
+
+        this.props.socket.channel.on(`${code}_max_players_updated`, result => {
+            this.props.setMaxPlayers(result.amount);
+        });
+
+        this.props.socket.channel.on(`${code}_player_status_updated`, result => {
+            this.props.setPlayers(result.players);
         });
 
         this.props.socket.channel.on(`${code}_started`, result => {
@@ -124,11 +137,74 @@ class Setup_v2 extends Component {
 
     startGame = (code, players) => {
 
-        if (players.length === 3 || players.length === 4 || players.length === 5 || players.length === 6) {
-            return create_new_game(code);
+        if (players.length === this.props.room.maxPlayers) {
+
+            let ready = allReady(players);
+
+            if (ready) {
+                return create_new_game(code);
+            } else {
+                return alert("Kõik mängijad ei ole veel valmis");
+            }
+
         } else {
-            return alert("3 kuni 6 mängijat võib olla ühes mängus");
+
+            let short = this.props.room.maxPlayers - players.length,
+                word = short > 1 ? "mängijat" : "mängija";
+
+            if (short < 0) {
+                return alert(`${Math.abs(short)} ${word} on rohkem!`);
+            } else {
+                return alert(`${short} ${word} on puudu!`);
+            }
+
         }
+
+    }
+
+    handleReady = (rid, uid, status) => {
+
+        return this.props.setUserStatus(status)
+            .then(_ => {
+                return update_isReady(rid, uid, status);
+            });
+
+    }
+
+    setPrivacy = (rid, privacy) => {
+
+        return this.props.setPrivacy(privacy)
+            .then(_ => {
+                return update_privacy(rid, privacy);
+            });
+
+    }
+
+    setMaxPlayers = (rid, amount) => {
+
+        return this.props.setMaxPlayers(amount)
+            .then(_ => {
+                return update_max_players(rid, amount);
+            });
+
+    }
+
+    handlePlayerStatus = (player, room) => {
+
+        if (player.uid === room.host_browser_id) {
+            return require("../media/svgs/star.svg");
+        }
+
+        if (player.browser_id === room.host_browser_id) {
+            return require("../media/svgs/star.svg");
+        }
+
+        if (player.isReady) {
+            return require("../media/svgs/basketball.svg");
+        }
+
+        return require("../media/svgs/sleep.svg");
+        
 
     }
 
@@ -147,10 +223,66 @@ class Setup_v2 extends Component {
                             <div className="waiting-action-names-list">
                                 {this.props.room.players.map((player, index) => {
                                     return(
-                                        <span key={index}>{player.name}</span>
+                                        <div key={index} className="waiting-action-names-list-item-container">
+                                            <span>{player.name}</span>
+                                            <img className="player-title-image" src={this.handlePlayerStatus(player, this.props.room)} alt="" />
+                                        </div>
                                     );
                                 })}
                             </div>
+                            {
+                                this.props.room.host_browser_id === this.props.user.browser_id ?
+                                    <div className="waiting-host-actions-container">
+                                        <div className="waiting-host-actions-privacy-title-container">
+                                            <span>Mängu privaatsus</span>
+                                        </div>
+                                        <div className="waiting-host-actions-privacy-container">
+                                            <div onClick={() => this.setPrivacy(this.props.room.code, "private")} className="waiting-host-actions-privacy-item-container" style={{backgroundColor: this.props.room.privacy === "private" ? "#5386E4" : "transparent"}}>
+                                                <span>Satsikas</span>
+                                            </div>
+                                            <div className="waiting-host-actions-privacy-separator"></div>
+                                            <div onClick={() => this.setPrivacy(this.props.room.code, "public")} className="waiting-host-actions-privacy-item-container" style={{backgroundColor: this.props.room.privacy === "public" ? "#5386E4" : "transparent"}}>
+                                                <span>Rahvale</span>
+                                            </div>
+                                        </div>
+                                        <div className="waiting-host-actions-privacy-title-container" style={{paddingTop: 30}}>
+                                            <span>Mängijate arv</span>
+                                        </div>
+                                        <div className="waiting-host-actions-max-container">
+                                            <div onClick={() => this.setMaxPlayers(this.props.room.code, 3)} className="waiting-host-actions-max-item-container" style={{backgroundColor: this.props.room.maxPlayers === 3 ? "#5386E4" : "transparent"}}>
+                                                <span>3</span>
+                                            </div>
+                                            <div className="waiting-host-actions-max-separator"></div>
+                                            <div onClick={() => this.setMaxPlayers(this.props.room.code, 4)} className="waiting-host-actions-max-item-container" style={{backgroundColor: this.props.room.maxPlayers === 4 ? "#5386E4" : "transparent"}}>
+                                                <span>4</span>
+                                            </div>
+                                            <div className="waiting-host-actions-max-separator"></div>
+                                            <div onClick={() => this.setMaxPlayers(this.props.room.code, 5)} className="waiting-host-actions-max-item-container" style={{backgroundColor: this.props.room.maxPlayers === 5 ? "#5386E4" : "transparent"}}>
+                                                <span>5</span>
+                                            </div>
+                                            <div className="waiting-host-actions-max-separator"></div>
+                                            <div onClick={() => this.setMaxPlayers(this.props.room.code, 6)} className="waiting-host-actions-max-item-container" style={{backgroundColor: this.props.room.maxPlayers === 6 ? "#5386E4" : "transparent"}}>
+                                                <span>6</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                :
+                                    <div></div>
+                            }
+                            {
+                                this.props.room.host_browser_id !== this.props.user.browser_id ?
+                                    <div className="waiting-action-room-data-container">
+                                        <div className="waiting-action-room-data-item-container">
+                                            <span>Mängu privaatsus:</span>
+                                            <strong>{this.props.room.privacy === "private" ? "Satsikas" : "Rahvale"}</strong>
+                                        </div>
+                                        <div className="waiting-action-room-data-item-container">
+                                            <span>Mängijate arv:</span> <strong>{this.props.room.maxPlayers}</strong>
+                                        </div>
+                                    </div>
+                                :
+                                    <div></div>
+                            }
                             {
                                 this.props.room.host_browser_id === this.props.user.browser_id ?
                                     !this.state.starting ?
@@ -160,6 +292,19 @@ class Setup_v2 extends Component {
                                     :
                                         <div className="waiting-action-enter-game-button">
                                             <img src={require("../media/svgs/loading-fat.svg")} alt="" />
+                                        </div>
+                                :
+                                    <div></div>
+                            }
+                            {
+                                this.props.room.host_browser_id !== this.props.user.browser_id ?
+                                    !this.props.user.isReady ?
+                                        <div onClick={() => this.handleReady(this.props.room.code, this.props.user.browser_id, true)} className="waiting-action-ready-game-button">
+                                            <span>Mina olen valmis</span>
+                                        </div>
+                                    :
+                                        <div onClick={() => this.handleReady(this.props.room.code, this.props.user.browser_id, false)} className="waiting-action-wait-game-button">
+                                            <span>Aeg maha</span>
                                         </div>
                                 :
                                     <div></div>
@@ -207,7 +352,7 @@ let mapStateToProps = (state) => {
 
 let mapDispatchToProps = (dispatch) => {
     return {
-        ...bindActionCreators({ setRoomWithPlayers, resetRoom, addPlayer, removePlayer, setUserBrowserID, setUser, resetUser }, dispatch)
+        ...bindActionCreators({ setRoomWithPlayers, resetRoom, addPlayer, setPlayers, removePlayer, setUserBrowserID, setUser, resetUser, setPrivacy, setMaxPlayers, setUserStatus }, dispatch)
     }
 }
 

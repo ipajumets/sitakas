@@ -10,7 +10,7 @@ import { setRoom } from "../modules/room";
 
 // api-requests
 import { check_my_waiting_status } from "../api-requests/global";
-import { create_new_room } from "./api-requests";
+import { create_new_room, get_public_games } from "./api-requests";
 
 class Welcome extends Component {
 
@@ -21,7 +21,33 @@ class Welcome extends Component {
             code: "",
             entering: false,
             creating: false,
+            rooms: [],
+            isFetching: true,
         };
+
+    }
+
+    componentDidMount = () => {
+
+        get_public_games()
+            .then(rooms => {
+                return this.setState({ rooms: rooms, isFetching: false });
+            });
+
+        this.receiveSockets();
+
+    }
+
+    receiveSockets = () => {
+
+        let that = this;
+
+        that.props.socket.channel.on("refresh_public_rooms_list", _ => {
+            get_public_games()
+                .then(rooms => {
+                    return that.setState({ rooms: rooms, isFetching: false });
+                });
+        });
 
     }
 
@@ -66,6 +92,63 @@ class Welcome extends Component {
 
     }
 
+    handlePlayerNames = (players) => {
+
+        if (players.length < 1) {
+            return "";
+        } 
+
+        if (players.length === 1) {
+            return players[0].name;
+        }
+
+        if (players.length === 2) {
+            return players[0].name+" ja "+players[1].name;
+        }
+
+        let sentence = "";
+
+        players.forEach((player, index) => {
+            if ((index+1) === players.length) {
+                return sentence = sentence+" ja "+player.name;
+            }
+            if ((index+1) === (players.length-1)) {
+                return sentence = sentence+player.name;
+            }
+            return sentence = sentence+player.name+", ";
+        });
+
+        return sentence;
+
+    }
+
+    renderPublicRooms = (rooms) => {
+
+        return rooms.map((room, index) => {
+            return(
+                <div key={index} className="public-games-list-item-container" onClick={() => this.enterRoom(room.code, this.props.user.browser_id)}>
+                    <div className="public-games-list-item-wrapper">
+                        <div className="public-games-list-item-names">
+                            <p style={{color: "tomato"}}>{room.created}</p>
+                        </div>
+                        <div className="public-games-list-item-row">
+                            <div className="public-games-list-item-code-container">
+                                <span>#{room.code}</span>
+                            </div>
+                            <div className="public-games-list-item-players-container">
+                                <span>{room.players.length}/{room.maxPlayers}</span>
+                            </div>
+                        </div>
+                        <div className="public-games-list-item-names">
+                            <p><strong>Mängijad:</strong> {this.handlePlayerNames(room.players)}</p>
+                        </div>
+                    </div>
+                </div>
+            );
+        });
+
+    }
+
     render = () => {
 
         if (this.props.user.browser_id) {
@@ -76,22 +159,42 @@ class Welcome extends Component {
                             <span>Sitaratas</span>
                         </div>
                         <div className="welcome-action-wrapper">
-                            <input type={"text"} value={this.state.code} onChange={(e) => this.setState({ code: e.target.value })} placeholder={"Mängu kood"} className="welcome-action-game-code-input" />
                             {
-                                !this.state.entering ?
-                                    <div onClick={() => this.enterRoom(this.state.code, this.props.user.browser_id)} className="welcome-action-enter-game-button">
-                                        <span>Sisene mängu</span>
+                                !this.state.creating ?
+                                    <div className="welcome-action-create-new-container" onClick={() => this.createNewRoom(this.props.user.browser_id)}>
+                                        <img src={require("../media/svgs/plus.svg")} alt="" />
                                     </div>
                                 :
-                                    <div className="welcome-action-enter-game-button">
+                                    <div className="welcome-action-create-new-container">
                                         <img src={require("../media/svgs/loading-fat.svg")} alt="" />
                                     </div>
                             }
+                            <div className="welcome-action-input-container">
+                                <input type={"text"} value={this.state.code} onChange={(e) => this.setState({ code: e.target.value })} placeholder={"Mängu kood"} className="welcome-action-game-code-input" />
+                            </div>
                             {
-                                !this.state.creating ?
-                                    <span onClick={() => this.createNewRoom(this.props.user.browser_id)} className="welcome-action-create-game-button">Uus mäng</span>
+                                !this.state.entering ?
+                                    <div className="welcome-action-enter-game-container" onClick={() => this.enterRoom(this.state.code, this.props.user.browser_id)}>
+                                        <img src={require("../media/svgs/send.svg")} alt="" />
+                                    </div>
                                 :
-                                    <img className="welcome-action-create-game-loading" src={require("../media/svgs/loading-fat.svg")} alt="" />
+                                    <div className="welcome-action-enter-game-container">
+                                        <img src={require("../media/svgs/loading-fat.svg")} alt="" />
+                                    </div>
+                            }
+                        </div>
+                        <div className="public-games-title-container">
+                            <p>Avalikud mängud</p>
+                        </div>
+                        <div className="public-games-list-container">
+                            {
+                                this.state.isFetching ?
+                                    <p className="public-games-list-idle">Laadimine...</p>
+                                :
+                                    this.state.rooms.length < 1 ?
+                                        <p className="public-games-list-idle">Mänge ei leitud</p>
+                                    :
+                                        this.renderPublicRooms(this.state.rooms)
                             }
                         </div>
                     </div>
@@ -116,6 +219,7 @@ class Welcome extends Component {
 let mapStateToProps = (state) => {
     return {
         user: state.user,
+        socket: state.socket,
     }
 }
 

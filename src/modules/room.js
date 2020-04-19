@@ -4,11 +4,15 @@ export const RESET_ROOM = "RESET_ROOM";
 export const SET_PLAYERS = "SET_PLAYERS";
 export const ADD_PLAYER = "ADD_PLAYER";
 export const REMOVE_PLAYER = "REMOVE_PLAYER";
+export const SET_PRIVACY = "SET_PRIVACY";
+export const SET_MAX_PLAYERS = "SET_MAX_PLAYERS";
 
 const initialState = {
     code: null,
     host_browser_id: null,
     players: [],
+    privacy: "private",
+    maxPlayers: 4,
 };
 
 export default (state = initialState, action) => {
@@ -21,14 +25,18 @@ export default (state = initialState, action) => {
                 ...state,
                 code: action.code,
                 host_browser_id: action.id,
+                privacy: action.privacy,
+                maxPlayers: action.maxPlayers,
             };
 
         case SET_ROOM_WITH_PLAYERS:
         
             return {
                 ...state,
-                code: action.code,
-                host_browser_id: action.id,
+                code: action.room.code,
+                host_browser_id: action.room.host_browser_id,
+                privacy: action.room.privacy,
+                maxPlayers: action.room.maxPlayers,
                 players: action.players,
             };
 
@@ -37,6 +45,20 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 players: action.data,
+            };
+
+        case SET_PRIVACY:
+    
+            return {
+                ...state,
+                privacy: action.privacy,
+            };
+
+        case SET_MAX_PLAYERS:
+    
+            return {
+                ...state,
+                maxPlayers: action.amount,
             };
 
         case ADD_PLAYER:
@@ -81,13 +103,12 @@ export let setRoom = (code, id) => dispatch => {
 
 }
 
-export let setRoomWithPlayers = (code, id, players) => dispatch => {
+export let setRoomWithPlayers = (room, players) => dispatch => {
 
     return new Promise(resolve => {
         return resolve(dispatch({
             type: SET_ROOM_WITH_PLAYERS,
-            code,
-            id,
+            room,
             players,
         }));
     });
@@ -132,6 +153,28 @@ export let removePlayer = (id) => dispatch => {
         return resolve(dispatch({
             type: REMOVE_PLAYER,
             id,
+        }));
+    });
+
+}
+
+export let setPrivacy = (privacy) => dispatch => {
+
+    return new Promise(resolve => {
+        return resolve(dispatch({
+            type: SET_PRIVACY,
+            privacy,
+        }));
+    });
+
+}
+
+export let setMaxPlayers = (amount) => dispatch => {
+
+    return new Promise(resolve => {
+        return resolve(dispatch({
+            type: SET_MAX_PLAYERS,
+            amount,
         }));
     });
 

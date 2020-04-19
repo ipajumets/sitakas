@@ -84,19 +84,23 @@
     padding-bottom: 10px;
 }
 
-.waiting-action-names-list span {
+.waiting-action-names-list-item-container {
+    padding: 10px;
+    position: relative;
+}
+
+.waiting-action-names-list-item-container span {
     color: white;
     text-align: center;
     font-family: "Inter", sans-serif;
     font-size: 16pt;
-    padding: 10px;
 }
 
 .waiting-action-enter-game-button {
     width: 192px;
-    height: 60px;
-    background-color: teal;
-    border-radius: 30px;
+    height: 54px;
+    background-color: #2292A4;
+    border-radius: 27px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -115,9 +119,45 @@
     height: 20px;
 }
 
+.waiting-action-ready-game-button {
+    width: 192px;
+    height: 54px;
+    background-color: #4BC6B9;
+    border-radius: 27px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 25px;
+    cursor: pointer;
+}
+
+.waiting-action-ready-game-button span {
+    color: white;
+    font-family: "Inter", sans-serif;
+    font-size: 12pt;
+}
+
+.waiting-action-wait-game-button {
+    width: 192px;
+    height: 54px;
+    background-color: #FF5666;
+    border-radius: 27px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 25px;
+    cursor: pointer;
+}
+
+.waiting-action-wait-game-button span {
+    color: white;
+    font-family: "Inter", sans-serif;
+    font-size: 12pt;
+}
+
 .waiting-action-create-game-button {
     padding: 30px 10px 10px 10px;
-    color: chocolate;
+    color: #F56476;
     font-family: "Inter", sans-serif;
     font-size: 12pt;
     cursor: pointer;
@@ -127,4 +167,141 @@
     width: 20px;
     height: 20px;
     margin-top: 36px;
+}
+
+.waiting-host-actions-container {
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.waiting-host-actions-privacy-title-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 15px;
+}
+
+.waiting-host-actions-privacy-title-container span {
+    color: black;
+    font-size: 12pt;
+    font-family: "Rubik", sans-serif;
+}
+
+.waiting-host-actions-privacy-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 256px;
+    height: 44px;
+    border-radius: 22px;
+    border: 1px solid #5386E4;
+    overflow: hidden;
+}
+
+.waiting-host-actions-privacy-separator {
+    width: 1px;
+    height: 44px;
+    background-color: #5386E4;
+}
+
+.waiting-host-actions-privacy-item-container {
+    height: 44px;
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.waiting-host-actions-privacy-item-container span {
+    color: white;
+    font-size: 11pt;
+    font-family: "Rubik", sans-serif;
+}
+
+.waiting-host-actions-max-title-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 15px;
+}
+
+.waiting-host-actions-max-title-container span {
+    color: black;
+    font-size: 12pt;
+    font-family: "Rubik", sans-serif;
+}
+
+.waiting-host-actions-max-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 312px;
+    height: 44px;
+    border-radius: 22px;
+    border: 1px solid #5386E4;
+    overflow: hidden;
+}
+
+.waiting-host-actions-max-separator {
+    width: 1px;
+    height: 44px;
+    background-color: #5386E4;
+}
+
+.waiting-host-actions-max-item-container {
+    height: 44px;
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.waiting-host-actions-max-item-container span {
+    color: white;
+    font-size: 11pt;
+    font-family: "Rubik", sans-serif;
+}
+
+.waiting-action-room-data-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.waiting-action-room-data-item-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 10px;
+}
+
+.waiting-action-room-data-item-container span {
+    color: black;
+    font-size: 11pt;
+    font-family: "Open Sans", sans-serif;
+}
+
+.waiting-action-room-data-item-container strong {
+    color: black;
+    font-size: 11pt;
+    font-family: "Open Sans", sans-serif;
+    margin-left: 5px;
+    font-weight: 700;
+}
+
+.player-title-image {
+    position: absolute;
+    top: 5px;
+    right: 0;
+    width: 16px;
+    height: 16px;
 }

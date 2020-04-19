@@ -23,3 +23,16 @@ export let create_new_room = (host_id) => {
         });
 
 }
+
+export let get_public_games = () => {
+
+    return fetch("https://www.sitaratas.eu/api/rooms/public")
+        .then(res => res.json())
+        .then(json => {
+            return json.rooms;
+        })
+        .catch(err => {
+            return alert(err);
+        });
+
+}

@@ -65,11 +65,17 @@ class Setup_v2 extends Component {
                 return this.setState({ joining: true }, () => {
                     return join_room(name, id, code)
                         .then(result => {
-                            if (result.user) {
-                                return this.props.history.push(`/waiting/${code}`);
+                            if (!result.exceeded) {
+                                if (result.user) {
+                                    return this.props.history.push(`/waiting/${code}`);
+                                } else {
+                                    return this.setState({ joining: false }, () => {
+                                        return alert("Mänguga liitumine ebaõnnestus, palun proovige uuesti.");
+                                    });
+                                }
                             } else {
                                 return this.setState({ joining: false }, () => {
-                                    return alert("Mänguga liitumine ebaõnnestus, palun proovige uuesti.");
+                                    return alert("Hiljaks jäid, rohkem ei mahu.");
                                 });
                             }
                         });

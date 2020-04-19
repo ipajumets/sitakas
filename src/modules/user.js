@@ -1,13 +1,13 @@
 export const SET_USER_BROWSER_ID = "SET_USER_BROWSER_ID";
 export const SET_USER = "SET_USER";
 export const RESET_USER = "RESET_USER";
+export const SET_USER_STATUS = "SET_USER_STATUS";
 
 const initialState = {
     browser_id: null,
     room_code: null,
     name: "",
-    active: true,
-    points: 0,
+    isReady: false,
 };
 
 export default (state = initialState, action) => {
@@ -27,8 +27,14 @@ export default (state = initialState, action) => {
                 browser_id: action.data.browser_id,
                 room_code: action.data.room_code,
                 name: action.data.name,
-                active: action.data.active,
-                points: action.data.points,
+                isReady: action.data.isReady,
+            };
+
+        case SET_USER_STATUS:
+        
+            return {
+                ...state,
+                isReady: action.status,
             };
 
         case RESET_USER:
@@ -37,8 +43,7 @@ export default (state = initialState, action) => {
                 ...state,
                 room_code: null,
                 name: "",
-                active: true,
-                points: 0,
+                isReady: false,
             };
         
         default:
@@ -64,6 +69,17 @@ export let setUser = (data) => dispatch => {
         return resolve(dispatch({
             type: SET_USER,
             data,
+        }));
+    });
+
+}
+
+export let setUserStatus = (status) => dispatch => {
+
+    return new Promise(resolve => {
+        return resolve(dispatch({
+            type: SET_USER_STATUS,
+            status,
         }));
     });
 
