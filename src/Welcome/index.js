@@ -29,6 +29,11 @@ class Welcome extends Component {
 
     componentDidMount = () => {
 
+        get_public_games()
+            .then(rooms => {
+                return this.setState({ rooms: rooms, isFetching: false });
+            });
+
         this.receiveSockets();
 
     }
@@ -47,7 +52,7 @@ class Welcome extends Component {
         that.props.socket.channel.on("connect", () => {
             get_public_games()
                 .then(rooms => {
-                    return that.setState({ rooms: rooms, isFetching: false });
+                    return that.setState({ rooms: rooms });
                 });
         });
 
