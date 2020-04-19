@@ -29,11 +29,6 @@ class Welcome extends Component {
 
     componentDidMount = () => {
 
-        get_public_games()
-            .then(rooms => {
-                return this.setState({ rooms: rooms, isFetching: false });
-            });
-
         this.receiveSockets();
 
     }
