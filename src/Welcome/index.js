@@ -138,6 +138,9 @@ class Welcome extends Component {
                             <div className="public-games-list-item-players-container">
                                 <span>{room.players.length}/{room.maxPlayers}</span>
                             </div>
+                            <div className="public-games-list-item-join-container">
+                                <img src={require("../media/svgs/next.svg")} alt="" />
+                            </div>
                         </div>
                         <div className="public-games-list-item-names">
                             <p><strong>Mängijad:</strong> {this.handlePlayerNames(room.players)}</p>
