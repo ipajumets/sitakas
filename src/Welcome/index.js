@@ -47,7 +47,7 @@ class Welcome extends Component {
         that.props.socket.channel.on("connect", () => {
             get_public_games()
                 .then(rooms => {
-                    return that.setState({ rooms: rooms });
+                    return that.setState({ rooms: rooms, isFetching: false });
                 });
         });
 
