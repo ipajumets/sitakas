@@ -119,3 +119,31 @@ export let update_isReady = (code, uid, status) => {
         });
 
 }
+
+// Update active status
+export let update_socket = (code, uid, sid, status) => {
+
+    let body = {
+        sid: sid,
+        status: status,
+    };
+
+    let request = {
+        method: "POST",
+        headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+    };
+
+    return fetch("https://www.sitaratas.eu/api/users/update-socket/"+code+"/"+uid, request)
+        .then(res => res.json())
+        .then(json => {
+            return json;
+        })
+        .catch(err => {
+            return alert(err);
+        });
+
+}

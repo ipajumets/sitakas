@@ -12,6 +12,7 @@ import { setRound, setPreviousRound, addMyBet, resetRound, updateResults, addWon
 import { setHand, setPreviousHand, addCard, addHandWinner, resetHands }  from "../modules/hands";
 import { setCards, removeCard, resetCards }  from "../modules/cards";
 import { resetRoom }  from "../modules/room";
+import { setConnections }  from "../modules/socket";
 
 // api-requests
 import { getGameData, addBet, uploadCard } from "./api-requests";
@@ -51,6 +52,7 @@ class Board extends Component {
             });
         });
 
+        that.props.socket.channel.emit("set-active", { code: room_code, uid: that.props.user.browser_id });
         that.receiveSockets(room_code, that.props.user.browser_id);
         that.handleGame(room_code, that.props.user.browser_id);
 
@@ -77,6 +79,9 @@ class Board extends Component {
                                                     })
                                                     .then(_ => {
                                                         return this.props.setCards(result.myCards.active)
+                                                            .then(_ => {
+                                                                return this.props.setConnections(result.users)
+                                                            })
                                                             .then(_ => {
                                                                 return this.setState({ loading: false, init: false });
                                                             });
@@ -121,30 +126,37 @@ class Board extends Component {
             });
         });
 
+        this.props.socket.channel.on(`${code}_update_connections`, result => {
+            return this.props.setConnections(result);
+        });
+
         this.props.socket.channel.on("connect", () => {
             return this.setState({ selected_card: {} }, () => {
+                setTimeout(() => {
+                    this.props.socket.channel.emit("set-active", { code: code, uid: id });
+                }, 667);
                 return this.handleGame(code, id);
             });
         });
 
     }
 
-    handleTable = (game, round, prevRound, hand, prevHand, uid) => {
+    handleTable = (game, round, prevRound, hand, prevHand, uid, connections) => {
 
         let sorted = rearrangePlayersOrder(game.players, uid);
 
         switch (game.players.length) {
 
             case 3:
-                return <ThreePlayersTable game={game} round={round} prevRound={prevRound} hand={hand} prevHand={prevHand} players={sorted} />;
+                return <ThreePlayersTable game={game} round={round} prevRound={prevRound} hand={hand} prevHand={prevHand} players={sorted} connections={connections} />;
             case 4:
-                return <FourPlayersTable game={game} round={round} prevRound={prevRound} hand={hand} prevHand={prevHand} players={sorted} />;
+                return <FourPlayersTable game={game} round={round} prevRound={prevRound} hand={hand} prevHand={prevHand} players={sorted} connections={connections} />;
             case 5:
-                return <FivePlayersTable game={game} round={round} prevRound={prevRound} hand={hand} prevHand={prevHand} players={sorted} />;
+                return <FivePlayersTable game={game} round={round} prevRound={prevRound} hand={hand} prevHand={prevHand} players={sorted} connections={connections} />;
             case 6:
-                return <SixPlayersTable game={game} round={round} prevRound={prevRound} hand={hand} prevHand={prevHand} players={sorted} />;
+                return <SixPlayersTable game={game} round={round} prevRound={prevRound} hand={hand} prevHand={prevHand} players={sorted} connections={connections} />;
             default:
-                return <ThreePlayersTable game={game} round={round} prevRound={prevRound} hand={hand} prevHand={prevHand} players={sorted} />;
+                return <ThreePlayersTable game={game} round={round} prevRound={prevRound} hand={hand} prevHand={prevHand} players={sorted} connections={connections} />;
 
         }
 
@@ -359,7 +371,7 @@ class Board extends Component {
                         </div>
                         <div className="board-action-wrapper">
                             <div className="board-table-container">
-                                {this.handleTable(this.props.game.data, this.props.round.data, this.props.round.prev, this.props.hands.data, this.props.hands.prev, this.props.user.browser_id)}
+                                {this.handleTable(this.props.game.data, this.props.round.data, this.props.round.prev, this.props.hands.data, this.props.hands.prev, this.props.user.browser_id, this.props.socket.connections)}
                                 {
                                     !this.props.game.data.isOver && this.props.round.data.turn === this.props.user.browser_id && this.props.round.data.action === "guess" ?
                                         <div className="guess-wins-container">
@@ -480,7 +492,7 @@ let mapStateToProps = (state) => {
 
 let mapDispatchToProps = (dispatch) => {
     return {
-        ...bindActionCreators({ resetRoom, setGame, updateGameHand, resetGame, setNextTurn, setRound, setPreviousRound, addMyBet, setHand, setPreviousHand, addCard, updateResults, setCards, removeCard, resetCards, resetHands, resetRound, resetUser, addWon, addHandWinner }, dispatch)
+        ...bindActionCreators({ resetRoom, setGame, updateGameHand, resetGame, setNextTurn, setRound, setPreviousRound, addMyBet, setHand, setPreviousHand, addCard, updateResults, setCards, removeCard, resetCards, resetHands, resetRound, resetUser, addWon, addHandWinner, setConnections }, dispatch)
     }
 }
 

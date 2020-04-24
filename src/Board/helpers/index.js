@@ -202,4 +202,12 @@ export let totalRounds = (players) => {
             return "";
     }
 
-}   
+}
+
+export let handleUser = (uid, users) => {
+
+    let status = users.filter(u => u.uid === uid)[0].active;
+
+    return status ? "#16C172" : "#FB5012";
+
+}

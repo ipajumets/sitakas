@@ -1,7 +1,8 @@
 import React from "react";
 import "./four_players.css";
+import { handleUser } from "../helpers";
 
-export default ({ game, round, prevRound, hand, prevHand, players }) => {
+export default ({ game, round, prevRound, hand, prevHand, players, connections }) => {
 
     let player_0_card = hand ? myCard(hand, players[0].uid) : null,
         player_1_card = hand ? myCard(hand, players[1].uid) : null,
@@ -53,6 +54,8 @@ export default ({ game, round, prevRound, hand, prevHand, players }) => {
                                             <div></div>
                                     }
                                 </div>
+                                <div className="status-indicator" style={{backgroundColor: handleUser(players[2].uid, connections)}}>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -102,6 +105,8 @@ export default ({ game, round, prevRound, hand, prevHand, players }) => {
                                             <div></div>
                                     }
                                 </div>
+                                <div className="status-indicator" style={{backgroundColor: handleUser(players[1].uid, connections)}}>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -148,6 +153,8 @@ export default ({ game, round, prevRound, hand, prevHand, players }) => {
                                         :
                                             <div></div>
                                     }
+                                </div>
+                                <div className="status-indicator" style={{backgroundColor: handleUser(players[3].uid, connections)}}>
                                 </div>
                             </div>
                         </div>
@@ -197,6 +204,8 @@ export default ({ game, round, prevRound, hand, prevHand, players }) => {
                                         :
                                             <div></div>
                                     }
+                                </div>
+                                <div className="status-indicator" style={{backgroundColor: handleUser(players[0].uid, connections)}}>
                                 </div>
                             </div>
                         </div>

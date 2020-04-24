@@ -342,3 +342,12 @@
     font-size: 9pt;
     font-family: "Roboto", Arial, sans-serif;
 }
+
+.status-indicator {
+    position: absolute;
+    top: -6px;
+    right: 0px;
+    height: 16px;
+    width: 16px;
+    border-radius: 8px;
+}
