@@ -53,7 +53,8 @@
     height: 8vh;
     object-fit: cover;
     border-radius: 5vh;
-    border: 1px solid white;
+    border-width: 3px;
+    border-style: solid;
 }
 
 .four-players-table-seat-profile-points-container {
@@ -341,13 +342,4 @@
 .prev-round-text {
     font-size: 9pt;
     font-family: "Roboto", Arial, sans-serif;
-}
-
-.status-indicator {
-    position: absolute;
-    top: -6px;
-    right: 0px;
-    height: 16px;
-    width: 16px;
-    border-radius: 8px;
 }

@@ -47,7 +47,7 @@ export default ({ game, round, prevRound, hand, prevHand, players, connections }
                                 :
                                     <div></div>
                             }
-                            <img className="four-players-table-seat-profile-image" src={players[3].image} alt="" />
+                            <img className="four-players-table-seat-profile-image" style={{borderColor: handleUser(players[3].uid, connections)}} src={players[3].image} alt="" />
                             <div className="four-players-table-seat-profile-points-container">
                                 <div style={{position: "relative"}}>
                                     <span className="seat-profile-points">{players[3].points}</span>
@@ -59,8 +59,6 @@ export default ({ game, round, prevRound, hand, prevHand, players, connections }
                                         :
                                             <div></div>
                                     }
-                                </div>
-                                <div className="status-indicator" style={{backgroundColor: handleUser(players[3].uid, connections)}}>
                                 </div>
                             </div>
                         </div>
@@ -99,7 +97,7 @@ export default ({ game, round, prevRound, hand, prevHand, players, connections }
                                     :
                                         <div></div>
                                 }
-                                <img className="four-players-table-seat-profile-image" src={players[2].image} alt="" />
+                                <img className="four-players-table-seat-profile-image" style={{borderColor: handleUser(players[2].uid, connections)}} src={players[2].image} alt="" />
                                 <div className="four-players-table-seat-profile-points-container">
                                     <div style={{position: "relative"}}>
                                         <span className="seat-profile-points">{players[2].points}</span>
@@ -111,8 +109,6 @@ export default ({ game, round, prevRound, hand, prevHand, players, connections }
                                             :
                                                 <div></div>
                                         }
-                                    </div>
-                                    <div className="status-indicator" style={{backgroundColor: handleUser(players[2].uid, connections)}}>
                                     </div>
                                 </div>
                             </div>
@@ -149,7 +145,7 @@ export default ({ game, round, prevRound, hand, prevHand, players, connections }
                                     :
                                         <div></div>
                                 }
-                                <img className="four-players-table-seat-profile-image" src={players[1].image} alt="" />
+                                <img className="four-players-table-seat-profile-image" style={{borderColor: handleUser(players[1].uid, connections)}} src={players[1].image} alt="" />
                                 <div className="four-players-table-seat-profile-points-container">
                                     <div style={{position: "relative"}}>
                                         <span className="seat-profile-points">{players[1].points}</span>
@@ -161,8 +157,6 @@ export default ({ game, round, prevRound, hand, prevHand, players, connections }
                                             :
                                                 <div></div>
                                         }
-                                    </div>
-                                    <div className="status-indicator" style={{backgroundColor: handleUser(players[1].uid, connections)}}>
                                     </div>
                                 </div>
                             </div>
@@ -200,7 +194,7 @@ export default ({ game, round, prevRound, hand, prevHand, players, connections }
                                     :
                                         <div></div>
                                 }
-                                <img className="four-players-table-seat-profile-image" src={players[4].image} alt="" />
+                                <img className="four-players-table-seat-profile-image" style={{borderColor: handleUser(players[4].uid, connections)}} src={players[4].image} alt="" />
                                 <div className="four-players-table-seat-profile-points-container">
                                     <div style={{position: "relative"}}>
                                         <span className="seat-profile-points">{players[4].points}</span>
@@ -212,8 +206,6 @@ export default ({ game, round, prevRound, hand, prevHand, players, connections }
                                             :
                                                 <div></div>
                                         }
-                                    </div>
-                                    <div className="status-indicator" style={{backgroundColor: handleUser(players[4].uid, connections)}}>
                                     </div>
                                 </div>
                             </div>
@@ -250,7 +242,7 @@ export default ({ game, round, prevRound, hand, prevHand, players, connections }
                                     :
                                         <div></div>
                                 }
-                                <img className="four-players-table-seat-profile-image" src={players[5].image} alt="" />
+                                <img className="four-players-table-seat-profile-image" style={{borderColor: handleUser(players[5].uid, connections)}} src={players[5].image} alt="" />
                                 <div className="four-players-table-seat-profile-points-container">
                                     <div style={{position: "relative"}}>
                                         <span className="seat-profile-points">{players[5].points}</span>
@@ -262,8 +254,6 @@ export default ({ game, round, prevRound, hand, prevHand, players, connections }
                                             :
                                                 <div></div>
                                         }
-                                    </div>
-                                    <div className="status-indicator" style={{backgroundColor: handleUser(players[5].uid, connections)}}>
                                     </div>
                                 </div>
                             </div>
@@ -302,7 +292,7 @@ export default ({ game, round, prevRound, hand, prevHand, players, connections }
                                 :
                                     <div></div>
                             }                            
-                            <img className="four-players-table-seat-profile-image" src={players[0].image} alt="" />
+                            <img className="four-players-table-seat-profile-image" style={{borderColor: handleUser(players[0].uid, connections)}} src={players[0].image} alt="" />
                             <div className="four-players-table-seat-profile-points-container">
                                 <div style={{position: "relative"}}>
                                     <span className="seat-profile-points">{players[0].points}</span>
@@ -314,8 +304,6 @@ export default ({ game, round, prevRound, hand, prevHand, players, connections }
                                         :
                                             <div></div>
                                     }
-                                </div>
-                                <div className="status-indicator" style={{backgroundColor: handleUser(players[0].uid, connections)}}>
                                 </div>
                             </div>
                         </div>
