@@ -1,7 +1,9 @@
 import React, { Component } from "react";
-import "./index.css";
-import { connect } from "react-redux";
+import io from "socket.io-client";
 import Page from "../Page";
+
+// CSS
+import "./index.css";
 
 class Counter extends Component {
 
@@ -16,9 +18,17 @@ class Counter extends Component {
 
     componentDidMount = () => {
 
-        return this.props.socket.channel.on("count", (result) => {
+        this.socket = io("https://www.sitaratas.eu:5000/");
+
+        return this.socket.on("count", (result) => {
             return this.setState({ count: result.count });
         }); 
+
+    }
+
+    componentWillUnmount = () => {
+
+        this.socket.close();
 
     }
 
@@ -36,10 +46,4 @@ class Counter extends Component {
 
 }
 
-let mapStateToProps = (state) => {
-    return {
-        socket: state.socket,
-    }
-}
-
-export default connect(mapStateToProps)(Counter);
+export default Counter;

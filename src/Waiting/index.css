@@ -27,6 +27,11 @@
 
 /* Waiting */
 
+.waiting-action-and-chat-container {
+    display: flex;
+    flex-direction: row;
+}
+
 .waiting-action-container {
     display: flex;
     flex-direction: column;

@@ -49,7 +49,7 @@ class Page extends Component {
             { name: "twitter:image", content: theImage },
             { property: "og:title", content: theTitle },
             { property: "og:type", content: contentType || "website" },
-            { property: "og:url", content: "http://192.168.1.235:5000" + pathname },
+            { property: "og:url", content: "https://www.sitaratas.eu" + pathname },
             { property: "og:image", content: theImage },
             { property: "og:description", content: theDescription },
             { property: "og:site_name", content: defaultTitle },

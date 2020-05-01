@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { isMobileSafari } from "react-device-detect";
+import io from "socket.io-client";
 import Page from "../Page";
 
 // api-requests
@@ -15,6 +16,7 @@ import "./index.css";
 import { setRoomWithPlayers, resetRoom, addPlayer, setPlayers, removePlayer, setPrivacy, setMaxPlayers } from "../modules/room";
 import { setUserBrowserID, setUser, resetUser, setUserStatus } from "../modules/user";
 import { allReady } from "./helpers";
+import Chat from "../Chat";
 
 class Setup_v2 extends Component {
 
@@ -31,11 +33,19 @@ class Setup_v2 extends Component {
 
     componentDidMount = () => {
 
+        this.socket = io("https://www.sitaratas.eu:5000/");
+
         let that = this,
             room_code = that.props.match.params.code ? that.props.match.params.code : this.props.room.code;
 
         that.receiveSockets(room_code, that.props.user.browser_id);
         that.handleWaitingStatus(that.props.user.browser_id, room_code);
+
+    }
+
+    componentWillUnmount = () => {
+
+        this.socket.close();
 
     }
 
@@ -73,38 +83,38 @@ class Setup_v2 extends Component {
 
     receiveSockets = (code, id) => {
 
-        this.props.socket.channel.on(`${code}_joined`, result => {
+        this.socket.on(`${code}_joined`, result => {
             this.props.addPlayer(result.data);
         });
 
-        this.props.socket.channel.on(`${code}_left`, result => {
+        this.socket.on(`${code}_left`, result => {
             this.props.removePlayer(result.data.id);
         });
 
-        this.props.socket.channel.on(`${code}_new_host`, result => {
+        this.socket.on(`${code}_new_host`, result => {
             this.props.removePlayer(result.data.id)
                 .then(_ => {
                     this.handleWaitingStatus(id, code);
                 });
         });
 
-        this.props.socket.channel.on(`${code}_privacy_updated`, result => {
+        this.socket.on(`${code}_privacy_updated`, result => {
             this.props.setPrivacy(result.privacy);
         });
 
-        this.props.socket.channel.on(`${code}_max_players_updated`, result => {
+        this.socket.on(`${code}_max_players_updated`, result => {
             this.props.setMaxPlayers(result.amount);
         });
 
-        this.props.socket.channel.on(`${code}_player_status_updated`, result => {
+        this.socket.on(`${code}_player_status_updated`, result => {
             this.props.setPlayers(result.players);
         });
 
-        this.props.socket.channel.on(`${code}_started`, result => {
+        this.socket.on(`${code}_started`, result => {
             this.props.history.push(`/game/${result.code}`);
         });
 
-        this.props.socket.channel.on("connect", () => {
+        this.socket.on("connect", () => {
             this.handleWaitingStatus(id, code);
         });
 
@@ -213,116 +223,119 @@ class Setup_v2 extends Component {
         if (this.props.room.code) {
             return(
                 <Page title={`${this.props.room.code}`}>
-                    <div className="waiting-action-container">
-                        <div className="waiting-action-navigation-container">
-                            <span>Sitaratas</span>
-                        </div>
-                        <div className="waiting-action-wrapper">
-                            <span className="waiting-action-game-code-title">MÄNGU KOOD</span>
-                            <span className="waiting-action-game-code">{this.props.room.code}</span>
-                            <div className="waiting-action-names-list">
-                                {this.props.room.players.map((player, index) => {
-                                    return(
-                                        <div key={index} className="waiting-action-names-list-item-container">
-                                            <span>{player.name}</span>
-                                            <img className="player-title-image" src={this.handlePlayerStatus(player, this.props.room)} alt="" />
+                    <div className="waiting-action-and-chat-container">
+                        <Chat uid={this.props.user.browser_id} rid={this.props.room.code} />
+                        <div className="waiting-action-container">
+                            <div className="waiting-action-navigation-container">
+                                <span>Sitaratas</span>
+                            </div>
+                            <div className="waiting-action-wrapper">
+                                <span className="waiting-action-game-code-title">MÄNGU KOOD</span>
+                                <span className="waiting-action-game-code">{this.props.room.code}</span>
+                                <div className="waiting-action-names-list">
+                                    {this.props.room.players.map((player, index) => {
+                                        return(
+                                            <div key={index} className="waiting-action-names-list-item-container">
+                                                <span>{player.name}</span>
+                                                <img className="player-title-image" src={this.handlePlayerStatus(player, this.props.room)} alt="" />
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                                {
+                                    this.props.room.host_browser_id === this.props.user.browser_id ?
+                                        <div className="waiting-host-actions-container">
+                                            <div className="waiting-host-actions-privacy-title-container">
+                                                <span>Mängu privaatsus</span>
+                                            </div>
+                                            <div className="waiting-host-actions-privacy-container">
+                                                <div onClick={() => this.setPrivacy(this.props.room.code, "private")} className="waiting-host-actions-privacy-item-container" style={{backgroundColor: this.props.room.privacy === "private" ? "#5386E4" : "transparent"}}>
+                                                    <span>Satsikas</span>
+                                                </div>
+                                                <div className="waiting-host-actions-privacy-separator"></div>
+                                                <div onClick={() => this.setPrivacy(this.props.room.code, "public")} className="waiting-host-actions-privacy-item-container" style={{backgroundColor: this.props.room.privacy === "public" ? "#5386E4" : "transparent"}}>
+                                                    <span>Rahvale</span>
+                                                </div>
+                                            </div>
+                                            <div className="waiting-host-actions-privacy-title-container" style={{paddingTop: 30}}>
+                                                <span>Mängijate arv</span>
+                                            </div>
+                                            <div className="waiting-host-actions-max-container">
+                                                <div onClick={() => this.setMaxPlayers(this.props.room.code, 3)} className="waiting-host-actions-max-item-container" style={{backgroundColor: this.props.room.maxPlayers === 3 ? "#5386E4" : "transparent"}}>
+                                                    <span>3</span>
+                                                </div>
+                                                <div className="waiting-host-actions-max-separator"></div>
+                                                <div onClick={() => this.setMaxPlayers(this.props.room.code, 4)} className="waiting-host-actions-max-item-container" style={{backgroundColor: this.props.room.maxPlayers === 4 ? "#5386E4" : "transparent"}}>
+                                                    <span>4</span>
+                                                </div>
+                                                <div className="waiting-host-actions-max-separator"></div>
+                                                <div onClick={() => this.setMaxPlayers(this.props.room.code, 5)} className="waiting-host-actions-max-item-container" style={{backgroundColor: this.props.room.maxPlayers === 5 ? "#5386E4" : "transparent"}}>
+                                                    <span>5</span>
+                                                </div>
+                                                <div className="waiting-host-actions-max-separator"></div>
+                                                <div onClick={() => this.setMaxPlayers(this.props.room.code, 6)} className="waiting-host-actions-max-item-container" style={{backgroundColor: this.props.room.maxPlayers === 6 ? "#5386E4" : "transparent"}}>
+                                                    <span>6</span>
+                                                </div>
+                                            </div>
                                         </div>
-                                    );
-                                })}
+                                    :
+                                        <div></div>
+                                }
+                                {
+                                    this.props.room.host_browser_id !== this.props.user.browser_id ?
+                                        <div className="waiting-action-room-data-container">
+                                            <div className="waiting-action-room-data-item-container">
+                                                <span>Mängu privaatsus:</span>
+                                                <strong>{this.props.room.privacy === "private" ? "Satsikas" : "Rahvale"}</strong>
+                                            </div>
+                                            <div className="waiting-action-room-data-item-container">
+                                                <span>Mängijate arv:</span> <strong>{this.props.room.maxPlayers}</strong>
+                                            </div>
+                                        </div>
+                                    :
+                                        <div></div>
+                                }
+                                {
+                                    this.props.room.host_browser_id === this.props.user.browser_id ?
+                                        !this.state.starting ?
+                                            <div onClick={() => this.startGame(this.props.room.code, this.props.room.players)} className="waiting-action-enter-game-button">
+                                                <span>Alusta mängu</span>
+                                            </div>
+                                        :
+                                            <div className="waiting-action-enter-game-button">
+                                                <img src={require("../media/svgs/loading-fat.svg")} alt="" />
+                                            </div>
+                                    :
+                                        <div></div>
+                                }
+                                {
+                                    this.props.room.host_browser_id !== this.props.user.browser_id ?
+                                        !this.props.user.isReady ?
+                                            <div onClick={() => this.handleReady(this.props.room.code, this.props.user.browser_id, true)} className="waiting-action-ready-game-button">
+                                                <span>Mina olen valmis</span>
+                                            </div>
+                                        :
+                                            <div onClick={() => this.handleReady(this.props.room.code, this.props.user.browser_id, false)} className="waiting-action-wait-game-button">
+                                                <span>Aeg maha</span>
+                                            </div>
+                                    :
+                                        <div></div>
+                                }
+                                {
+                                    !this.state.leaving ?
+                                        <span onClick={() => this.leaveRoom(this.props.room.code, this.props.user.browser_id)} className="waiting-action-create-game-button">Lahku mängust</span>
+                                    :
+                                        <img className="waiting-action-create-game-loading" src={require("../media/svgs/loading-fat.svg")} alt="" />
+                                }
                             </div>
                             {
-                                this.props.room.host_browser_id === this.props.user.browser_id ?
-                                    <div className="waiting-host-actions-container">
-                                        <div className="waiting-host-actions-privacy-title-container">
-                                            <span>Mängu privaatsus</span>
-                                        </div>
-                                        <div className="waiting-host-actions-privacy-container">
-                                            <div onClick={() => this.setPrivacy(this.props.room.code, "private")} className="waiting-host-actions-privacy-item-container" style={{backgroundColor: this.props.room.privacy === "private" ? "#5386E4" : "transparent"}}>
-                                                <span>Satsikas</span>
-                                            </div>
-                                            <div className="waiting-host-actions-privacy-separator"></div>
-                                            <div onClick={() => this.setPrivacy(this.props.room.code, "public")} className="waiting-host-actions-privacy-item-container" style={{backgroundColor: this.props.room.privacy === "public" ? "#5386E4" : "transparent"}}>
-                                                <span>Rahvale</span>
-                                            </div>
-                                        </div>
-                                        <div className="waiting-host-actions-privacy-title-container" style={{paddingTop: 30}}>
-                                            <span>Mängijate arv</span>
-                                        </div>
-                                        <div className="waiting-host-actions-max-container">
-                                            <div onClick={() => this.setMaxPlayers(this.props.room.code, 3)} className="waiting-host-actions-max-item-container" style={{backgroundColor: this.props.room.maxPlayers === 3 ? "#5386E4" : "transparent"}}>
-                                                <span>3</span>
-                                            </div>
-                                            <div className="waiting-host-actions-max-separator"></div>
-                                            <div onClick={() => this.setMaxPlayers(this.props.room.code, 4)} className="waiting-host-actions-max-item-container" style={{backgroundColor: this.props.room.maxPlayers === 4 ? "#5386E4" : "transparent"}}>
-                                                <span>4</span>
-                                            </div>
-                                            <div className="waiting-host-actions-max-separator"></div>
-                                            <div onClick={() => this.setMaxPlayers(this.props.room.code, 5)} className="waiting-host-actions-max-item-container" style={{backgroundColor: this.props.room.maxPlayers === 5 ? "#5386E4" : "transparent"}}>
-                                                <span>5</span>
-                                            </div>
-                                            <div className="waiting-host-actions-max-separator"></div>
-                                            <div onClick={() => this.setMaxPlayers(this.props.room.code, 6)} className="waiting-host-actions-max-item-container" style={{backgroundColor: this.props.room.maxPlayers === 6 ? "#5386E4" : "transparent"}}>
-                                                <span>6</span>
-                                            </div>
-                                        </div>
+                                isMobileSafari ?
+                                    <div className="ios-safari-bottom">
                                     </div>
                                 :
                                     <div></div>
-                            }
-                            {
-                                this.props.room.host_browser_id !== this.props.user.browser_id ?
-                                    <div className="waiting-action-room-data-container">
-                                        <div className="waiting-action-room-data-item-container">
-                                            <span>Mängu privaatsus:</span>
-                                            <strong>{this.props.room.privacy === "private" ? "Satsikas" : "Rahvale"}</strong>
-                                        </div>
-                                        <div className="waiting-action-room-data-item-container">
-                                            <span>Mängijate arv:</span> <strong>{this.props.room.maxPlayers}</strong>
-                                        </div>
-                                    </div>
-                                :
-                                    <div></div>
-                            }
-                            {
-                                this.props.room.host_browser_id === this.props.user.browser_id ?
-                                    !this.state.starting ?
-                                        <div onClick={() => this.startGame(this.props.room.code, this.props.room.players)} className="waiting-action-enter-game-button">
-                                            <span>Alusta mängu</span>
-                                        </div>
-                                    :
-                                        <div className="waiting-action-enter-game-button">
-                                            <img src={require("../media/svgs/loading-fat.svg")} alt="" />
-                                        </div>
-                                :
-                                    <div></div>
-                            }
-                            {
-                                this.props.room.host_browser_id !== this.props.user.browser_id ?
-                                    !this.props.user.isReady ?
-                                        <div onClick={() => this.handleReady(this.props.room.code, this.props.user.browser_id, true)} className="waiting-action-ready-game-button">
-                                            <span>Mina olen valmis</span>
-                                        </div>
-                                    :
-                                        <div onClick={() => this.handleReady(this.props.room.code, this.props.user.browser_id, false)} className="waiting-action-wait-game-button">
-                                            <span>Aeg maha</span>
-                                        </div>
-                                :
-                                    <div></div>
-                            }
-                            {
-                                !this.state.leaving ?
-                                    <span onClick={() => this.leaveRoom(this.props.room.code, this.props.user.browser_id)} className="waiting-action-create-game-button">Lahku mängust</span>
-                                :
-                                    <img className="waiting-action-create-game-loading" src={require("../media/svgs/loading-fat.svg")} alt="" />
                             }
                         </div>
-                        {
-                            isMobileSafari ?
-                                <div className="ios-safari-bottom">
-                                </div>
-                            :
-                                <div></div>
-                        }
                     </div>
                 </Page>
             );
@@ -346,7 +359,6 @@ let mapStateToProps = (state) => {
     return {
         room: state.room,
         user: state.user,
-        socket: state.socket,
     }
 }
 

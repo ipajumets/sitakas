@@ -165,7 +165,7 @@ export let getGameData = (code, browser_id) => {
 }
 
 // Add bet
-export let addBet = (game_id, user_id, wins, round_id) => {
+export let addBet = (game_id, user_id, wins) => {
 
     let body = {
         uid: user_id,

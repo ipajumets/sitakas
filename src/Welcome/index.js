@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import "./index.css";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
+import io from "socket.io-client";
 import Page from "../Page";
 
 // modules
@@ -29,6 +30,8 @@ class Welcome extends Component {
 
     componentDidMount = () => {
 
+        this.socket = io("https://www.sitaratas.eu:5000/");
+
         get_public_games()
             .then(rooms => {
                 return this.setState({ rooms: rooms, isFetching: false });
@@ -38,21 +41,25 @@ class Welcome extends Component {
 
     }
 
+    componentWillUnmount = () => {
+
+        this.socket.close();
+
+    }
+
     receiveSockets = () => {
 
-        let that = this;
-
-        that.props.socket.channel.on("refresh_public_rooms_list", _ => {
+        this.socket.on("refresh_public_rooms_list", _ => {
             get_public_games()
                 .then(rooms => {
-                    return that.setState({ rooms: rooms });
+                    return this.setState({ rooms: rooms });
                 });
         });
 
-        that.props.socket.channel.on("connect", () => {
+        this.socket.on("connect", () => {
             get_public_games()
                 .then(rooms => {
-                    return that.setState({ rooms: rooms });
+                    return this.setState({ rooms: rooms });
                 });
         });
 
@@ -229,7 +236,6 @@ class Welcome extends Component {
 let mapStateToProps = (state) => {
     return {
         user: state.user,
-        socket: state.socket,
     }
 }
 
