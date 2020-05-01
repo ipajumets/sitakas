@@ -73,7 +73,10 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 players: state.players.filter(player => {
-                    return player.browser_id !== action.id;
+                    if (player.browser_id) {
+                        return player.browser_id !== action.id;
+                    }
+                    return player.uid !== action.id;
                 }),
             };
 
