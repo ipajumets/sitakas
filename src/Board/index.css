@@ -53,6 +53,22 @@
     border-bottom: 1px solid skyblue;
 }
 
+.board-action-between-navigation-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    height: 54px;
+    background-color: #B2DDF7;
+    border-bottom: 1px solid skyblue;
+}
+
+.board-action-navigation-titles-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .board-action-navigation-title {
     font-size: 13pt;
     font-family: "Roboto", Arial, sans-serif;

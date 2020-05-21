@@ -27,6 +27,8 @@ import SixPlayersTable from "./layouts/six_players";
 // helpers
 import { rearrangePlayersOrder, getSitaratas, checkErrors, sortCards, totalRounds } from "./helpers";
 import Chat from "../Chat";
+import ChatBubble from "../ChatBubble";
+import MobileChat from "../MobileChat";
 
 class Board extends Component {
 
@@ -39,6 +41,7 @@ class Board extends Component {
             wins: 0,
             selected_card: {},
             inner_width: 0,
+            width: document.body.clientWidth,
         };
 
     }
@@ -59,6 +62,10 @@ class Board extends Component {
 
         that.receiveSockets(room_code, that.props.user.browser_id);
         that.handleGame(room_code, that.props.user.browser_id);
+
+        window.addEventListener("resize", () => {
+            this.setState({width: document.body.clientWidth});
+        });
 
     }
 
@@ -375,12 +382,29 @@ class Board extends Component {
             return(
                 <Page title={this.props.round.data.turn === this.props.user.browser_id ? `Sinu kord | Mäng ${this.props.game.data.room_code}` : `Mäng ${this.props.game.data.room_code}`} icon={this.props.round.data.turn === this.props.user.browser_id ? require("../media/icos/favicon-alert.png") : require("../media/icos/favicon.png")}>
                     <div className="board-action-and-chat-container">
-                        <Chat uid={this.props.user.browser_id} rid={this.props.game.data.room_code} />
+                        {
+                            this.state.width >= 960 ?
+                                <Chat uid={this.props.user.browser_id} rid={this.props.game.data.room_code} />
+                            :
+                                <div></div>
+                        }
                         <div className="board-action-container">
-                            <div className="board-action-navigation-container">
-                                <span className="board-action-navigation-title">MÄNG {this.props.game.data.room_code}</span>
-                                <span className="board-action-navigation-subtitle">ROUND {this.props.game.data.round}/{totalRounds(this.props.game.data.players.length)}</span>
-                            </div>
+                            {
+                                this.state.width > 960 ?
+                                    <div className="board-action-navigation-container">
+                                        <span className="board-action-navigation-title">MÄNG {this.props.game.data.room_code}</span>
+                                        <span className="board-action-navigation-subtitle">ROUND {this.props.game.data.round}/{totalRounds(this.props.game.data.players.length)}</span>
+                                    </div>
+                                :
+                                    <div className="board-action-between-navigation-container">
+                                        <div style={{width: 54}}></div>
+                                        <div className="board-action-navigation-titles-wrapper">
+                                            <span className="board-action-navigation-title">MÄNG {this.props.game.data.room_code}</span>
+                                            <span className="board-action-navigation-subtitle">ROUND {this.props.game.data.round}/{totalRounds(this.props.game.data.players.length)}</span>
+                                        </div>
+                                        <ChatBubble uid={this.props.user.browser_id} rid={this.props.game.data.room_code} />
+                                    </div>
+                            }
                             <div className="board-action-wrapper">
                                 <div className="board-table-container">
                                     {this.handleTable(this.props.game.data, this.props.round.data, this.props.round.prev, this.props.hands.data, this.props.hands.prev, this.props.user.browser_id, this.props.socket.connections)}
@@ -468,6 +492,12 @@ class Board extends Component {
                                     <div></div>
                             }
                         </div>
+                        {
+                            this.props.chat.showMobile ?
+                                <MobileChat uid={this.props.user.browser_id} rid={this.props.game.data.room_code} />
+                            :
+                                <div></div>
+                        }
                     </div>
                 </Page>
             );
@@ -500,6 +530,7 @@ let mapStateToProps = (state) => {
         hands: state.hands,
         cards: state.cards,
         socket: state.socket,
+        chat: state.chat,
     }
 }
 

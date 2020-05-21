@@ -1,0 +1,25 @@
+.chat-bubble-container {
+    width: 54px;
+    height: 54px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(112, 193, 179);
+    position: relative;
+}
+
+.chat-bubble-container img {
+    width: 20px;
+    height: 20px;
+}
+
+.chat-bubble-last-message-container {
+    width: 10px;
+    height: 10px;
+    background-color: tomato;
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    border-radius: 5px;
+}

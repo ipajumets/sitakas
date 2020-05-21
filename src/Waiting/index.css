@@ -40,10 +40,26 @@
     background-color: #97D2FB;
 }
 
-.waiting-action-navigation-container {
+.waiting-action-navigation-center-container {
     display: flex;
     flex-direction: row;
     justify-content: center;
+    align-items: center;
+    height: 54px;
+    background-color: white;
+}
+
+.waiting-action-navigation-center-container span {
+    font-size: 14pt;
+    font-family: "Inter", sans-serif;
+    color: chocolate;
+    font-weight: bold;
+}
+
+.waiting-action-navigation-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
     align-items: center;
     height: 54px;
     background-color: white;

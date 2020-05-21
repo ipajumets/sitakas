@@ -15,8 +15,14 @@ import "./index.css";
 // modules
 import { setRoomWithPlayers, resetRoom, addPlayer, setPlayers, removePlayer, setPrivacy, setMaxPlayers } from "../modules/room";
 import { setUserBrowserID, setUser, resetUser, setUserStatus } from "../modules/user";
+
+//  helpers
 import { allReady } from "./helpers";
+
+// components
 import Chat from "../Chat";
+import ChatBubble from "../ChatBubble";
+import MobileChat from "../MobileChat";
 
 class Setup_v2 extends Component {
 
@@ -27,6 +33,7 @@ class Setup_v2 extends Component {
             starting: false,
             leaving: false,
             init: false,
+            width: document.body.clientWidth,
         };
 
     }
@@ -40,6 +47,10 @@ class Setup_v2 extends Component {
 
         that.receiveSockets(room_code, that.props.user.browser_id);
         that.handleWaitingStatus(that.props.user.browser_id, room_code);
+
+        window.addEventListener("resize", () => {
+            this.setState({width: document.body.clientWidth});
+        });
 
     }
 
@@ -224,11 +235,25 @@ class Setup_v2 extends Component {
             return(
                 <Page title={`${this.props.room.code}`}>
                     <div className="waiting-action-and-chat-container">
-                        <Chat uid={this.props.user.browser_id} rid={this.props.room.code} />
+                        {
+                            this.state.width >= 960 ?
+                                <Chat uid={this.props.user.browser_id} rid={this.props.room.code} />
+                            :
+                                <div></div>
+                        }
                         <div className="waiting-action-container">
-                            <div className="waiting-action-navigation-container">
-                                <span>Sitaratas</span>
-                            </div>
+                            {
+                                this.state.width > 960 ?
+                                    <div className="waiting-action-navigation-center-container">
+                                        <span>Sitaratas</span>
+                                    </div>
+                                :
+                                    <div className="waiting-action-navigation-container">
+                                        <div style={{width: 54}}></div>
+                                        <span>Sitaratas</span>
+                                        <ChatBubble uid={this.props.user.browser_id} rid={this.props.room.code} />
+                                    </div>
+                            }
                             <div className="waiting-action-wrapper">
                                 <span className="waiting-action-game-code-title">MÄNGU KOOD</span>
                                 <span className="waiting-action-game-code">{this.props.room.code}</span>
@@ -336,6 +361,12 @@ class Setup_v2 extends Component {
                                     <div></div>
                             }
                         </div>
+                        {
+                            this.props.chat.showMobile ?
+                                <MobileChat uid={this.props.user.browser_id} rid={this.props.room.code} />
+                            :
+                                <div></div>
+                        }
                     </div>
                 </Page>
             );
@@ -359,6 +390,7 @@ let mapStateToProps = (state) => {
     return {
         room: state.room,
         user: state.user,
+        chat: state.chat,
     }
 }
 

@@ -1,0 +1,50 @@
+.mobile-chat-messages-container {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: white;
+    z-index: 100;
+}
+
+.mobile-chat-messages-header-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100vw;
+    border-bottom: 1px solid rgb(235, 235, 235);
+    padding: 10px 15px;
+}
+
+.mobile-chat-messages-header-titles-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.mobile-chat-messages-header-title {
+    font-family: "Rubik", Arial, Helvetica, sans-serif;
+    color: black;
+    font-size: 18px;
+    font-weight: normal;
+}
+
+.mobile-chat-messages-header-subtitle {
+    font-family: "Rubik", Arial, Helvetica, sans-serif;
+    color: #A7A7A7;
+    font-size: 10px;
+    font-weight: normal;
+}
+
+.mobile-chat-exit-button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#mobileChat {
+    height: calc(100vh - 119px);
+}
