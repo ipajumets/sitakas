@@ -4,6 +4,7 @@ import io from "socket.io-client";
 import { connect } from "react-redux";
 import "./index.css";
 import "../Chat/index.css";
+import { isIOS, isChrome, isMobileSafari } from "react-device-detect";
 
 // Modules
 import { toggleMobileChat, addMessage, setNewMessageAlert } from "../modules/chat";
@@ -144,6 +145,20 @@ class MobileChat extends Component {
 
     }
 
+    handleHeight = () => {
+
+        if ((isIOS && isMobileSafari) || (isIOS && isChrome)) {
+            if (document.body.clientHeight < 720) {
+                return `calc(${document.body.clientHeight}px - 195px)`;
+            } else {
+                return `calc(${document.body.clientHeight}px - 236px)`;
+            }
+        } else {
+            return `calc(${document.body.clientHeight}px - 119px)`;
+        }
+
+    }
+
     render = () => {
 
         if (!this.props.chat.fetching) {
@@ -158,7 +173,7 @@ class MobileChat extends Component {
                             <img src={require("../media/svgs/exit.svg")} style={{width: 16, height: 16}} alt="" />
                         </div>
                     </div>
-                    <div className="chat-messages-container" id="mobileChat">
+                    <div className="chat-messages-container" id="mobileChat" style={{height: this.handleHeight()}}>
                         {this.renderMessages(this.props.chat.data, this.props.uid)}
                     </div>
                     <div className="chat-input-container">
