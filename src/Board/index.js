@@ -41,7 +41,7 @@ class Board extends Component {
             wins: 0,
             selected_card: {},
             inner_width: 0,
-            width: document.body.clientWidth,
+            width: 0,
         };
 
     }
@@ -54,7 +54,7 @@ class Board extends Component {
         let that = this,
             room_code = that.props.match.params.code;
 
-        that.setState({ inner_width: window.innerWidth }, () => {
+        that.setState({ inner_width: window.innerWidth, width: document.body.clientWidth }, () => {
             window.addEventListener("resize", (ev) => {
                 that.setState({ inner_width: ev.target.innerWidth });
             });
