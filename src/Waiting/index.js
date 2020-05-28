@@ -33,7 +33,7 @@ class Setup_v2 extends Component {
             starting: false,
             leaving: false,
             init: false,
-            width: document.body.clientWidth,
+            width: 0,
         };
 
     }
@@ -48,8 +48,10 @@ class Setup_v2 extends Component {
         that.receiveSockets(room_code, that.props.user.browser_id);
         that.handleWaitingStatus(that.props.user.browser_id, room_code);
 
-        window.addEventListener("resize", () => {
-            this.setState({width: document.body.clientWidth});
+        that.setState({ width: document.body.clientWidth }, () => {
+            window.addEventListener("resize", () => {
+                this.setState({width: document.body.clientWidth});
+            });
         });
 
     }
