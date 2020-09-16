@@ -9,6 +9,8 @@ import { setMessages, addMessage } from "../modules/chat";
 import { sendMessage, getMessages } from "./api-requests";
 import { handleBottomMargin, handleMessageName } from "./helpers";
 
+import { lang } from "../lang";
+
 class Chat extends Component {
 
     constructor(props) {
@@ -128,7 +130,7 @@ class Chat extends Component {
         }
 
         if (filtered.length < 1) {
-            return alert("Mida läks untsu! Värskenda igaks juhuks brauserit...");
+            return alert(lang.somethingWentWrong[this.props.user.language]);
         }
 
         let name = filtered[0].name;
@@ -155,15 +157,15 @@ class Chat extends Component {
                 <div className="chat-container">
                     <div className="chat-navigation-container">
                         <div className="chat-navigation-wrapper">
-                            <span className="chat-title">Prügijutu nurgake</span>
-                            <span className="chat-subtitle">{this.props.chat.data.length < 1 ? "Ühtegi prügijuttu ei leitud" : `${this.props.chat.data.length} ${this.props.chat.data.length === 1 ? "prügijutt" : "prügijuttu"}`}</span>
+                            <span className="chat-title">{lang.chatTitle[this.props.user.language]}</span>
+                            <span className="chat-subtitle">{this.props.chat.data.length < 1 ? lang.noMessages[this.props.user.language] : `${this.props.chat.data.length} ${this.props.chat.data.length === 1 ? lang.message[this.props.user.language] : lang.messages[this.props.user.language]}`}</span>
                         </div>
                     </div>
                     <div className="chat-messages-container" id="chat">
                         {this.renderMessages(this.props.chat.data, this.props.uid)}
                     </div>
                     <div className="chat-input-container">
-                        <input type="text" placeholder={"Sisesta prügijutt siia"} value={this.state.message} onChange={(e) => this.setState({ message: e.target.value })} onKeyPress={(e) => this.handleKeyPress(e, this.state.message, this.props.uid, this.props.rid, this.props.room.players, this.props.game.data)} />
+                        <input type="text" placeholder={lang.chatInputPlaceholder[this.props.user.language]} value={this.state.message} onChange={(e) => this.setState({ message: e.target.value })} onKeyPress={(e) => this.handleKeyPress(e, this.state.message, this.props.uid, this.props.rid, this.props.room.players, this.props.game.data)} />
                         <div className="chat-input-button-container" onClick={() => this.handleMessage(this.state.message, this.props.uid, this.props.rid, this.props.room.players, this.props.game.data)}> 
                             <img src={require("../media/svgs/interface.svg")} alt="" />
                         </div>
@@ -175,7 +177,7 @@ class Chat extends Component {
                 <div className="chat-container">
                     <div className="chat-navigation-container">
                         <div className="chat-navigation-wrapper">
-                            <span className="chat-title">Prügijutu nurgake</span>
+                            <span className="chat-title">{lang.chatTitle[this.props.user.language]}</span>
                         </div>
                     </div>
                     <div className="chat-loading-container">
@@ -194,6 +196,7 @@ let mapStateToProps = (state) => {
         chat: state.chat,
         room: state.room,
         game: state.game,
+        user: state.user,
     }
 }
 

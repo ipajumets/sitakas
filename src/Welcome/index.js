@@ -6,12 +6,17 @@ import io from "socket.io-client";
 import Page from "../Page";
 
 // modules
-import { setUser } from "../modules/user";
+import { setUser, setLanguage } from "../modules/user";
 import { setRoom } from "../modules/room";
 
 // api-requests
 import { check_my_waiting_status } from "../api-requests/global";
 import { create_new_room, get_public_games } from "./api-requests";
+import Coffee from "../Coffee";
+import Language from "../Language";
+
+import { lang } from "../lang";
+import { timeSinceEST, timeSinceENG } from "./helpers";
 
 class Welcome extends Component {
 
@@ -143,11 +148,14 @@ class Welcome extends Component {
                 <div key={index} className="public-games-list-item-container" onClick={() => this.enterRoom(room.code, this.props.user.browser_id)}>
                     <div className="public-games-list-item-wrapper">
                         <div className="public-games-list-item-names">
-                            <p style={{color: "tomato"}}>{room.created}</p>
+                            <p style={{color: "tomato"}}>{this.props.user.language === "english" ? timeSinceENG(room.created) : timeSinceEST(room.created)}</p>
                         </div>
                         <div className="public-games-list-item-row">
                             <div className="public-games-list-item-code-container">
                                 <span>#{room.code}</span>
+                                {room.jokers &&
+                                    <img src={require("../media/svgs/joker.svg")} alt="" />
+                                }
                             </div>
                             <div className="public-games-list-item-players-container">
                                 <span>{room.players.length}/{room.maxPlayers}</span>
@@ -157,7 +165,7 @@ class Welcome extends Component {
                             </div>
                         </div>
                         <div className="public-games-list-item-names">
-                            <p><strong>Mängijad:</strong> {this.handlePlayerNames(room.players)}</p>
+                            <p><strong>{lang.players[this.props.user.language]}</strong> {this.handlePlayerNames(room.players)}</p>
                         </div>
                     </div>
                 </div>
@@ -173,7 +181,15 @@ class Welcome extends Component {
                 <Page title={"Sitaratas.eu | Kõige parem kaardimäng maailmas"}>
                     <div className="welcome-action-container">
                         <div className="welcome-action-navigation-container">
-                            <span>Sitaratas</span>
+                            <div className="welcome-action-navigation-side-container">
+                                <Coffee title={lang.coffee[this.props.user.language]} />                             
+                            </div>
+                            <div className="welcome-action-navigation-middle-container">
+                                <span>{lang.title[this.props.user.language]}</span>
+                            </div>
+                            <div className="welcome-action-navigation-side-container" style={{justifyContent: "flex-end"}}>
+                                <Language setLanguage={this.props.setLanguage} language={this.props.user.language} />
+                            </div>
                         </div>
                         <div className="welcome-action-wrapper">
                             {
@@ -187,7 +203,7 @@ class Welcome extends Component {
                                     </div>
                             }
                             <div className="welcome-action-input-container">
-                                <input type={"text"} value={this.state.code} onChange={(e) => this.setState({ code: e.target.value })} placeholder={"Mängu kood"} className="welcome-action-game-code-input" />
+                                <input type={"text"} value={this.state.code} onChange={(e) => this.setState({ code: e.target.value })} placeholder={lang.gameCodeInputPlaceholder[this.props.user.language]} className="welcome-action-game-code-input" />
                             </div>
                             {
                                 !this.state.entering ?
@@ -201,15 +217,15 @@ class Welcome extends Component {
                             }
                         </div>
                         <div className="public-games-title-container">
-                            <p>Avalikud mängud</p>
+                            <p>{lang.publicGames[this.props.user.language]}</p>
                         </div>
                         <div className="public-games-list-container">
                             {
                                 this.state.isFetching ?
-                                    <p className="public-games-list-idle">Laadimine...</p>
+                                    <p className="public-games-list-idle">{lang.loading[this.props.user.language]}</p>
                                 :
                                     this.state.rooms.length < 1 ?
-                                        <p className="public-games-list-idle">Mänge ei leitud</p>
+                                        <p className="public-games-list-idle">{lang.noGames[this.props.user.language]}</p>
                                     :
                                         this.renderPublicRooms(this.state.rooms)
                             }
@@ -241,7 +257,7 @@ let mapStateToProps = (state) => {
 
 let mapDispatchToProps = (dispatch) => {
     return {
-        ...bindActionCreators({ setUser, setRoom }, dispatch)
+        ...bindActionCreators({ setUser, setRoom, setLanguage }, dispatch)
     }
 }
 

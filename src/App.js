@@ -5,7 +5,7 @@ import { bindActionCreators } from "redux";
 import firebase from "firebase";
 import Routes from "./routes";
 
-import { setUserBrowserID } from "./modules/user";
+import { setUserBrowserID, setLanguage } from "./modules/user";
 import { setSocket } from "./modules/socket";
 
 // Cookies and browserID
@@ -31,10 +31,11 @@ class App extends Component {
     firebase.analytics();
 
     let browserID = Cookies.get("browserID");
+    let language = Cookies.get("language");
 
     if (browserID) {
 
-      return this.props.setUserBrowserID(browserID);
+      this.props.setUserBrowserID(browserID);
 
     } else {
 
@@ -42,9 +43,16 @@ class App extends Component {
 
       Cookies.set("browserID", id, { expires: 365 });  
 
-      return this.props.setUserBrowserID(id);
+      this.props.setUserBrowserID(id);
 
     }
+
+    if (language) {
+      this.props.setLanguage(language);
+    } else {
+      this.props.setLanguage("estonian");
+    }
+
 
   } 
 
@@ -60,7 +68,7 @@ class App extends Component {
 
 let mapDispatchToProps = (dispatch) => {
   return {
-      ...bindActionCreators({ setSocket, setUserBrowserID }, dispatch)
+      ...bindActionCreators({ setSocket, setUserBrowserID, setLanguage }, dispatch)
   }
 }
 

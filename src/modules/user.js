@@ -1,9 +1,13 @@
+import Cookies from "js-cookie";
+
+export const SET_LANGUAGE = "SET_LANGUAGE";
 export const SET_USER_BROWSER_ID = "SET_USER_BROWSER_ID";
 export const SET_USER = "SET_USER";
 export const RESET_USER = "RESET_USER";
 export const SET_USER_STATUS = "SET_USER_STATUS";
 
 const initialState = {
+    language: "estonian",
     browser_id: null,
     room_code: null,
     name: "",
@@ -13,6 +17,15 @@ const initialState = {
 export default (state = initialState, action) => {
 
     switch (action.type) {
+
+        case SET_LANGUAGE:
+
+            Cookies.set("language", action.data, { expires: 365 });
+            
+            return {
+                ...state,
+                language: action.data,
+            };
 
         case SET_USER_BROWSER_ID:
             
@@ -24,6 +37,7 @@ export default (state = initialState, action) => {
         case SET_USER:
         
             return {
+                ...state,
                 browser_id: action.data.browser_id,
                 room_code: action.data.room_code,
                 name: action.data.name,
@@ -51,6 +65,17 @@ export default (state = initialState, action) => {
     }
 
 };
+
+export let setLanguage = (data) => dispatch => {
+
+    return new Promise(resolve => {
+        return resolve(dispatch({
+            type: SET_LANGUAGE,
+            data,
+        }));
+    });
+
+}
 
 export let setUserBrowserID = (id) => dispatch => {
 

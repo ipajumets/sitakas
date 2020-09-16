@@ -14,9 +14,10 @@ export let check_my_waiting_status = (id, code) => {
         body: JSON.stringify(body),
     };
 
-    return fetch("https://www.sitaratas.eu/api/users/check-my-waiting-status", request)
+    return fetch("/api/users/check-my-waiting-status", request)
         .then(res => res.json())
         .then(json => {
+            console.log(json);
             return json;
         })
         .catch(err => {

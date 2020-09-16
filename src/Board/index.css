@@ -43,24 +43,31 @@
     background-color: rgba(152, 210, 251, 0.5);
 }
 
-.board-action-navigation-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 54px;
-    background-color: #B2DDF7;
-    border-bottom: 1px solid skyblue;
-}
-
 .board-action-between-navigation-container {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
     height: 54px;
-    background-color: #B2DDF7;
-    border-bottom: 1px solid skyblue;
+    background-color: white;
+}
+
+.board-action-navigation-middle-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.board-action-navigation-side-container {
+    height: 100%;
+    width: 180px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 0 20px;
 }
 
 .board-action-navigation-titles-wrapper {
@@ -225,6 +232,44 @@
     align-items: center;
     background-color: rgba(125, 125, 125, 0.2);
     padding: 2vh 0;
+}
+
+.selected-card-joker-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    background-color: rgba(125, 125, 125, 0.2);
+    border-radius: 5px 5px 0 0;
+    overflow: hidden;
+}
+
+.selected-card-joker-overlay span {
+    font-weight: bold;
+    font-size: 12pt;
+    font-family: "Roboto", Arial, sans-serif;
+    color: black;
+    -webkit-text-stroke: 1px rgb(200, 200, 200);
+    padding: 5px 0;
+}
+
+.selected-card-joker-button-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: red;
+}
+
+.selected-card-joker-button-container {
+    font-weight: bold;
+    font-size: 10pt;
+    font-family: "Roboto", Arial, sans-serif;
+    color: black;
+    -webkit-text-stroke: 1px rgb(200, 200, 200);
 }
 
 .selected-card-overlay span {
@@ -596,4 +641,10 @@
     font-family: "Roboto", Arial, sans-serif;
     font-size: 12pt;
     cursor: pointer;
+}
+
+@media only screen and (max-width: 500px) {
+    .board-action-navigation-side-container {
+        width: 128px;
+    }
 }

@@ -7,7 +7,7 @@ import Page from "../Page";
 import { isMobileSafari, isChrome, isMobile, isIOS } from "react-device-detect";
 
 // modules
-import { resetUser }  from "../modules/user";
+import { resetUser, setLanguage }  from "../modules/user";
 import { setGame, updateGameHand, resetGame }  from "../modules/game";
 import { setRound, setPreviousRound, addMyBet, resetRound, updateResults, addWon, setNextTurn }  from "../modules/round";
 import { setHand, setPreviousHand, addCard, addHandWinner, resetHands }  from "../modules/hands";
@@ -29,6 +29,10 @@ import { rearrangePlayersOrder, getSitaratas, checkErrors, sortCards, totalRound
 import Chat from "../Chat";
 import ChatBubble from "../ChatBubble";
 import MobileChat from "../MobileChat";
+import Coffee from "../Coffee";
+import Language from "../Language";
+
+import { lang } from "../lang";
 
 class Board extends Component {
 
@@ -158,22 +162,22 @@ class Board extends Component {
 
     }
 
-    handleTable = (game, round, prevRound, hand, prevHand, uid, connections) => {
+    handleTable = (game, round, prevRound, hand, prevHand, uid, connections, language) => {
 
         let sorted = rearrangePlayersOrder(game.players, uid);
 
         switch (game.players.length) {
 
             case 3:
-                return <ThreePlayersTable game={game} round={round} prevRound={prevRound} hand={hand} prevHand={prevHand} players={sorted} connections={connections} />;
+                return <ThreePlayersTable language={language} game={game} round={round} prevRound={prevRound} hand={hand} prevHand={prevHand} players={sorted} connections={connections} />;
             case 4:
-                return <FourPlayersTable game={game} round={round} prevRound={prevRound} hand={hand} prevHand={prevHand} players={sorted} connections={connections} />;
+                return <FourPlayersTable language={language} game={game} round={round} prevRound={prevRound} hand={hand} prevHand={prevHand} players={sorted} connections={connections} />;
             case 5:
-                return <FivePlayersTable game={game} round={round} prevRound={prevRound} hand={hand} prevHand={prevHand} players={sorted} connections={connections} />;
+                return <FivePlayersTable language={language} game={game} round={round} prevRound={prevRound} hand={hand} prevHand={prevHand} players={sorted} connections={connections} />;
             case 6:
-                return <SixPlayersTable game={game} round={round} prevRound={prevRound} hand={hand} prevHand={prevHand} players={sorted} connections={connections} />;
+                return <SixPlayersTable language={language} game={game} round={round} prevRound={prevRound} hand={hand} prevHand={prevHand} players={sorted} connections={connections} />;
             default:
-                return <ThreePlayersTable game={game} round={round} prevRound={prevRound} hand={hand} prevHand={prevHand} players={sorted} connections={connections} />;
+                return <ThreePlayersTable language={language} game={game} round={round} prevRound={prevRound} hand={hand} prevHand={prevHand} players={sorted} connections={connections} />;
 
         }
 
@@ -188,15 +192,31 @@ class Board extends Component {
 
         return sortedCards.map((card, index) => {
             if (this.state.selected_card.suit === card.suit && this.state.selected_card.value === card.value) {
-                return(
-                    <div style={canFit ? {zIndex: index+1} : {zIndex: index+1, marginLeft: index !== 0 ? -marginLeft : 0}} className="board-hand-selected-card-container" key={index} onClick={() => this.handle_card_send(card, index, game, uid)}>
-                        <img className="board-hand-card" src={require(`../media/deck/${card.value}_${card.suit}.svg`)} alt="" />
-                        <div className="selected-card-overlay">
-                            <img src={require("../media/svgs/up-arrow.svg")} style={{width: 24, height: 24}} alt=""/>
-                            <span>SAADA</span>
+                if (this.state.selected_card.value === 15) {
+                    return(
+                        <div style={canFit ? {zIndex: index+1} : {zIndex: index+1, marginLeft: index !== 0 ? -marginLeft : 0}} className="board-hand-selected-card-container" key={index}>
+                            <img className="board-hand-card" src={require(`../media/deck/${card.value}_${card.suit}.svg`)} alt="" />
+                            <div className="selected-card-joker-overlay">
+                                <div className="selected-card-joker-button-container" style={{...this.handleJokersButton(), backgroundColor: "rgba(99, 105, 209, 0.67)"}} onClick={() => this.handle_joker_send(card, index, game, uid, true)}>
+                                    <span>{lang.high[this.props.user.language]}</span>
+                                </div>
+                                <div className="selected-card-joker-button-container" style={{...this.handleJokersButton(), backgroundColor: "rgba(255, 99, 71, 0.67)"}} onClick={() => this.handle_joker_send(card, index, game, uid, false)}>
+                                    <span>{lang.low[this.props.user.language]}</span>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                );
+                    );
+                } else {
+                    return(
+                        <div style={canFit ? {zIndex: index+1} : {zIndex: index+1, marginLeft: index !== 0 ? -marginLeft : 0}} className="board-hand-selected-card-container" key={index} onClick={() => this.handle_card_send(card, index, game, uid)}>
+                            <img className="board-hand-card" src={require(`../media/deck/${card.value}_${card.suit}.svg`)} alt="" />
+                            <div className="selected-card-overlay">
+                                <img src={require("../media/svgs/up-arrow.svg")} style={{width: 24, height: 24}} alt=""/>
+                                <span>{lang.play[this.props.user.language]}</span>
+                            </div>
+                        </div>
+                    );
+                }
             } else {
                 return(
                     <div style={canFit ? {zIndex: index+1} : {zIndex: index+1, marginLeft: index !== 0 ? -marginLeft : 0}} className="board-hand-card-container" key={index} onClick={() => this.handle_card_select(card, round, hand, cards, uid)}>
@@ -216,7 +236,7 @@ class Board extends Component {
                     .then(result => {
                         if (result.error) {
                             return this.setState({ betting: false }, () => {
-                                return alert(result.message);
+                                return alert(this.props.user.language === "english" ? "You can't bid "+wins : wins+" ei saa pakkuda");
                             });
                         }
                         return this.setState({ wins: 0, betting: false });
@@ -229,7 +249,10 @@ class Board extends Component {
     handle_card_select = (card, round, hand, cards, uid) => {
 
         if (round.turn === uid && round.action === "call") {
-            if (hand.cards.length < 1) {
+
+            if (card.value === 15) return this.setState({ selected_card: card });
+
+            if (hand.cards.length < 1 || !hand.base) {
                 return this.setState({ selected_card: card });
             } else {
 
@@ -240,21 +263,22 @@ class Board extends Component {
                     if (card.suit === hand.base.suit) {
                         return this.setState({ selected_card: card });
                     } else {
-                        return alert("Palun käi masti");
+                        return alert(lang.playSuit[this.props.user.language]);
                     }
                 } else if (myTrumpCards.length > 0) {
                     if (card.suit === round.trump.suit) {
                         return this.setState({ selected_card: card });
                     } else {
-                        return alert("Palun käi trumpi");
+                        return alert(lang.playTrump[this.props.user.language]);
                     }
                 } else {
                     return this.setState({ selected_card: card });
                 }
 
             }
+
         } else {
-            return alert("Veel ei ole sinu kord");
+            return alert(lang.notYourTurnYet[this.props.user.language]);
         }
 
     }
@@ -262,6 +286,29 @@ class Board extends Component {
     handle_card_send = (c, c_index, game, uid) => {
 
         let card = { uid: uid, value: c.value, suit: c.suit };
+            
+        return this.props.removeCard(c_index)
+            .then(_ => {
+                return this.props.addCard(card);
+            })
+            .then(_ => {
+                return this.props.setNextTurn(uid, "called")
+                    .then(_ => {
+                        return uploadCard(game, card)
+                            .then(result => {
+                                if (result.error) {
+                                    return alert(result.message);
+                                }
+                                return this.setState({ selected_card: {} });
+                            });
+                    }); 
+            });
+
+    }
+
+    handle_joker_send = (c, c_index, game, uid, isHighest) => {
+
+        let card = { uid: uid, value: c.value, suit: c.suit, isHighest: isHighest };
             
         return this.props.removeCard(c_index)
             .then(_ => {
@@ -373,6 +420,20 @@ class Board extends Component {
 
     }
 
+    handleJokersButton = () => {
+
+        if (isMobileSafari) {
+            return { height: 95 };
+        }
+
+        if (isIOS && isMobile && isChrome) {
+            return { height: 95 };
+        }
+
+        return { height: 45 };
+
+    }
+
     render = () => {
 
         if (!this.state.loading) {
@@ -380,7 +441,7 @@ class Board extends Component {
             let loser = this.props.game.data.isOver ? getSitaratas(this.props.game.data.players) : {};
 
             return(
-                <Page title={this.props.round.data.turn === this.props.user.browser_id ? `Sinu kord | Mäng ${this.props.game.data.room_code}` : `Mäng ${this.props.game.data.room_code}`} icon={this.props.round.data.turn === this.props.user.browser_id ? require("../media/icos/favicon-alert.png") : require("../media/icos/favicon.png")}>
+                <Page title={this.props.round.data.turn === this.props.user.browser_id ? `${lang.yourTurn[this.props.user.language]} | ${lang.game[this.props.user.language]} ${this.props.game.data.room_code}` : `${lang.game[this.props.user.language]} ${this.props.game.data.room_code}`} icon={this.props.round.data.turn === this.props.user.browser_id ? require("../media/icos/favicon-alert.png") : require("../media/icos/favicon.png")}>
                     <div className="board-action-and-chat-container">
                         {
                             this.state.width >= 960 ?
@@ -391,29 +452,43 @@ class Board extends Component {
                         <div className="board-action-container">
                             {
                                 this.state.width > 960 ?
-                                    <div className="board-action-navigation-container">
-                                        <span className="board-action-navigation-title">MÄNG {this.props.game.data.room_code}</span>
-                                        <span className="board-action-navigation-subtitle">ROUND {this.props.game.data.round}/{totalRounds(this.props.game.data.players.length)}</span>
+                                    <div className="board-action-between-navigation-container">
+                                        <div className="board-action-navigation-side-container">
+                                            <Coffee title={lang.coffee[this.props.user.language]} />                             
+                                        </div>
+                                        <div className="board-action-navigation-middle-container">
+                                            <span className="board-action-navigation-title">{lang.game[this.props.user.language].toUpperCase()} {this.props.game.data.room_code}</span>
+                                            <span className="board-action-navigation-subtitle">ROUND {this.props.game.data.round}/{totalRounds(this.props.game.data.players.length)}</span>
+                                        </div>
+                                        <div className="board-action-navigation-side-container" style={{justifyContent: "flex-end", paddingRight: 0}}>
+                                            <Language setLanguage={this.props.setLanguage} language={this.props.user.language} />
+                                        </div>
                                     </div>
                                 :
                                     <div className="board-action-between-navigation-container">
-                                        <div style={{width: 54}}></div>
-                                        <div className="board-action-navigation-titles-wrapper">
-                                            <span className="board-action-navigation-title">MÄNG {this.props.game.data.room_code}</span>
+                                        <div className="board-action-navigation-side-container">
+                                            <Coffee hide={true} title={lang.coffee[this.props.user.language]} />
+                                            <div style={{width: 15}}></div>
+                                            <Language hide={true} setLanguage={this.props.setLanguage} language={this.props.user.language} />                                
+                                        </div>
+                                        <div className="board-action-navigation-middle-container">
+                                            <span className="board-action-navigation-title">{lang.game[this.props.user.language].toUpperCase()} {this.props.game.data.room_code}</span>
                                             <span className="board-action-navigation-subtitle">ROUND {this.props.game.data.round}/{totalRounds(this.props.game.data.players.length)}</span>
                                         </div>
-                                        <ChatBubble uid={this.props.user.browser_id} rid={this.props.game.data.room_code} />
+                                        <div className="board-action-navigation-side-container" style={{justifyContent: "flex-end", paddingRight: 0}}>
+                                            <ChatBubble uid={this.props.user.browser_id} rid={this.props.game.data.room_code} />
+                                        </div>
                                     </div>
                             }
                             <div className="board-action-wrapper">
                                 <div className="board-table-container">
-                                    {this.handleTable(this.props.game.data, this.props.round.data, this.props.round.prev, this.props.hands.data, this.props.hands.prev, this.props.user.browser_id, this.props.socket.connections)}
+                                    {this.handleTable(this.props.game.data, this.props.round.data, this.props.round.prev, this.props.hands.data, this.props.hands.prev, this.props.user.browser_id, this.props.socket.connections, this.props.user.language)}
                                     {
                                         !this.props.game.data.isOver && this.props.round.data.turn === this.props.user.browser_id && this.props.round.data.action === "guess" ?
                                             <div className="guess-wins-container">
                                                 <div className="guess-wins-wrapper">
                                                     <div className="guess-wins-header-container">
-                                                        <span>Sinu panus</span>
+                                                        <span>{lang.yourBid[this.props.user.language]}</span>
                                                     </div>
                                                     <div className="guess-wins-input-container">
                                                         <div className="guess-wins-input-button-container" onClick={() => this.handle_wins_bet_substract(this.state.wins)}>
@@ -428,7 +503,7 @@ class Board extends Component {
                                                     </div>
                                                     <div className="guess-wins-footer-container">
                                                         <div className="guess-wins-footer-button-container" onClick={() => this.add_my_bet(this.props.game.data.room_code, this.props.user.browser_id, this.state.wins, this.props.round.data.round)}>
-                                                            <span>Kinnita</span>
+                                                            <span>{lang.confirmBid[this.props.user.language]}</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -440,7 +515,7 @@ class Board extends Component {
                                         this.props.hands.data ?
                                             this.props.hands.data.winner ?
                                                 <div className="hand-winner-overlay-container">
-                                                    <span><b>{this.props.game.data.players.filter(player => player.uid === this.props.hands.data.winner.uid)[0].name}</b> võtab</span>
+                                                    <span><b>{this.props.game.data.players.filter(player => player.uid === this.props.hands.data.winner.uid)[0].name}</b> {lang.wins[this.props.user.language]}</span>
                                                 </div>
                                             :
                                                 <div></div>
@@ -450,7 +525,7 @@ class Board extends Component {
                                     {
                                         this.props.round.data.turn === this.props.user.browser_id && this.props.round.data.action === "call" && !this.props.hands.data.winner ?
                                             <div className="hand-winner-overlay-container">
-                                                <span><b>Sinu</b> kord</span>
+                                                <span><b>{lang.your[this.props.user.language]}</b> {lang.turn[this.props.user.language]}</span>
                                             </div>
                                         :
                                             <div></div>
@@ -472,18 +547,18 @@ class Board extends Component {
                                     <div className="final-pop-up-container" style={{zIndex: 1000}}>
                                         <div className="final-pop-up-sitaratas-container">
                                             <img className="final-pop-up-sitaratas-image" src={loser.image} alt="" />
-                                            <span className="final-pop-up-sitaratas-name"><span className="final-pop-up-sitaratas-title">Sitaratas:</span> {loser.name}</span>
+                                            <span className="final-pop-up-sitaratas-name"><span className="final-pop-up-sitaratas-title">{lang.loser[this.props.user.language]}</span> {loser.name}</span>
                                             <div className="final-pop-up-signature-container">
-                                                <span className="final-pop-up-signature-title">Allkiri</span>
+                                                <span className="final-pop-up-signature-title">{lang.signature[this.props.user.language]}</span>
                                                 <div className="final-pop-up-signature"></div>
                                             </div>
                                             <div className="final-pop-up-list-container">
-                                                <span className="final-pop-up-list-title">Lõplik järjestus</span>
+                                                <span className="final-pop-up-list-title">{lang.list[this.props.user.language]}</span>
                                                 {this.renderResults(this.props.game.data.players)}
                                             </div>
                                             <div className="final-pop-up-exit-container">
                                                 <div className="final-pop-up-exit-button-container" onClick={() => this.exitGame()}>
-                                                    <span className="final-pop-up-exit-button-text">Välju</span>
+                                                    <span className="final-pop-up-exit-button-text">{lang.quit[this.props.user.language]}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -536,7 +611,7 @@ let mapStateToProps = (state) => {
 
 let mapDispatchToProps = (dispatch) => {
     return {
-        ...bindActionCreators({ resetRoom, setGame, updateGameHand, resetGame, setNextTurn, setRound, setPreviousRound, addMyBet, setHand, setPreviousHand, addCard, updateResults, setCards, removeCard, resetCards, resetHands, resetRound, resetUser, addWon, addHandWinner, setConnections }, dispatch)
+        ...bindActionCreators({ resetRoom, setGame, updateGameHand, resetGame, setNextTurn, setRound, setPreviousRound, addMyBet, setHand, setPreviousHand, addCard, updateResults, setCards, removeCard, resetCards, resetHands, resetRound, resetUser, addWon, addHandWinner, setConnections, setLanguage }, dispatch)
     }
 }
 

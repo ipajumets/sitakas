@@ -1,20 +1,20 @@
 import React, { Component } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { isMobileSafari } from "react-device-detect";
+import { isMobileSafari, isMobile } from "react-device-detect";
 import io from "socket.io-client";
 import Page from "../Page";
 
 // api-requests
 import { check_my_waiting_status } from "../api-requests/global";
-import { leave_room, create_new_game, update_privacy, update_max_players, update_isReady } from "./api-requests";
+import { leave_room, create_new_game, update_privacy, update_max_players, update_isReady, update_jokers, update_sport } from "./api-requests";
 
 // css
 import "./index.css";
 
 // modules
-import { setRoomWithPlayers, resetRoom, addPlayer, setPlayers, removePlayer, setPrivacy, setMaxPlayers } from "../modules/room";
-import { setUserBrowserID, setUser, resetUser, setUserStatus } from "../modules/user";
+import { setRoomWithPlayers, resetRoom, addPlayer, setPlayers, removePlayer, setPrivacy, setJokers, setMaxPlayers, setSport } from "../modules/room";
+import { setUserBrowserID, setUser, resetUser, setUserStatus, setLanguage } from "../modules/user";
 
 //  helpers
 import { allReady } from "./helpers";
@@ -23,6 +23,10 @@ import { allReady } from "./helpers";
 import Chat from "../Chat";
 import ChatBubble from "../ChatBubble";
 import MobileChat from "../MobileChat";
+import Coffee from "../Coffee";
+import Language from "../Language";
+
+import { lang } from "../lang";
 
 class Setup_v2 extends Component {
 
@@ -115,6 +119,14 @@ class Setup_v2 extends Component {
             this.props.setPrivacy(result.privacy);
         });
 
+        this.socket.on(`${code}_jokers_updated`, result => {
+            this.props.setJokers(result.jokers);
+        });
+
+        this.socket.on(`${code}_sport_updated`, result => {
+            this.props.setSport(result.sport);
+        });
+
         this.socket.on(`${code}_max_players_updated`, result => {
             this.props.setMaxPlayers(result.amount);
         });
@@ -203,11 +215,29 @@ class Setup_v2 extends Component {
 
     }
 
+    setJokers = (rid, jokers) => {
+
+        return this.props.setJokers(jokers)
+            .then(_ => {
+                return update_jokers(rid, jokers);
+            });
+
+    }
+
     setMaxPlayers = (rid, amount) => {
 
         return this.props.setMaxPlayers(amount)
             .then(_ => {
                 return update_max_players(rid, amount);
+            });
+
+    }
+
+    setSport = (rid, sport) => {
+
+        return this.props.setSport(sport)
+            .then(_ => {
+                return update_sport(rid, sport);
             });
 
     }
@@ -247,17 +277,40 @@ class Setup_v2 extends Component {
                             {
                                 this.state.width > 960 ?
                                     <div className="waiting-action-navigation-center-container">
-                                        <span>Sitaratas</span>
+                                        <div className="waiting-action-navigation-side-container">
+                                            <Coffee title={lang.coffee[this.props.user.language]} />                             
+                                        </div>
+                                        <div className="waiting-action-navigation-middle-container">
+                                            <span>{lang.title[this.props.user.language]}</span>
+                                        </div>
+                                        <div className="waiting-action-navigation-side-container" style={{justifyContent: "flex-end"}}>
+                                            <Language setLanguage={this.props.setLanguage} language={this.props.user.language} />
+                                        </div>
                                     </div>
                                 :
-                                    <div className="waiting-action-navigation-container">
-                                        <div style={{width: 54}}></div>
-                                        <span>Sitaratas</span>
-                                        <ChatBubble uid={this.props.user.browser_id} rid={this.props.room.code} />
+                                    <div className="waiting-action-navigation-center-container">
+                                        <div className="waiting-action-navigation-side-container">
+                                            <Coffee hide={true} title={lang.coffee[this.props.user.language]} />
+                                            <div style={{width: 15}}></div>
+                                            <Language hide={true} setLanguage={this.props.setLanguage} language={this.props.user.language} />                          
+                                        </div>
+                                        <div className="waiting-action-navigation-middle-container">
+                                            <span>{lang.title[this.props.user.language]}</span>
+                                        </div>
+                                        <div className="waiting-action-navigation-side-container" style={{justifyContent: "flex-end", paddingRight: 0}}>
+                                            <ChatBubble uid={this.props.user.browser_id} rid={this.props.room.code} />
+                                        </div>
                                     </div>
                             }
                             <div className="waiting-action-wrapper">
-                                <span className="waiting-action-game-code-title">MÄNGU KOOD</span>
+                                {
+                                    isMobile && this.props.room.host_browser_id === this.props.user.browser_id ?
+                                        <div className="ios-safari-bottom">
+                                        </div>
+                                    :
+                                        <div></div>
+                                }
+                                <span className="waiting-action-game-code-title">{lang.gameCode[this.props.user.language]}</span>
                                 <span className="waiting-action-game-code">{this.props.room.code}</span>
                                 <div className="waiting-action-names-list">
                                     {this.props.room.players.map((player, index) => {
@@ -273,21 +326,33 @@ class Setup_v2 extends Component {
                                     this.props.room.host_browser_id === this.props.user.browser_id ?
                                         <div className="waiting-host-actions-container">
                                             <div className="waiting-host-actions-privacy-title-container">
-                                                <span>Mängu privaatsus</span>
+                                                <p>{lang.privacy[this.props.user.language]}</p>
                                             </div>
                                             <div className="waiting-host-actions-privacy-container">
                                                 <div onClick={() => this.setPrivacy(this.props.room.code, "private")} className="waiting-host-actions-privacy-item-container" style={{backgroundColor: this.props.room.privacy === "private" ? "#5386E4" : "transparent"}}>
-                                                    <span>Satsikas</span>
+                                                    <span>{lang.private[this.props.user.language]}</span>
                                                 </div>
                                                 <div className="waiting-host-actions-privacy-separator"></div>
                                                 <div onClick={() => this.setPrivacy(this.props.room.code, "public")} className="waiting-host-actions-privacy-item-container" style={{backgroundColor: this.props.room.privacy === "public" ? "#5386E4" : "transparent"}}>
-                                                    <span>Rahvale</span>
+                                                    <span>{lang.public[this.props.user.language]}</span>
                                                 </div>
                                             </div>
-                                            <div className="waiting-host-actions-privacy-title-container" style={{paddingTop: 30}}>
-                                                <span>Mängijate arv</span>
+                                            <div className="waiting-host-actions-privacy-title-container">
+                                                <p>{lang.gameType[this.props.user.language]}</p>
                                             </div>
-                                            <div className="waiting-host-actions-max-container">
+                                            <div className="waiting-host-actions-privacy-container">
+                                                <div onClick={() => this.setJokers(this.props.room.code, false)} className="waiting-host-actions-privacy-item-container" style={{backgroundColor: !this.props.room.jokers ? "#5386E4" : "transparent"}}>
+                                                    <span>{lang.classic[this.props.user.language]}</span>
+                                                </div>
+                                                <div className="waiting-host-actions-privacy-separator"></div>
+                                                <div onClick={() => this.setJokers(this.props.room.code, true)} className="waiting-host-actions-privacy-item-container" style={{backgroundColor: this.props.room.jokers ? "#5386E4" : "transparent"}}>
+                                                    <span>{lang.jokers[this.props.user.language]}</span>
+                                                </div>
+                                            </div>
+                                            <div className="waiting-host-actions-max-title-container">
+                                                <p>{lang.numberOfPlayers[this.props.user.language]}</p>
+                                            </div>
+                                            <div className="waiting-host-actions-max-container" style={{marginBottom: 15}}>
                                                 <div onClick={() => this.setMaxPlayers(this.props.room.code, 3)} className="waiting-host-actions-max-item-container" style={{backgroundColor: this.props.room.maxPlayers === 3 ? "#5386E4" : "transparent"}}>
                                                     <span>3</span>
                                                 </div>
@@ -304,6 +369,22 @@ class Setup_v2 extends Component {
                                                     <span>6</span>
                                                 </div>
                                             </div>
+                                            <div className="waiting-host-actions-max-title-container">
+                                                <p>{lang.sport[this.props.user.language]}</p>
+                                            </div>
+                                            <div className="waiting-host-actions-max-container">
+                                                <div onClick={() => this.setSport(this.props.room.code, "basketball")} className="waiting-host-actions-max-item-container" style={{backgroundColor: this.props.room.sport === "basketball" ? "#5386E4" : "transparent"}}>
+                                                    <span role="img" aria-label="Koss">🏀</span>
+                                                </div>
+                                                <div className="waiting-host-actions-max-separator"></div>
+                                                <div onClick={() => this.setSport(this.props.room.code, "football")} className="waiting-host-actions-max-item-container" style={{backgroundColor: this.props.room.sport === "football" ? "#5386E4" : "transparent"}}>
+                                                    <span role="img" aria-label="Jalka">⚽</span>
+                                                </div>
+                                                <div className="waiting-host-actions-max-separator"></div>
+                                                <div onClick={() => this.setSport(this.props.room.code, "both")} className="waiting-host-actions-max-item-container" style={{backgroundColor: this.props.room.sport === "both" ? "#5386E4" : "transparent"}}>
+                                                    <span role="img" aria-label="Mõlemad">🏀 ⚽</span>
+                                                </div>
+                                            </div>
                                         </div>
                                     :
                                         <div></div>
@@ -312,21 +393,28 @@ class Setup_v2 extends Component {
                                     this.props.room.host_browser_id !== this.props.user.browser_id ?
                                         <div className="waiting-action-room-data-container">
                                             <div className="waiting-action-room-data-item-container">
-                                                <span>Mängu privaatsus:</span>
-                                                <strong>{this.props.room.privacy === "private" ? "Satsikas" : "Rahvale"}</strong>
+                                                <span>{lang.privacy[this.props.user.language]}:</span>
+                                                <strong>{this.props.room.privacy === "private" ? "Satsikas" : "Rahvale"} <span>{this.props.room.sport === "basketball" ? "🏀" : this.props.room.sport === "football" ? "⚽" : "🏀 ⚽"}</span></strong>
                                             </div>
                                             <div className="waiting-action-room-data-item-container">
-                                                <span>Mängijate arv:</span> <strong>{this.props.room.maxPlayers}</strong>
+                                                <span>{lang.numberOfPlayers[this.props.user.language]}:</span> <strong>{this.props.room.maxPlayers}</strong>
                                             </div>
                                         </div>
                                     :
                                         <div></div>
                                 }
+                                {this.props.room.host_browser_id !== this.props.user.browser_id &&
+                                    <div className="waiting-action-room-data-container">
+                                        <div className="waiting-action-room-data-item-container">
+                                            <span>{lang.gameType[this.props.user.language]}:</span> <strong>{this.props.room.jokers ? lang.jokers[this.props.user.language] : lang.classic[this.props.user.language]}</strong>
+                                        </div>
+                                    </div>
+                                }
                                 {
                                     this.props.room.host_browser_id === this.props.user.browser_id ?
                                         !this.state.starting ?
                                             <div onClick={() => this.startGame(this.props.room.code, this.props.room.players)} className="waiting-action-enter-game-button">
-                                                <span>Alusta mängu</span>
+                                                <span>{lang.start[this.props.user.language]}</span>
                                             </div>
                                         :
                                             <div className="waiting-action-enter-game-button">
@@ -339,18 +427,18 @@ class Setup_v2 extends Component {
                                     this.props.room.host_browser_id !== this.props.user.browser_id ?
                                         !this.props.user.isReady ?
                                             <div onClick={() => this.handleReady(this.props.room.code, this.props.user.browser_id, true)} className="waiting-action-ready-game-button">
-                                                <span>Mina olen valmis</span>
+                                                <span>{lang.iAmReady[this.props.user.language]}</span>
                                             </div>
                                         :
                                             <div onClick={() => this.handleReady(this.props.room.code, this.props.user.browser_id, false)} className="waiting-action-wait-game-button">
-                                                <span>Aeg maha</span>
+                                                <span>{lang.timeOut[this.props.user.language]}</span>
                                             </div>
                                     :
                                         <div></div>
                                 }
                                 {
                                     !this.state.leaving ?
-                                        <span onClick={() => this.leaveRoom(this.props.room.code, this.props.user.browser_id)} className="waiting-action-create-game-button">Lahku mängust</span>
+                                        <span onClick={() => this.leaveRoom(this.props.room.code, this.props.user.browser_id)} className="waiting-action-create-game-button">{lang.leave[this.props.user.language]}</span>
                                     :
                                         <img className="waiting-action-create-game-loading" src={require("../media/svgs/loading-fat.svg")} alt="" />
                                 }
@@ -375,11 +463,6 @@ class Setup_v2 extends Component {
         } else {
             return(
                 <Page>
-                    <div className="waiting-loading-container">
-                        <div className="waiting-action-navigation-container">
-                            <span>Sitaratas</span>
-                        </div>
-                    </div>
                 </Page>
             );
         }
@@ -398,7 +481,7 @@ let mapStateToProps = (state) => {
 
 let mapDispatchToProps = (dispatch) => {
     return {
-        ...bindActionCreators({ setRoomWithPlayers, resetRoom, addPlayer, setPlayers, removePlayer, setUserBrowserID, setUser, resetUser, setPrivacy, setMaxPlayers, setUserStatus }, dispatch)
+        ...bindActionCreators({ setRoomWithPlayers, resetRoom, addPlayer, setPlayers, removePlayer, setUserBrowserID, setUser, resetUser, setPrivacy, setJokers, setMaxPlayers, setUserStatus, setSport, setLanguage }, dispatch)
     }
 }
 

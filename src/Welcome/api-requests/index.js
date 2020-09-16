@@ -13,7 +13,7 @@ export let create_new_room = (host_id) => {
         body: JSON.stringify(body),
     }
 
-    return fetch("https://www.sitaratas.eu/api/rooms/create-new-room", request)
+    return fetch("/api/rooms/create-new-room", request)
         .then(res => res.json())
         .then(json => {
             return json;
@@ -26,7 +26,7 @@ export let create_new_room = (host_id) => {
 
 export let get_public_games = () => {
 
-    return fetch("https://www.sitaratas.eu/api/rooms/public")
+    return fetch("/api/rooms/public")
         .then(res => res.json())
         .then(json => {
             return json.rooms;

@@ -2,7 +2,9 @@ import React from "react";
 import "./four_players.css";
 import { handleUser } from "../helpers";
 
-export default ({ game, round, prevRound, hand, prevHand, players, connections }) => {
+import { lang } from "../../lang";
+
+export default ({ game, round, prevRound, hand, prevHand, players, connections, language }) => {
 
     let player_0_card = hand ? myCard(hand, players[0].uid) : null,
         player_1_card = hand ? myCard(hand, players[1].uid) : null,
@@ -63,7 +65,15 @@ export default ({ game, round, prevRound, hand, prevHand, players, connections }
                     <div className="four-players-top-player-card-container">
                         {
                             player_2_card ?
-                                <img className="player-card" src={require(`../../media/deck/${player_2_card.value}_${player_2_card.suit}.svg`)} alt="" />
+                                <div className="player-card-container">
+                                    {player_2_card && player_2_card.suit.includes("joker") && player_2_card.isHighest &&
+                                        <img className="joker-state-icon" src={require("../../media/svgs/top.svg")} alt="" />
+                                    }
+                                    {player_2_card && player_2_card.suit.includes("joker") && !player_2_card.isHighest &&
+                                        <img className="joker-state-icon" style={{transform: "rotate(180deg)"}} src={require("../../media/svgs/bottom.svg")} alt="" />
+                                    }
+                                    <img className="player-card" src={require(`../../media/deck/${player_2_card.value}_${player_2_card.suit}.svg`)} alt="" />
+                                </div>
                             :
                                 <div></div>
                         }
@@ -112,7 +122,15 @@ export default ({ game, round, prevRound, hand, prevHand, players, connections }
                     <div className="four-players-left-player-card-container">
                         {
                             player_1_card ?
-                                <img className="player-card" src={require(`../../media/deck/${player_1_card.value}_${player_1_card.suit}.svg`)} alt="" />
+                                <div className="player-card-container">
+                                    {player_1_card && player_1_card.suit.includes("joker") && player_1_card.isHighest &&
+                                        <img className="joker-state-icon" src={require("../../media/svgs/top.svg")} alt="" />
+                                    }
+                                    {player_1_card && player_1_card.suit.includes("joker") && !player_1_card.isHighest &&
+                                        <img className="joker-state-icon" style={{transform: "rotate(180deg)"}} src={require("../../media/svgs/bottom.svg")} alt="" />
+                                    }
+                                    <img className="player-card" src={require(`../../media/deck/${player_1_card.value}_${player_1_card.suit}.svg`)} alt="" />
+                                </div>
                             :
                                 <div></div>
                         }
@@ -159,7 +177,15 @@ export default ({ game, round, prevRound, hand, prevHand, players, connections }
                     <div className="four-players-right-player-card-container">
                         {
                             player_3_card ?
-                                <img className="player-card" src={require(`../../media/deck/${player_3_card.value}_${player_3_card.suit}.svg`)} alt="" />
+                                <div className="player-card-container">
+                                    {player_3_card && player_3_card.suit.includes("joker") && player_3_card.isHighest &&
+                                        <img className="joker-state-icon" src={require("../../media/svgs/top.svg")} alt="" />
+                                    }
+                                    {player_3_card && player_3_card.suit.includes("joker") && !player_3_card.isHighest &&
+                                        <img className="joker-state-icon" style={{transform: "rotate(180deg)"}} src={require("../../media/svgs/bottom.svg")} alt="" />
+                                    }
+                                    <img className="player-card" src={require(`../../media/deck/${player_3_card.value}_${player_3_card.suit}.svg`)} alt="" />
+                                </div>
                             :
                                 <div></div>
                         }
@@ -208,7 +234,15 @@ export default ({ game, round, prevRound, hand, prevHand, players, connections }
                     <div className="four-players-bottom-player-card-container">
                         {
                             player_0_card ?
-                                <img className="player-card" src={require(`../../media/deck/${player_0_card.value}_${player_0_card.suit}.svg`)} alt="" />
+                                <div className="player-card-container">
+                                    {player_0_card && player_0_card.suit.includes("joker") && player_0_card.isHighest &&
+                                        <img className="joker-state-icon" src={require("../../media/svgs/top.svg")} alt="" />
+                                    }
+                                    {player_0_card && player_0_card.suit.includes("joker") && !player_0_card.isHighest &&
+                                        <img className="joker-state-icon" style={{transform: "rotate(180deg)"}} src={require("../../media/svgs/bottom.svg")} alt="" />
+                                    }
+                                    <img className="player-card" src={require(`../../media/deck/${player_0_card.value}_${player_0_card.suit}.svg`)} alt="" />
+                                </div>
                             :
                                 <div></div>
                         }
@@ -223,7 +257,7 @@ export default ({ game, round, prevRound, hand, prevHand, players, connections }
                 hand ?
                     hand.base ?
                         <div className="base-container">
-                            <span className="base-title">PÕHI</span>
+                            <span className="base-title">{lang.suit[language]}</span>
                             <img className="trump-card" src={require(`../../media/deck/${hand.base.value}_${hand.base.suit}.svg`)} alt="" />
                         </div>
                     :
@@ -232,23 +266,23 @@ export default ({ game, round, prevRound, hand, prevHand, players, connections }
                     <div></div>
             }
             <div className="stats-container">
-                <span className="stats-text">Kaarte käes: <span className="bolded-text">{howManyCardsInHand(game.round)}</span></span>
-                <span className="stats-text">Tahetakse: <span className="bolded-text">{howMuchWanted(round.results)}</span></span>
+                <span className="stats-text">{lang.totalCards[language]} <span className="bolded-text">{howManyCardsInHand(game.round)}</span></span>
+                <span className="stats-text">{lang.totalBids[language]} <span className="bolded-text">{howMuchWanted(round.results)}</span></span>
                 <div style={{height: 2, backgroundColor: "tomato", width: 128, marginTop: 5, marginBottom: 5}}></div>
-                <span className="stats-text"><span className="bolded-text">{whosTurn(round, players)}</span> {handleAction(round.action)}</span>
+                <span className="stats-text"><span className="bolded-text">{whosTurn(round, players)}</span> {handleAction(round.action, language)}</span>
             </div>
             {
                 prevHand ?
                     prevHand.cards ?
                         <div className="previous-hand-container">
                             <div className="prev-hand-title-container">
-                                <span>Eelmine käsi</span>
+                                <span>{lang.previousHand[language]}</span>
                             </div>
                             <div className="prev-hand-cards-container">
                                 {renderPrevCards(prevHand)}
                             </div>
                             <div className="prev-hand-bottom-container">
-                                <span><span className="bolded-text">{whoTook(prevHand.winner, players)}</span> võttis</span>
+                                <span><span className="bolded-text">{whoTook(prevHand.winner, players)}</span> {lang.won[language]}</span>
                             </div>
                         </div>
                     :
@@ -361,16 +395,16 @@ let whosTurn = (round, players) => {
 
 }
 
-let handleAction = (action) => {
+let handleAction = (action, language) => {
 
     switch (action) {
 
         case "guess":
-            return "pakub";
+            return lang.bids[language];
         case "call":
-            return "käib";
+            return lang.turns[language];
         case "called":
-            return "käis";
+            return lang.turned[language];
         default:
             return "";
 

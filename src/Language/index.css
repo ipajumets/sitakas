@@ -1,0 +1,34 @@
+.language-button {
+    padding: 6px 12px;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-color: rgba(230, 230, 230, 0.5);
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.language-button:hover {
+    background-color: rgba(220, 220, 220, 0.5);
+}
+
+.language-button img {
+    height: 18px;
+    object-fit: contain;
+}
+
+.language-button p {
+    font-family: "Open Sans", Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    font-style: normal;
+    color: #333333;
+    white-space: nowrap;
+    margin-right: 8px;
+}
+
+@media only screen and (max-width: 500px) {
+    .language-button p {
+        display: none;
+    }
+}

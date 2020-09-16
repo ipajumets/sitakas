@@ -17,7 +17,7 @@ export let sendMessage = (message, uid, rid, name) => {
         body: JSON.stringify(body),
     };
 
-    return fetch("https://www.sitaratas.eu/api/messages/add-message", request)
+    return fetch("/api/messages/add-message", request)
         .then(res => res.json())
         .then(result => {
             return result;
@@ -32,7 +32,7 @@ export let sendMessage = (message, uid, rid, name) => {
 // Get all messages
 export let getMessages = (rid) => {
 
-    return fetch("https://www.sitaratas.eu/api/messages/all-for/"+rid)
+    return fetch("/api/messages/all-for/"+rid)
         .then(res => res.json())
         .then(json => {
             return json.data;

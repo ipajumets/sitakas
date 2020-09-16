@@ -15,7 +15,7 @@ export let join_room = (name, id, code) => {
         body: JSON.stringify(body),
     };
 
-    return fetch("https://www.sitaratas.eu/api/users/join-room", request)
+    return fetch("/api/users/join-room", request)
         .then(res => res.json())
         .then(json => {
             return json;

@@ -12,6 +12,8 @@ import { toggleMobileChat, addMessage, setNewMessageAlert } from "../modules/cha
 import { sendMessage } from "../Chat/api-requests";
 import { handleBottomMargin, handleMessageName } from "../Chat/helpers";
 
+import { lang } from "../lang";
+
 class MobileChat extends Component {
 
     constructor(props) {
@@ -116,7 +118,7 @@ class MobileChat extends Component {
         }
 
         if (filtered.length < 1) {
-            return alert("Mida läks untsu! Värskenda igaks juhuks brauserit...");
+            return alert(lang.somethingWentWrong[this.props.user.language]);
         }
 
         let name = filtered[0].name;
@@ -166,8 +168,8 @@ class MobileChat extends Component {
                 <div className="mobile-chat-messages-container">
                     <div className="mobile-chat-messages-header-container">
                         <div className="mobile-chat-messages-header-titles-wrapper">
-                            <h3 className="mobile-chat-messages-header-title">Prügijutu nurgake</h3>
-                            <h4 className="mobile-chat-messages-header-subtitle">{this.props.chat.data.length < 1 ? "Ühtegi prügijuttu ei leitud" : `${this.props.chat.data.length} ${this.props.chat.data.length === 1 ? "prügijutt" : "prügijuttu"}`}</h4>
+                            <h3 className="mobile-chat-messages-header-title">{lang.chatTitle[this.props.user.language]}</h3>
+                            <h4 className="mobile-chat-messages-header-subtitle">{this.props.chat.data.length < 1 ? lang.noMessages[this.props.user.language] : `${this.props.chat.data.length} ${this.props.chat.data.length === 1 ? lang.message[this.props.user.language] : lang.messages[this.props.user.language]}`}</h4>
                         </div>
                         <div className="mobile-chat-exit-button-container" onClick={() => this.closeChat()}>
                             <img src={require("../media/svgs/exit.svg")} style={{width: 16, height: 16}} alt="" />
@@ -177,7 +179,7 @@ class MobileChat extends Component {
                         {this.renderMessages(this.props.chat.data, this.props.uid)}
                     </div>
                     <div className="chat-input-container">
-                        <input type="text" placeholder={"Sisesta prügijutt siia"} value={this.state.message} onChange={(e) => this.setState({ message: e.target.value })} onKeyPress={(e) => this.handleKeyPress(e, this.state.message, this.props.uid, this.props.rid, this.props.room.players, this.props.game.data)} />
+                        <input type="text" placeholder={lang.chatInputPlaceholder[this.props.user.language]} value={this.state.message} onChange={(e) => this.setState({ message: e.target.value })} onKeyPress={(e) => this.handleKeyPress(e, this.state.message, this.props.uid, this.props.rid, this.props.room.players, this.props.game.data)} />
                         <div className="chat-input-button-container" onClick={() => this.handleMessage(this.state.message, this.props.uid, this.props.rid, this.props.room.players, this.props.game.data)}> 
                             <img src={require("../media/svgs/interface.svg")} alt="" />
                         </div>
@@ -188,7 +190,7 @@ class MobileChat extends Component {
             return(
                 <div className="chat-container">
                     <div className="mobile-chat-messages-header-container">
-                        <h3 className="mobile-chat-messages-header-title">Prügijutu nurgake</h3>
+                        <h3 className="mobile-chat-messages-header-title">{lang.chatTitle[this.props.user.language]}</h3>
                         <div className="mobile-chat-exit-button-container" onClick={() => this.props.toggleMobileChat()}>
                             <img src={require("../media/svgs/exit.svg")} style={{width: 16, height: 16}} alt="" />
                         </div>
@@ -210,6 +212,7 @@ let mapStateToProps = (state) => {
         chat: state.chat,
         room: state.room,
         game: state.game,
+        user: state.user,
     }
 }
 

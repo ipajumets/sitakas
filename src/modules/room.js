@@ -5,14 +5,18 @@ export const SET_PLAYERS = "SET_PLAYERS";
 export const ADD_PLAYER = "ADD_PLAYER";
 export const REMOVE_PLAYER = "REMOVE_PLAYER";
 export const SET_PRIVACY = "SET_PRIVACY";
+export const SET_JOKERS = "SET_JOKERS";
 export const SET_MAX_PLAYERS = "SET_MAX_PLAYERS";
+export const SET_SPORT = "SET_SPORT";
 
 const initialState = {
     code: null,
     host_browser_id: null,
     players: [],
     privacy: "private",
+    jokers: false,
     maxPlayers: 4,
+    sport: "basketball",
 };
 
 export default (state = initialState, action) => {
@@ -26,7 +30,9 @@ export default (state = initialState, action) => {
                 code: action.code,
                 host_browser_id: action.id,
                 privacy: action.privacy,
+                jokers: action.jokers,
                 maxPlayers: action.maxPlayers,
+                sport: action.sport,
             };
 
         case SET_ROOM_WITH_PLAYERS:
@@ -36,8 +42,10 @@ export default (state = initialState, action) => {
                 code: action.room.code,
                 host_browser_id: action.room.host_browser_id,
                 privacy: action.room.privacy,
+                jokers: action.room.jokers,
                 maxPlayers: action.room.maxPlayers,
                 players: action.players,
+                sport: action.room.sport,
             };
 
         case SET_PLAYERS:
@@ -54,11 +62,25 @@ export default (state = initialState, action) => {
                 privacy: action.privacy,
             };
 
+        case SET_JOKERS:
+
+            return {
+                ...state,
+                jokers: action.jokers,
+            };
+
         case SET_MAX_PLAYERS:
     
             return {
                 ...state,
                 maxPlayers: action.amount,
+            };
+
+        case SET_SPORT:
+    
+            return {
+                ...state,
+                sport: action.data,
             };
 
         case ADD_PLAYER:
@@ -172,12 +194,34 @@ export let setPrivacy = (privacy) => dispatch => {
 
 }
 
+export let setJokers = (jokers) => dispatch => {
+
+    return new Promise(resolve => {
+        return resolve(dispatch({
+            type: SET_JOKERS,
+            jokers,
+        }));
+    });
+
+}
+
 export let setMaxPlayers = (amount) => dispatch => {
 
     return new Promise(resolve => {
         return resolve(dispatch({
             type: SET_MAX_PLAYERS,
             amount,
+        }));
+    });
+
+}
+
+export let setSport = (data) => dispatch => {
+
+    return new Promise(resolve => {
+        return resolve(dispatch({
+            type: SET_SPORT,
+            data,
         }));
     });
 

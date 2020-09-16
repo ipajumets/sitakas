@@ -158,6 +158,14 @@
     align-items: center;
 }
 
+.player-card-container {
+    width: 10vw;
+    height: 12vw;
+    max-width: 50px;
+    max-height: 70px;
+    position: relative;
+}
+
 .player-card {
     width: 10vw;
     height: 12vw;
@@ -342,4 +350,12 @@
 .prev-round-text {
     font-size: 9pt;
     font-family: "Roboto", Arial, sans-serif;
+}
+
+.joker-state-icon {
+    position: absolute;
+    top: -8px;
+    right: -6px;
+    width: 20px;
+    height: 20px;
 }

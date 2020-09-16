@@ -34,7 +34,7 @@ export default (state = initialState, action) => {
                 data: {
                     ...state.data,
                     cards: [action.card, ...state.data.cards],
-                    base: !state.data.base ? action.card : state.data.base,
+                    base: state.data.base ? state.data.base : action.card.value !== 15 ? action.card : null,
                 },
             };
     

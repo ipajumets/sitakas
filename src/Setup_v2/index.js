@@ -9,11 +9,15 @@ import "./index.css";
 
 // modules
 import { setRoom, setRoomWithPlayers, resetRoom, setPlayers } from "../modules/room";
-import { setUser } from "../modules/user";
+import { setUser, setLanguage } from "../modules/user";
 
 // api-requests
 import { check_my_waiting_status } from "../api-requests/global";
 import { join_room } from "./api-requests";
+import Coffee from "../Coffee";
+import Language from "../Language";
+
+import { lang } from "../lang";
 
 class Setup_v2 extends Component {
 
@@ -96,16 +100,24 @@ class Setup_v2 extends Component {
                 <Page title={`${this.props.room.code}`}>
                     <div className="setup-action-container">
                         <div className="setup-action-navigation-container">
-                            <span>Sitaratas</span>
+                            <div className="setup-action-navigation-side-container">
+                                <Coffee title={lang.coffee[this.props.user.language]} />                             
+                            </div>
+                            <div className="setup-action-navigation-middle-container">
+                                <span>{lang.title[this.props.user.language]}</span>
+                            </div>
+                            <div className="setup-action-navigation-side-container" style={{justifyContent: "flex-end"}}>
+                                <Language setLanguage={this.props.setLanguage} language={this.props.user.language} />
+                            </div>
                         </div>
                         <div className="setup-action-wrapper">
-                            <span className="setup-action-game-code-title">MÄNGU KOOD</span>
+                            <span className="setup-action-game-code-title">{lang.gameCode[this.props.user.language]}</span>
                             <span className="setup-action-game-code">{this.props.room.code}</span>
-                            <input type={"text"} value={this.state.name} onChange={(e) => this.setState({ name: e.target.value })} placeholder={"Sinu nimi"} className="setup-action-game-code-input" />
+                            <input type={"text"} value={this.state.name} onChange={(e) => this.setState({ name: e.target.value })} placeholder={lang.yourName[this.props.user.language]} className="setup-action-game-code-input" />
                             {
                                 !this.state.joining ?
                                     <div onClick={() => this.joinRoom(this.state.name, this.props.user.browser_id, this.props.room.code)} className="setup-action-enter-game-button">
-                                        <span>Valmis</span>
+                                        <span>{lang.ready[this.props.user.language]}</span>
                                     </div>
                                 :
                                     <div className="setup-action-enter-game-button">
@@ -114,7 +126,7 @@ class Setup_v2 extends Component {
                             }
                             {
                                 !this.state.creating ?
-                                    <span onClick={() => this.goBack()} className="setup-action-create-game-button">Mine tagasi</span>
+                                    <span onClick={() => this.goBack()} className="setup-action-create-game-button">{lang.goBack[this.props.user.language]}</span>
                                 :
                                     <img className="setup-action-create-game-loading" src={require("../media/svgs/loading-fat.svg")} alt="" />
                             }
@@ -154,7 +166,7 @@ let mapStateToProps = (state) => {
 
 let mapDispatchToProps = (dispatch) => {
     return {
-        ...bindActionCreators({ setRoom, setRoomWithPlayers, setPlayers, resetRoom, setUser }, dispatch)
+        ...bindActionCreators({ setRoom, setRoomWithPlayers, setPlayers, resetRoom, setUser, setLanguage }, dispatch)
     }
 }
 

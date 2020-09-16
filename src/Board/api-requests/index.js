@@ -14,7 +14,7 @@ export let get_round = (code, round) => {
         body: JSON.stringify(body),
     };
 
-    return fetch("https://www.sitaratas.eu/api/rounds/get-round", request)
+    return fetch("/api/rounds/get-round", request)
         .then(res => res.json())
         .then(json => {
             return json;
@@ -42,7 +42,7 @@ export let get_hand = (code, round, hand) => {
         body: JSON.stringify(body),
     };
 
-    return fetch("https://www.sitaratas.eu/api/hands/get-hand", request)
+    return fetch("/api/hands/get-hand", request)
         .then(res => res.json())
         .then(json => {
             return json;
@@ -70,7 +70,7 @@ export let get_my_cards = (code, round, uid) => {
         body: JSON.stringify(body),
     };
 
-    return fetch("https://www.sitaratas.eu/api/cards/get-my-cards", request)
+    return fetch("/api/cards/get-my-cards", request)
         .then(res => res.json())
         .then(json => {
             return json;
@@ -102,7 +102,7 @@ export let add_bet = (code, round, uid, wins, next_uid, next_action, last) => {
         body: JSON.stringify(body),
     };
 
-    return fetch("https://www.sitaratas.eu/api/rounds/add-bet", request)
+    return fetch("/api/rounds/add-bet", request)
         .then(res => res.json())
         .then(json => {
             return json;
@@ -139,7 +139,7 @@ export let add_last_card = (code, round, hand, uid, value, suit, winner, next_ui
         body: JSON.stringify(body),
     };
 
-    return(fetch("https://www.sitaratas.eu/api/hands/add-last-card", request))
+    return(fetch("/api/hands/add-last-card", request))
         .then(res => res.json())
         .then(json => {
             return json;
@@ -155,7 +155,7 @@ export let add_last_card = (code, round, hand, uid, value, suit, winner, next_ui
 // Get data about game
 export let getGameData = (code, browser_id) => {
 
-    return fetch("https://www.sitaratas.eu/api/games/get-game-data/"+code+"/"+browser_id)
+    return fetch("/api/games/get-game-data/"+code+"/"+browser_id)
         .then(res => res.json())
         .then(json => {
             return json;
@@ -181,7 +181,7 @@ export let addBet = (game_id, user_id, wins) => {
         body: JSON.stringify(body),
     };
 
-    return fetch("https://www.sitaratas.eu/api/rounds/add-bet/"+game_id, request)
+    return fetch("/api/rounds/add-bet/"+game_id, request)
         .then(res => res.json())
         .then(result => {
             return result;
@@ -209,7 +209,7 @@ export let uploadCard = (game, card) => {
         body: JSON.stringify(body),
     };
 
-    return fetch("https://www.sitaratas.eu/api/hands/add-card/"+game.room_code, request)
+    return fetch("/api/hands/add-card/"+game.room_code, request)
         .then(res => res.json())
         .then(json => {
             return json;
