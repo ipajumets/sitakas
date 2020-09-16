@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { isMobileSafari, isMobile } from "react-device-detect";
+import { isMobile } from "react-device-detect";
 import io from "socket.io-client";
 import Page from "../Page";
 
@@ -444,7 +444,7 @@ class Setup_v2 extends Component {
                                 }
                             </div>
                             {
-                                isMobileSafari ?
+                                isMobile ?
                                     <div className="ios-safari-bottom">
                                     </div>
                                 :

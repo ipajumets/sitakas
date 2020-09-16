@@ -159,18 +159,18 @@
 }
 
 .player-card-container {
-    width: 10vw;
-    height: 12vw;
-    max-width: 50px;
-    max-height: 70px;
+    width: 12vw;
+    height: 15vw;
+    max-width: 54px;
+    max-height: 75px;
     position: relative;
 }
 
 .player-card {
-    width: 10vw;
-    height: 12vw;
-    max-width: 50px;
-    max-height: 70px;
+    width: 12vw;
+    height: 15vw;
+    max-width: 54px;
+    max-height: 75px;
     object-fit: contain;
 }
 
@@ -186,8 +186,8 @@
 }
 
 .trump-card {
-    width: 10vw;
-    height: 12vw;
+    width: 12vw;
+    height: 15vw;
     max-width: 50px;
     max-height: 70px;
     object-fit: contain;

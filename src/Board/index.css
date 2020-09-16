@@ -77,6 +77,8 @@
 }
 
 .board-action-navigation-title {
+    white-space: nowrap;
+    text-align: center;
     font-size: 13pt;
     font-family: "Roboto", Arial, sans-serif;
     color: black;
