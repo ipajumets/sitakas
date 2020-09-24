@@ -52,7 +52,7 @@ class Board extends Component {
 
     componentDidMount = () => {
 
-        this.socket = io("http://192.168.1.235:5000/");
+        this.socket = io("https://www.sitaratas.eu:5000/");
         this.socket.emit("set-active", { code: this.props.match.params.code, uid: this.props.user.browser_id });
 
         let that = this,

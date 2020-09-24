@@ -35,7 +35,7 @@ class Welcome extends Component {
 
     componentDidMount = () => {
 
-        this.socket = io("http://192.168.1.235:5000/");
+        this.socket = io("https://www.sitaratas.eu:5000/");
 
         get_public_games()
             .then(rooms => {
