@@ -52,7 +52,7 @@ class Board extends Component {
 
     componentDidMount = () => {
 
-        this.socket = io("https://www.sitaratas.eu:5000/");
+        this.socket = io("http://192.168.1.235:5000/");
         this.socket.emit("set-active", { code: this.props.match.params.code, uid: this.props.user.browser_id });
 
         let that = this,
@@ -457,10 +457,10 @@ class Board extends Component {
                                             <Coffee title={lang.coffee[this.props.user.language]} />                             
                                         </div>
                                         <div className="board-action-navigation-middle-container">
-                                            <span className="board-action-navigation-title">{lang.game[this.props.user.language].toUpperCase()} {this.props.game.data.room_code}</span>
+                                            <span className="board-action-navigation-title">{lang.game[this.props.user.language].toUpperCase()} {this.props.game.data.room_code} {this.props.game.data.jokers && <img className="board-action-navigation-joker" src={require("../media/svgs/joker.svg")} alt="" />}</span>
                                             <span className="board-action-navigation-subtitle">ROUND {this.props.game.data.round}/{totalRounds(this.props.game.data.players.length)}</span>
                                         </div>
-                                        <div className="board-action-navigation-side-container" style={{justifyContent: "flex-end", paddingRight: 0}}>
+                                        <div className="board-action-navigation-side-container" style={{justifyContent: "flex-end", paddingRight: 20}}>
                                             <Language setLanguage={this.props.setLanguage} language={this.props.user.language} />
                                         </div>
                                     </div>
@@ -472,7 +472,7 @@ class Board extends Component {
                                             <Language hide={true} setLanguage={this.props.setLanguage} language={this.props.user.language} />                                
                                         </div>
                                         <div className="board-action-navigation-middle-container">
-                                            <span className="board-action-navigation-title">{lang.game[this.props.user.language].toUpperCase()} {this.props.game.data.room_code}</span>
+                                            <span className="board-action-navigation-title">{lang.game[this.props.user.language].toUpperCase()} {this.props.game.data.room_code} {this.props.game.data.jokers && <img className="board-action-navigation-joker" src={require("../media/svgs/joker.svg")} alt="" />}</span>
                                             <span className="board-action-navigation-subtitle">ROUND {this.props.game.data.round}/{totalRounds(this.props.game.data.players.length)}</span>
                                         </div>
                                         <div className="board-action-navigation-side-container" style={{justifyContent: "flex-end", paddingRight: 0}}>

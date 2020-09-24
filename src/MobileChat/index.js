@@ -27,7 +27,7 @@ class MobileChat extends Component {
 
     componentDidMount = () => {
 
-        this.socket = io("https://www.sitaratas.eu:5000/");
+        this.socket = io("http://192.168.1.235:5000/");
 
         this.receiveSockets(this.props.rid, this.props.uid);
 

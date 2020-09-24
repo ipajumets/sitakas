@@ -44,7 +44,7 @@ class Setup_v2 extends Component {
 
     componentDidMount = () => {
 
-        this.socket = io("https://www.sitaratas.eu:5000/");
+        this.socket = io("http://192.168.1.235:5000/");
 
         let that = this,
             room_code = that.props.match.params.code ? that.props.match.params.code : this.props.room.code;

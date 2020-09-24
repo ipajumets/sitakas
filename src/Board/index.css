@@ -20,6 +20,12 @@
     height: 64px;
 }
 
+.board-action-navigation-joker {
+    width: 20px;
+    height: 20px;
+    margin-left: 5px;
+}
+
 /* Setup */
 
 .board-action-and-chat-container {
@@ -76,6 +82,9 @@
     font-family: "Roboto", Arial, sans-serif;
     color: black;
     font-weight: bold;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }
 
 .board-action-navigation-subtitle {
