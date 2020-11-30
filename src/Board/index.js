@@ -11,12 +11,12 @@ import { resetUser, setLanguage }  from "../modules/user";
 import { setGame, updateGameHand, resetGame }  from "../modules/game";
 import { setRound, setPreviousRound, addMyBet, resetRound, updateResults, addWon, setNextTurn }  from "../modules/round";
 import { setHand, setPreviousHand, addCard, addHandWinner, resetHands }  from "../modules/hands";
-import { setCards, removeCard, resetCards }  from "../modules/cards";
+import { setCards, setJokers, removeCard, resetCards }  from "../modules/cards";
 import { resetRoom }  from "../modules/room";
 import { setConnections }  from "../modules/socket";
 
 // api-requests
-import { getGameData, addBet, uploadCard } from "./api-requests";
+import { getGameData, addBet, uploadCard, getJokersCount } from "./api-requests";
 
 // Layouts
 import ThreePlayersTable from "./layouts/three_players";
@@ -101,7 +101,17 @@ class Board extends Component {
                                                     .then(_ => {
                                                         return this.props.setCards(result.myCards.active)
                                                             .then(_ => {
-                                                                return this.props.setConnections(result.users)
+                                                                if (result.game.jokers) {
+                                                                    return getJokersCount(code)
+                                                                        .then(count => {
+                                                                            return this.props.setJokers(count)
+                                                                                .then(_ => {
+                                                                                    return this.props.setConnections(result.users);
+                                                                                });
+                                                                        });
+                                                                } else {
+                                                                    return this.props.setConnections(result.users);
+                                                                }
                                                             })
                                                             .then(_ => {
                                                                 return this.setState({ loading: false, init: false });
@@ -151,6 +161,15 @@ class Board extends Component {
             return this.props.setConnections(result);
         });
 
+        this.socket.on(`${code}_update_jokers_counter`, uid => {
+            let newData = {
+                ...this.props.cards.jokers,
+                [uid]: this.props.cards.jokers[uid]+1,
+            };
+
+            return this.props.setJokers(newData);
+        });
+
         this.socket.on("connect", () => {
             return this.setState({ selected_card: {} }, () => {
                 setTimeout(() => {
@@ -162,20 +181,20 @@ class Board extends Component {
 
     }
 
-    handleTable = (game, round, prevRound, hand, prevHand, uid, connections, language) => {
+    handleTable = (game, round, prevRound, hand, prevHand, uid, connections, language, jokers) => {
 
         let sorted = rearrangePlayersOrder(game.players, uid);
 
         switch (game.players.length) {
 
             case 3:
-                return <ThreePlayersTable language={language} game={game} round={round} prevRound={prevRound} hand={hand} prevHand={prevHand} players={sorted} connections={connections} />;
+                return <ThreePlayersTable jokers={jokers} language={language} game={game} round={round} prevRound={prevRound} hand={hand} prevHand={prevHand} players={sorted} connections={connections} />;
             case 4:
-                return <FourPlayersTable language={language} game={game} round={round} prevRound={prevRound} hand={hand} prevHand={prevHand} players={sorted} connections={connections} />;
+                return <FourPlayersTable jokers={jokers} language={language} game={game} round={round} prevRound={prevRound} hand={hand} prevHand={prevHand} players={sorted} connections={connections} />;
             case 5:
-                return <FivePlayersTable language={language} game={game} round={round} prevRound={prevRound} hand={hand} prevHand={prevHand} players={sorted} connections={connections} />;
+                return <FivePlayersTable jokers={jokers} language={language} game={game} round={round} prevRound={prevRound} hand={hand} prevHand={prevHand} players={sorted} connections={connections} />;
             case 6:
-                return <SixPlayersTable language={language} game={game} round={round} prevRound={prevRound} hand={hand} prevHand={prevHand} players={sorted} connections={connections} />;
+                return <SixPlayersTable jokers={jokers} language={language} game={game} round={round} prevRound={prevRound} hand={hand} prevHand={prevHand} players={sorted} connections={connections} />;
             default:
                 return <ThreePlayersTable language={language} game={game} round={round} prevRound={prevRound} hand={hand} prevHand={prevHand} players={sorted} connections={connections} />;
 
@@ -482,7 +501,7 @@ class Board extends Component {
                             }
                             <div className="board-action-wrapper">
                                 <div className="board-table-container">
-                                    {this.handleTable(this.props.game.data, this.props.round.data, this.props.round.prev, this.props.hands.data, this.props.hands.prev, this.props.user.browser_id, this.props.socket.connections, this.props.user.language)}
+                                    {this.handleTable(this.props.game.data, this.props.round.data, this.props.round.prev, this.props.hands.data, this.props.hands.prev, this.props.user.browser_id, this.props.socket.connections, this.props.user.language, this.props.cards.jokers)}
                                     {
                                         !this.props.game.data.isOver && this.props.round.data.turn === this.props.user.browser_id && this.props.round.data.action === "guess" ?
                                             <div className="guess-wins-container">
@@ -611,7 +630,7 @@ let mapStateToProps = (state) => {
 
 let mapDispatchToProps = (dispatch) => {
     return {
-        ...bindActionCreators({ resetRoom, setGame, updateGameHand, resetGame, setNextTurn, setRound, setPreviousRound, addMyBet, setHand, setPreviousHand, addCard, updateResults, setCards, removeCard, resetCards, resetHands, resetRound, resetUser, addWon, addHandWinner, setConnections, setLanguage }, dispatch)
+        ...bindActionCreators({ resetRoom, setGame, updateGameHand, resetGame, setNextTurn, setRound, setPreviousRound, addMyBet, setHand, setPreviousHand, addCard, updateResults, setCards, setJokers, removeCard, resetCards, resetHands, resetRound, resetUser, addWon, addHandWinner, setConnections, setLanguage }, dispatch)
     }
 }
 

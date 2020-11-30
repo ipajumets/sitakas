@@ -219,3 +219,15 @@ export let uploadCard = (game, card) => {
         });
 
 }
+
+// Get jokers count
+export let getJokersCount = (code) => {
+
+    return fetch("/api/cards/jokers-count/"+code)
+        .then(res => res.json())
+        .then(json => {
+            return json;
+        })
+        .catch(err => console.log(err));
+
+}

@@ -359,3 +359,22 @@
     width: 20px;
     height: 20px;
 }
+
+.four-players-table-jokers-counter-container {
+    position: absolute;
+    bottom: -12px;
+    right: 0;
+    height: 20px;
+    width: 20px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.67);
+}
+
+.four-players-table-jokers-counter-container span {
+    font-size: 12px;
+    font-family: Arial, sans-serif;
+    color: white;
+}

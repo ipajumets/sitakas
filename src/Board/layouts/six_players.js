@@ -4,7 +4,7 @@ import { handleUser } from "../helpers";
 
 import { lang } from "../../lang";
 
-export default ({ game, round, prevRound, hand, prevHand, players, connections, language }) => {
+export default ({ game, round, prevRound, hand, prevHand, players, connections, language, jokers }) => {
 
     let player_0_card = hand ? myCard(hand, players[0].uid) : null,
         player_1_card = hand ? myCard(hand, players[1].uid) : null,
@@ -62,6 +62,11 @@ export default ({ game, round, prevRound, hand, prevHand, players, connections, 
                                             <div></div>
                                     }
                                 </div>
+                                {game.jokers &&
+                                    <div className="four-players-table-jokers-counter-container">
+                                        <span>{jokers[players[3].uid]}</span>
+                                    </div>
+                                }
                             </div>
                         </div>
                     </div>
@@ -120,6 +125,11 @@ export default ({ game, round, prevRound, hand, prevHand, players, connections, 
                                                 <div></div>
                                         }
                                     </div>
+                                    {game.jokers &&
+                                        <div className="four-players-table-jokers-counter-container">
+                                            <span>{jokers[players[2].uid]}</span>
+                                        </div>
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -176,6 +186,11 @@ export default ({ game, round, prevRound, hand, prevHand, players, connections, 
                                                 <div></div>
                                         }
                                     </div>
+                                    {game.jokers &&
+                                        <div className="four-players-table-jokers-counter-container">
+                                            <span>{jokers[players[1].uid]}</span>
+                                        </div>
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -233,6 +248,11 @@ export default ({ game, round, prevRound, hand, prevHand, players, connections, 
                                                 <div></div>
                                         }
                                     </div>
+                                    {game.jokers &&
+                                        <div className="four-players-table-jokers-counter-container">
+                                            <span>{jokers[players[4].uid]}</span>
+                                        </div>
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -289,6 +309,11 @@ export default ({ game, round, prevRound, hand, prevHand, players, connections, 
                                                 <div></div>
                                         }
                                     </div>
+                                    {game.jokers &&
+                                        <div className="four-players-table-jokers-counter-container">
+                                            <span>{jokers[players[5].uid]}</span>
+                                        </div>
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -347,6 +372,11 @@ export default ({ game, round, prevRound, hand, prevHand, players, connections, 
                                             <div></div>
                                     }
                                 </div>
+                                {game.jokers &&
+                                    <div className="four-players-table-jokers-counter-container">
+                                        <span>{jokers[players[0].uid]}</span>
+                                    </div>
+                                }
                             </div>
                         </div>
                     </div>
